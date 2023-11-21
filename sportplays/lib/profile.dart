@@ -1,7 +1,7 @@
 // profile.dart
 import 'package:flutter/material.dart';
-import 'package:project1/user.dart';
-import 'package:project1/setting.dart';
+import 'package:sportplays/user.dart';
+import 'package:sportplays/setting.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key, required this.passUser}) : super(key: key);
@@ -44,7 +44,7 @@ class _ProfileState extends State<Profile> {
             children: [
               CircleAvatar(
                 radius: 50,
-                backgroundImage: AssetImage('../images/hehe.jpeg'), // Update the path
+                backgroundImage: AssetImage('../images/utm.jpeg'), // Update the path
               ),
               const SizedBox(height: 10),
               Text(
