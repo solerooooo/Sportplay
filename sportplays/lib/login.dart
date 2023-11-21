@@ -24,7 +24,7 @@ class _ScreenState extends State<Login> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              Image.network('../images/utm.jpeg'),
+              //Image.network('../images/utm.jpeg'),
               const SizedBox(height: 10),
               const Text(
                 'Borang Flutter',

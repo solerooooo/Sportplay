@@ -44,19 +44,40 @@ class _ProfileState extends State<Profile> {
             children: [
               CircleAvatar(
                 radius: 50,
-                backgroundImage: AssetImage('../images/utm.jpeg'), // Update the path
+                backgroundColor: Colors.amber, // Update the path
               ),
               const SizedBox(height: 10),
               Text(
-                'Username: ${passUser.name}',
+                '${passUser.name}',
                 style: TextStyle(fontSize: 20),
               ),
               const SizedBox(height: 10),
               Text(
-                'Email: ${passUser.email}',
+                '${passUser.email}',
                 style: TextStyle(fontSize: 20),
               ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.lightGreenAccent,
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 2,
+                      ),
+                      
+                    ),
+                    child: const Text(
+                      'Active Student',
+                      style: TextStyle(fontSize: 20),
+                    )
+                  
+                  )
+                ],
+              )
             ],
+            
           ),
         ),
       ),
