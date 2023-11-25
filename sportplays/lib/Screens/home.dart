@@ -1,9 +1,9 @@
 // home.dart
 import 'package:flutter/material.dart';
-import 'package:sportplays/login.dart';
-import 'package:sportplays/profile.dart';
-import 'package:sportplays/register.dart';
-import 'package:sportplays/user.dart';
+import 'login.dart';
+import 'profile.dart';
+import 'register.dart';
+import '../user.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key});

@@ -1,6 +1,6 @@
 // setting.dart
 import 'package:flutter/material.dart';
-import 'user.dart';
+import '../user.dart';
 
 class Setting extends StatefulWidget {
   const Setting({Key? key});

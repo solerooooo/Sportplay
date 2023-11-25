@@ -1,7 +1,7 @@
 // profile.dart
 import 'package:flutter/material.dart';
-import 'package:sportplays/user.dart';
-import 'package:sportplays/setting.dart';
+import '../user.dart';
+import 'setting.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key, required this.passUser}) : super(key: key);
@@ -42,42 +42,64 @@ class _ProfileState extends State<Profile> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 50,
-                backgroundColor: Colors.amber, // Update the path
+                backgroundColor: Colors.amber,
               ),
               const SizedBox(height: 10),
               Text(
                 '${passUser.name}',
-                style: TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 20),
               ),
               const SizedBox(height: 10),
               Text(
                 '${passUser.email}',
-                style: TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 20),
               ),
+              const SizedBox(height: 10), 
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    decoration: BoxDecoration(
+                    width: 300,
+                    height: 40,
+                    decoration: const BoxDecoration(
                       color: Colors.lightGreenAccent,
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 2,
-                      ),
-                      
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
                     child: const Text(
                       'Active Student',
+                      textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 20),
-                    )
-                  
+                    ),
+                  ),
+
+                  const SizedBox(height: 10), 
+
+                  Container(
+                    width: 300,
+                    height: 100,
+                    decoration: const BoxDecoration(
+                      color: Colors.white60,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: const Text(
+                      'About',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 20),
+                    ), 
+                  ),
+              
+
+                  Container(
+                    width: 300,
+                    height: 1000,
+
                   )
                 ],
-              )
+                
+              ),
             ],
-            
           ),
         ),
       ),
