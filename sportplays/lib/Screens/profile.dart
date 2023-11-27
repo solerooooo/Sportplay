@@ -1,6 +1,6 @@
 // profile.dart
 import 'package:flutter/material.dart';
-import '../user.dart';
+import '../Models/user.dart';
 import 'setting.dart';
 
 class Profile extends StatefulWidget {
@@ -23,7 +23,9 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.purple,
       appBar: AppBar(
+        backgroundColor: Colors.lightGreenAccent,
         title: const Text('User Profile'),
         actions: [
           IconButton(
@@ -37,7 +39,9 @@ class _ProfileState extends State<Profile> {
           ),
         ],
       ),
+
       body: Center(
+        
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -80,27 +84,74 @@ class _ProfileState extends State<Profile> {
                     width: 300,
                     height: 100,
                     decoration: const BoxDecoration(
-                      color: Colors.white60,
+                      color: Colors.white,
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    child: const Text(
-                      'About',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 20),
-                    ), 
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'About',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 20),
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.person),
+                            const SizedBox(width: 10),
+                            Text(
+                              '${passUser.email}',
+                              style: const TextStyle(fontSize: 20),
+                            ),
+                          ],
+                        ),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.phone),
+                            const SizedBox(width: 10),
+                            Text(
+                              '${passUser.phone}',
+                              style: const TextStyle(fontSize: 20),
+                            ),
+                          ],
+                        ),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.home),
+                            const SizedBox(width: 10),
+                            Text(
+                              '${passUser.address}',
+                              style: const TextStyle(fontSize: 20),
+                            ),
+                          ],
+                        ),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.work),
+                            const SizedBox(width: 10),
+                            Text(
+                              '${passUser.job}',
+                              style: const TextStyle(fontSize: 20),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-              
-
-                  Container(
-                    width: 300,
-                    height: 1000,
-
-                  )
                 ],
-                
               ),
             ],
-          ),
+          )
         ),
       ),
     );

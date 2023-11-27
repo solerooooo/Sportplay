@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'login.dart';
 import 'profile.dart';
 import 'register.dart';
-import '../user.dart';
+import '../Models/user.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key});
