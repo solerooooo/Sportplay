@@ -1,4 +1,4 @@
-// setting.dart
+/*// setting.dart
 import 'package:flutter/material.dart';
 import '../Models/user.dart';
 
@@ -97,4 +97,4 @@ class _SettingState extends State<Setting> {
       ),
     );
   }
-}
+}*/

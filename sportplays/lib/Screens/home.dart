@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'login.dart';
 import 'profile.dart';
 import 'register.dart';
-import '../Models/user.dart';
+import '../models/user.dart';
 
 class Home extends StatelessWidget {
-  const Home({Key? key});
+  final User passUser;
+
+  const Home({Key? key, required this.passUser}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +40,9 @@ class Home extends StatelessWidget {
             ListTile(
               title: const Text('Profile'),
               onTap: () {
-                // Create a dummy user for demonstration purposes
-                User dummyUser = User(name: 'John Doe', email: 'john.doe@example.com');
-
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Profile(passUser: dummyUser)),
+                  MaterialPageRoute(builder: (context) => Profile(passUser: passUser)),
                 );
               },
             ),
@@ -54,7 +53,7 @@ class Home extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              'Welcome!',
+              'Welcome, ${passUser.getName()}!',
               style: const TextStyle(fontSize: 30),
             ),
           ],

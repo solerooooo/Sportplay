@@ -1,15 +1,16 @@
 // login.dart
 import 'package:flutter/material.dart';
 import 'home.dart';
+import '../models/user.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key});
 
   @override
-  State<Login> createState() => _ScreenState();
+  State<Login> createState() => _LoginState();
 }
 
-class _ScreenState extends State<Login> {
+class _LoginState extends State<Login> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
 
@@ -24,7 +25,6 @@ class _ScreenState extends State<Login> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              //Image.network('../images/utm.jpeg'),
               const SizedBox(height: 10),
               const Text(
                 'Login to SportPlay',
@@ -54,10 +54,18 @@ class _ScreenState extends State<Login> {
                 height: 70,
                 child: ElevatedButton(
                   onPressed: () {
-                    MaterialPageRoute route = MaterialPageRoute(
-                      builder: (context) => const Home(),
+                    User passUser = User(
+                      name: nameController.text,
+                      email: emailController.text,
+                      password: '',
+                      phone: '',
+                      address: '',
+                      gender: '',
                     );
-                    Navigator.pushReplacement(context, route);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => Home(passUser: passUser)),
+                    );
                   },
                   child: const Text(
                     'Submit',
