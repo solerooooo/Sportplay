@@ -13,6 +13,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +44,8 @@ class _LoginState extends State<Login> {
               TextField(
                 controller: emailController,
                 decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.email),
-                  label: Text('Email'),
+                  prefixIcon: Icon(Icons.lock),
+                  label: Text('Password'),
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -57,10 +58,11 @@ class _LoginState extends State<Login> {
                     User passUser = User(
                       name: nameController.text,
                       email: emailController.text,
-                      password: '',
+                      password: passwordController.text,
                       phone: '',
                       address: '',
-                      gender: '',
+                      gender: '', 
+                      userId: '',
                     );
                     Navigator.pushReplacement(
                       context,

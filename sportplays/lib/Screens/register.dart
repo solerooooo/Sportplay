@@ -17,6 +17,7 @@ class _RegisterState extends State<Register> {
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
   final genderController = TextEditingController();
+  final idController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +41,14 @@ class _RegisterState extends State<Register> {
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.person),
                   labelText: 'Name',
+                  border: OutlineInputBorder(),
+                ),
+              ),const SizedBox(height: 20),
+              TextField(
+                controller: idController,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.card_membership),
+                  labelText: 'Student ID',
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -101,7 +110,9 @@ class _RegisterState extends State<Register> {
                       password: passwordController.text,
                       phone: phoneController.text,
                       address: addressController.text,
-                      gender: genderController.text,
+                      gender: genderController.text, 
+                      userId: idController.text,
+                      
                     );
 
                     Navigator.pushReplacement(

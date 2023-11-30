@@ -6,6 +6,7 @@ class User {
   String phone;
   String address;
   String gender;
+  String userId;
 
   User({
     required this.name,
@@ -13,6 +14,7 @@ class User {
     required this.password,
     required this.phone,
     required this.address,
+    required this.userId, 
     required this.gender,
   });
 
@@ -23,6 +25,7 @@ class User {
   String getPhone() => phone;
   String getAddress() => address;
   String getGender() => gender;
+  String getId() => userId;
 
   // Setters
   set setName(String name) => this.name = name;
@@ -31,4 +34,5 @@ class User {
   set setPhone(String phone) => this.phone = phone;
   set setAddress(String address) => this.address = address;
   set setGender(String gender) => this.gender = gender;
+  set setId(String userId) => this.userId = userId;
 }

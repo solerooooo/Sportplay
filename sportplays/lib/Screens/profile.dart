@@ -26,9 +26,12 @@ class _ProfileState extends State<Profile> {
       children: [
         Icon(icon),
         const SizedBox(width: 10),
-        Text(
-          text,
-          style: const TextStyle(fontSize: 20),
+        Flexible(
+          child: Text(
+            text,
+            style: const TextStyle(fontSize: 20),
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ],
     );
@@ -56,7 +59,7 @@ class _ProfileState extends State<Profile> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: ListView(
+          child: Column(
             children: [
               const CircleAvatar(
                 radius: 50,
@@ -65,12 +68,13 @@ class _ProfileState extends State<Profile> {
               const SizedBox(height: 10),
               Text(
                 '${passUser.getName()}',
-                style: const TextStyle(fontSize: 20),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               const SizedBox(height: 10),
               Text(
-                '${passUser.getEmail()}',
-                style: const TextStyle(fontSize: 20),
+                '${passUser.getId()}',
+                style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 10),
               Container(
@@ -90,27 +94,33 @@ class _ProfileState extends State<Profile> {
               const SizedBox(height: 10),
               Container(
                 width: 300,
-                height: 100,
+                height: 400,
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'About',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    const SizedBox(height: 10),
-                    buildInfoRow(Icons.person, passUser.getEmail()),
-                    buildInfoRow(Icons.phone, passUser.getPhone()),
-                    buildInfoRow(Icons.home, passUser.getAddress()),
-                    buildInfoRow(Icons.work, passUser.getGender()),
-                  ],
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceEvenly,
+                    children: [
+                      const Text(
+                        'About',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, 
+                            fontSize: 20,
+                            ),
+                      ),
+                      buildInfoRow(Icons.person, passUser.getEmail()),
+                      buildInfoRow(Icons.phone, passUser.getPhone()),
+                      buildInfoRow(Icons.home, passUser.getAddress()),
+                      buildInfoRow(Icons.work, passUser.getGender()),
+                    ],
+                  ),
                 ),
               ),
+              const SizedBox(height: 10),
             ],
           ),
         ),
