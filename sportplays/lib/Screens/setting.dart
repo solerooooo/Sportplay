@@ -1,100 +1,99 @@
-/*// setting.dart
+// setting.dart
 import 'package:flutter/material.dart';
-import '../Models/user.dart';
+import '../models/user.dart';
 
 class Setting extends StatefulWidget {
-  const Setting({Key? key});
+  final User passUser;
+  final Function(User) onUpdateUser;
+
+  const Setting({Key? key, required this.passUser, required this.onUpdateUser}) : super(key: key);
 
   @override
   State<Setting> createState() => _SettingState();
 }
 
 class _SettingState extends State<Setting> {
-  List<User> computerStudents = [
-    User(name: 'Camily', email: 'camily@utm.edu.my'),
-    User(name: 'Solihin', email: 'solihin@utm.edu.my'),
-  ];
+  late User user;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController genderController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    user = widget.passUser;
+    emailController.text = user.getEmail();
+    phoneController.text = user.getPhone();
+    addressController.text = user.getAddress();
+    genderController.text = user.getGender();
+  }
+
+  void saveChanges() {
+    final updatedUser = User(
+      name: user.getName(),
+      email: emailController.text,
+      password: user.getPassword(),
+      phone: phoneController.text,
+      address: addressController.text,
+      gender: genderController.text,
+      userId: user.getId(),
+    );
+
+    // Call the callback function to handle the updated user
+    widget.onUpdateUser(updatedUser);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Setting'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              //declare
-              final nameController = TextEditingController();
-              final emailController = TextEditingController();
-
-              //create a popup form
-              AlertDialog alertDialog = AlertDialog(
-                title: const Text('Add Student'),
-                content: SizedBox(
-                  width: 200,
-                  height: 200,
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: nameController,
-                      ),
-                      TextField(
-                        controller: emailController,
-                      ),
-                    ],
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      //code add student
-                      computerStudents.add(
-                        User(
-                          name: nameController.text,
-                          email: emailController.text,
-                        ),
-                      );
-                      setState(() {
-                        //refresh screen
-                      });
-                      //close popup
-                      Navigator.pop(context);
-                    },
-                    child: Text('Ok'),
-                  ),
-                ],
-              );
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return alertDialog;
-                },
-              );
-            },
-            icon: Icon(Icons.add),
-          ),
-        ],
+        title: const Text('Settings'),
       ),
-      body: ListView.builder(
-        itemCount: computerStudents.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            leading: Icon(Icons.person),
-            title: Text(computerStudents[index].name),
-            subtitle: Text(computerStudents[index].email),
-            trailing: IconButton(
-              onPressed: () {
-                //delete
-                computerStudents.removeAt(index);
-                setState(() {
-                  //refresh screen
-                });
-              },
-              icon: Icon(Icons.clear),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(),
+              ),
             ),
-          );
-        },
+            const SizedBox(height: 20),
+            TextField(
+              controller: phoneController,
+              decoration: const InputDecoration(
+                labelText: 'Phone Number',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: addressController,
+              decoration: const InputDecoration(
+                labelText: 'Address',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: genderController,
+              decoration: const InputDecoration(
+                labelText: 'Gender',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: saveChanges,
+              child: const Text('Save Changes'),
+            ),
+          ],
+        ),
       ),
     );
   }
-}*/
+}

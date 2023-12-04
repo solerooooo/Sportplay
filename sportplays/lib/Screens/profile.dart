@@ -1,6 +1,7 @@
 // profile.dart
 import 'package:flutter/material.dart';
 import '../models/user.dart';
+import 'setting.dart';
 
 class Profile extends StatefulWidget {
   final User passUser;
@@ -47,10 +48,18 @@ class _ProfileState extends State<Profile> {
         actions: [
           IconButton(
             onPressed: () {
-              /* MaterialPageRoute route = MaterialPageRoute(
-                builder: (context) => const Setting(),
+              MaterialPageRoute route = MaterialPageRoute(
+                builder: (context) => Setting(
+                  passUser: passUser,
+                  onUpdateUser: (User updatedUser) {
+                    // Update the profile page with the new user data
+                    setState(() {
+                      passUser = updatedUser;
+                    });
+                  },
+                ),
               );
-              Navigator.push(context, route);*/
+              Navigator.push(context, route);
             },
             icon: const Icon(Icons.settings),
           ),
@@ -134,7 +143,7 @@ class _ProfileState extends State<Profile> {
                         'Booking Notification',
                         style: TextStyle(fontSize: 17),
                       ),
-                       SizedBox(width: 10),
+                      SizedBox(width: 10),
                       NotiSwitch(),
                     ],
                   ),
