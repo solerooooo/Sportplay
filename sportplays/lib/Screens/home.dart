@@ -3,23 +3,19 @@ import 'login.dart';
 import 'profile.dart';
 import 'register.dart';
 import '../models/user.dart';
-
+//import 'booking.dart';
 
 class Home extends StatefulWidget {
   final User passUser;
 
-
   const Home({Key? key, required this.passUser}) : super(key: key);
-
 
   @override
   _HomeState createState() => _HomeState();
 }
 
-
 class _HomeState extends State<Home> {
   int _selectedIndex = 0;
-
 
   void _onTabSelected(int index) {
     setState(() {
@@ -27,8 +23,16 @@ class _HomeState extends State<Home> {
     });
 
 
-    // Handle navigation based on the selected tab
-    if (index == 1) {
+    //if (index == 1) {
+      //Navigator.push(
+        //context,
+        //MaterialPageRoute(
+         // builder: (context) => Booking(passUser: widget.passUser),
+        //),
+      //);
+    //}
+
+    if (index == 2) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -36,8 +40,8 @@ class _HomeState extends State<Home> {
         ),
       );
     }
-  }
 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +74,16 @@ class _HomeState extends State<Home> {
             ),
             ListTile(
               title: const Text('Profile'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Profile(passUser: widget.passUser)),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Booking Page'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -139,24 +153,27 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-           
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onTabSelected,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
+      bottomNavigationBar:BottomNavigationBar(
+  currentIndex: _selectedIndex,
+  onTap: _onTabSelected,
+  items: const [
+    BottomNavigationBarItem(
+      icon: Icon(Icons.home),
+      label: 'Home',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.add),
+      label: 'Booking',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.person),
+      label: 'Profile',
+    ),
+  ],
+),
     );
   }
 }
