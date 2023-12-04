@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'login.dart';
 import '../models/user.dart';
 
+
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
+
 
   @override
   State<Register> createState() => _RegisterState();
 }
+
 
 class _RegisterState extends State<Register> {
   final nameController = TextEditingController();
@@ -19,13 +22,14 @@ class _RegisterState extends State<Register> {
   final genderController = TextEditingController();
   final idController = TextEditingController();
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Register'),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -110,10 +114,11 @@ class _RegisterState extends State<Register> {
                       password: passwordController.text,
                       phone: phoneController.text,
                       address: addressController.text,
-                      gender: genderController.text, 
+                      gender: genderController.text,
                       userId: idController.text,
-                      
+                     
                     );
+
 
                     Navigator.pushReplacement(
                       context,
