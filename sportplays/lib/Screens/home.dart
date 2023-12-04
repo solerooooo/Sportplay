@@ -4,6 +4,7 @@ import 'profile.dart';
 import 'register.dart';
 import '../models/user.dart';
 import 'booking.dart';
+import 'qna.dart';
 
 class Home extends StatefulWidget {
   final User passUser;
@@ -35,7 +36,7 @@ class _HomeState extends State<Home> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Profile(passUser: widget.passUser),
+          builder: (context) => QnAPage(),
         ),
       );
     }
@@ -45,7 +46,7 @@ class _HomeState extends State<Home> {
         context,
         MaterialPageRoute(
           builder: (context) => Profile(passUser: widget.passUser),
-        ),
+        ),        
       );
     }
   }
@@ -213,7 +214,7 @@ class _HomeState extends State<Home> {
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
         onTap: _onTabSelected,
-        selectedItemColor: Colors.black, 
+        selectedItemColor: Colors.black,
         unselectedItemColor: Colors.black.withOpacity(0.5),
         showUnselectedLabels: true,
         items: const [
