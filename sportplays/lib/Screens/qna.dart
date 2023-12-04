@@ -8,7 +8,7 @@ class QnASystem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Q&A System',
+      title: 'INSIGHTS',
       home: QnAPage(),
       theme: ThemeData(
         primaryColor: Colors.purple, // Set the primary color to purple
@@ -24,8 +24,8 @@ class QnAPage extends StatefulWidget {
 
 class _QnAPageState extends State<QnAPage> {
   List<Map<String, String>> qnaList = [
-    {'question': 'What is Flutter?', 'answer': 'Flutter is a UI toolkit by Google for building natively compiled applications for mobile, web, and desktop from a single codebase.'},
-    {'question': 'How to install Flutter?', 'answer': 'You can install Flutter by following the installation guide on the official Flutter website: https://flutter.dev/docs/get-started/install'},
+    {'question': 'What are the available payment methods?', 'answer': 'Pay for your bookings using any of the following supported payment options: FPX Online Banking or Cash'},
+    {'question': 'How can I view my booking details?', 'answer': '1. Click on your Profile page. 2. Click on the History button.  3. You’ll be able to view the details of your booking, including the date and time of your booking.'},
     // Add more questions and answers as needed
   ];
 
@@ -33,7 +33,7 @@ class _QnAPageState extends State<QnAPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Q&A System'),
+        title: Text('INSIGHTS'),
         // Set the background color of the AppBar to purple
         backgroundColor: Colors.purple,
       ),
