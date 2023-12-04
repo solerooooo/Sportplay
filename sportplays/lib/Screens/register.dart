@@ -25,7 +25,7 @@ class _RegisterState extends State<Register> {
       appBar: AppBar(
         title: const Text('Register'),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
