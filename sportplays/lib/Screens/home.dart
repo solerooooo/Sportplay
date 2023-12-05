@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Availability.dart';
 import 'login.dart';
 import 'profile.dart';
 import 'register.dart';
@@ -164,7 +165,7 @@ class _HomeState extends State<Home> {
             const SizedBox(height: 20),
             Container(
               width: 400,
-              height: 150,
+              height: 250,
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -181,7 +182,29 @@ class _HomeState extends State<Home> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: 150,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>  AvailabilityPage(passUser: widget.passUser),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.lightGreenAccent,
+                        ), // Set the button color
+                        child: const Text(
+                          'View Court Availability here',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     SizedBox(
                       width: 150,
                       height: 50,

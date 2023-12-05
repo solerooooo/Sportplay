@@ -19,8 +19,14 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SOLEROOOOO', style: TextStyle(color: Colors.lightGreenAccent,  fontWeight: FontWeight.bold),),
-        backgroundColor: Colors.purple
+        title: const Text(
+          'SOLEROOOOO',
+          style: TextStyle(
+            color: Colors.lightGreenAccent,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.purple,
       ),
       body: Center(
         child: Padding(
@@ -30,7 +36,12 @@ class _LoginState extends State<Login> {
               const SizedBox(height: 10),
               const Text(
                 'Login to SportPlay',
-                style: TextStyle(fontSize: 30),
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+              Image.asset(
+                '../images/logo.png', 
+                height: 300, 
               ),
               const SizedBox(height: 20),
               TextField(
@@ -62,16 +73,21 @@ class _LoginState extends State<Login> {
                       password: passwordController.text,
                       phone: '',
                       address: '',
-                      gender: '', 
+                      gender: '',
                       userId: '',
                     );
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => Home(passUser: passUser)),
+                      MaterialPageRoute(
+                        builder: (context) => Home(passUser: passUser),
+                      ),
                     );
                   },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.lightGreenAccent,
+                  ),
                   child: const Text(
-                    'Submit',
+                    'Log in',
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
