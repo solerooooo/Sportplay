@@ -61,7 +61,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => QnAPage(),
+          builder: (context) => QnAPage(passUser: widget.passUser,),
         ),
       );
     }

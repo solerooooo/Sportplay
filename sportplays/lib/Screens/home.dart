@@ -37,7 +37,7 @@ class _HomeState extends State<Home> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => QnAPage(),
+          builder: (context) => QnAPage(passUser: widget.passUser),
         ),
       );
     }
