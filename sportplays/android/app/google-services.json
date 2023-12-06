@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "53647232373",
+    "firebase_url": "https://sportplays-2b76f-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "sportplays-2b76f",
+    "storage_bucket": "sportplays-2b76f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:53647232373:android:445c1eab5179119411573c",
+        "android_client_info": {
+          "package_name": "com.example.sportplays"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCi5AvNwdwpflqIjrMzN_5m0c5BuYGBT5Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
