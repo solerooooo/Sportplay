@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'home.dart';
+import '../models/user.dart';
+import 'qna.dart';
+import 'profile.dart';
 
 class BookingPage extends StatefulWidget {
-  const BookingPage({super.key});
+ final User passUser;
+
+  const BookingPage({Key? key, required this.passUser}) : super(key: key);
 
   @override
   _BookingPageState createState() => _BookingPageState();
@@ -11,6 +17,40 @@ class _BookingPageState extends State<BookingPage> {
   String selectedActivity = 'Ping Pong';
   int playerQuantity = 1;
   String selectedPaymentMethod = 'Cash';
+  int _selectedIndex = 0;
+
+  void _onTabSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    if (index == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>  Home(passUser: widget.passUser),
+        ),
+      );
+    }
+
+    if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => QnAPage(passUser: widget.passUser),
+        ),
+      );
+    }
+
+    if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Profile(passUser: widget.passUser),
+        ),        
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -211,6 +251,32 @@ class _BookingPageState extends State<BookingPage> {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _selectedIndex,
+        onTap: _onTabSelected,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black.withOpacity(0.5),
+        showUnselectedLabels: true,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Booking',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.question_answer),
+            label: 'Q&A',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }

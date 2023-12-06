@@ -28,7 +28,7 @@ class _HomeState extends State<Home> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const BookingPage(),
+          builder: (context) =>  BookingPage(passUser: widget.passUser,),
         ),
       );
     }
@@ -213,7 +213,7 @@ class _HomeState extends State<Home> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const BookingPage(),
+                              builder: (context) =>  BookingPage(passUser: widget.passUser,),
                             ),
                           );
                         },
