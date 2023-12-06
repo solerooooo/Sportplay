@@ -2,16 +2,14 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
 import '../models/user.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
 
-
   @override
   State<Register> createState() => _RegisterState();
 }
-
 
 class _RegisterState extends State<Register> {
   final nameController = TextEditingController();
@@ -21,7 +19,6 @@ class _RegisterState extends State<Register> {
   final addressController = TextEditingController();
   final genderController = TextEditingController();
   final idController = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +44,8 @@ class _RegisterState extends State<Register> {
                   labelText: 'Name',
                   border: OutlineInputBorder(),
                 ),
-              ),const SizedBox(height: 20),
+              ),
+              const SizedBox(height: 20),
               TextField(
                 controller: idController,
                 decoration: const InputDecoration(
@@ -107,23 +105,34 @@ class _RegisterState extends State<Register> {
                 width: 300,
                 height: 70,
                 child: ElevatedButton(
-                  onPressed: () {
-                    User passUser = User(
-                      name: nameController.text,
-                      email: emailController.text,
-                      password: passwordController.text,
-                      phone: phoneController.text,
-                      address: addressController.text,
-                      gender: genderController.text,
-                      userId: idController.text,
-                     
-                    );
+                  onPressed: () async {
+                    // Create a map with user data
+                    Map<String, dynamic> userData = {
+                      'name': nameController.text,
+                      'email': emailController.text,
+                      'password': passwordController.text,
+                      'phone': phoneController.text,
+                      'address': addressController.text,
+                      'gender': genderController.text,
+                      'userId': idController.text,
+                    };
+                    try {
+                      // Add user data to Firestore
+                      await FirebaseFirestore.instance
+                          .collection(
+                              'UserData') // Your collection name in Firestore
+                          .doc(nameController
+                              .text) // Document name based on the 'name'
+                          .set(userData);
 
-
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Login()),
-                    );
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Login()),
+                      );
+                    } catch (error) {
+                      // Handle any errors that might occur during data insertion
+                      print('Error adding user data to Firestore: $error');
+                    }
                   },
                   child: const Text(
                     'Register',
