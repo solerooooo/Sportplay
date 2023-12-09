@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'Availability.dart';
 import 'login.dart';
 import 'profile.dart';
 import 'register.dart';
 import '../models/user.dart';
 import 'booking.dart';
 import 'qna.dart';
+import 'Availability.dart'; // Import the AvailabilityPage
+import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // Import Font Awesome Icons
 
 class Home extends StatefulWidget {
   final User passUser;
@@ -28,7 +29,10 @@ class _HomeState extends State<Home> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>  BookingPage(passUser: widget.passUser,),
+          builder: (context) => BookingPage(
+            passUser: widget.passUser,
+            selectedTime: 'YourSelectedTimeHere',
+          ),
         ),
       );
     }
@@ -47,7 +51,7 @@ class _HomeState extends State<Home> {
         context,
         MaterialPageRoute(
           builder: (context) => Profile(passUser: widget.passUser),
-        ),        
+        ),
       );
     }
   }
@@ -163,71 +167,160 @@ class _HomeState extends State<Home> {
               ),
             ),
             const SizedBox(height: 20),
+            // Containers for Ping Pong, Badminton, and Squash
             Container(
-              width: 400,
-              height: 250,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(50)),
+              width: 400, // Set the width to take the full available space
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  // Container for Ping Pong
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AvailabilityPage(
+                            passUser: widget.passUser,
+                            sport:
+                                'Ping Pong', // Pass the sport type to AvailabilityPage
+                          ),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                '../images/pingpong.png',
+                                height: 50,
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'Ping Pong',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Container for Badminton
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AvailabilityPage(
+                            passUser: widget.passUser,
+                            sport:
+                                'Badminton', // Pass the sport type to AvailabilityPage
+                          ),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                '../images/badminton.png',
+                                height: 50,
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'Badminton',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Container for Squash
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AvailabilityPage(
+                            passUser: widget.passUser,
+                            sport:
+                                'Squash', // Pass the sport type to AvailabilityPage
+                          ),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                '../images/squash.png',
+                                height: 50,
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'Squash',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Looking for a court to book?",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: 150,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>  AvailabilityPage(passUser: widget.passUser),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.lightGreenAccent,
-                        ), // Set the button color
-                        child: const Text(
-                          'View Court Availability here',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: 150,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>  BookingPage(passUser: widget.passUser,),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.lightGreenAccent,
-                        ), // Set the button color
-                        child: const Text(
-                          'Book here',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              width: 600, // Set the width to take the full available space
+              child: Column(
+                children: [
+                  Image.asset(
+                    '../images/sporthall.png',
+                    height: 180, // Set the height to match the other containers
+                    width: 600, // Set the width to match the other containers
+                  ),
+                  const SizedBox(height: 10),
+                ],
               ),
             ),
           ],

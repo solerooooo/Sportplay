@@ -52,7 +52,7 @@ void _onTabSelected(int index) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>  BookingPage(passUser: widget.passUser,),
+          builder: (context) =>  BookingPage(passUser: widget.passUser, selectedTime: 'YourSelectedTimeHere',),
         ),
       );
     }

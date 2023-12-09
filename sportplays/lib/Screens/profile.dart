@@ -30,7 +30,7 @@ class _ProfileState extends State<Profile> {
         Flexible(
           child: Text(
             text,
-            style: const TextStyle(fontSize: 20),
+            style: const TextStyle(fontSize: 16),  // Change font size to 16
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -44,7 +44,9 @@ class _ProfileState extends State<Profile> {
       backgroundColor: Colors.purple,
       appBar: AppBar(
         backgroundColor: Colors.lightGreenAccent,
-        title: const Text('User Profile'),
+        title: const Text(
+          'User Profile',
+        ),
         actions: [
           IconButton(
             onPressed: () {
@@ -78,9 +80,9 @@ class _ProfileState extends State<Profile> {
                 const SizedBox(height: 10),
                 Text(
                   '${passUser.getName()}',
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 21.5),
                 ),
-                const SizedBox(height: 10),
                 Text(
                   '${passUser.getId()}',
                   style: const TextStyle(fontSize: 16),
@@ -96,39 +98,43 @@ class _ProfileState extends State<Profile> {
                   child: const Center(
                     child: Text(
                       'Active Student',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
                 const SizedBox(height: 10),
                 Container(
                   width: 300,
-                  height: 400,
+                  height: 300,
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        const Text(
-                          'About',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      const Text(
+                        'About',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
                         ),
-                        buildInfoRow(Icons.person, passUser.getEmail()),
-                        buildInfoRow(Icons.phone, passUser.getPhone()),
-                        buildInfoRow(Icons.home, passUser.getAddress()),
-                        buildInfoRow(Icons.work, passUser.getGender()),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 20),
+                      buildInfoRow(Icons.person, passUser.getEmail()),
+                      const SizedBox(height: 20),
+                      buildInfoRow(Icons.phone, passUser.getPhone()),
+                      const SizedBox(height: 20),
+                      buildInfoRow(Icons.home, passUser.getAddress()),
+                      const SizedBox(height: 20),
+                      buildInfoRow(Icons.work, passUser.getGender()),
+                      const SizedBox(height: 20),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 Container(
                   width: 300,
                   height: 60,

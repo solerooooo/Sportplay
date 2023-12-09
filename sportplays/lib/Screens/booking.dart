@@ -5,9 +5,10 @@ import 'qna.dart';
 import 'profile.dart';
 
 class BookingPage extends StatefulWidget {
- final User passUser;
+  final User passUser;
+  final String selectedTime;
 
-  const BookingPage({Key? key, required this.passUser}) : super(key: key);
+  const BookingPage({Key? key, required this.passUser, required this.selectedTime}) : super(key: key);
 
   @override
   _BookingPageState createState() => _BookingPageState();
