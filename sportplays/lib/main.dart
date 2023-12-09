@@ -1,7 +1,7 @@
 // main.dart
 import 'package:flutter/material.dart';
+import 'package:sportplays/Screens/splash_screen.dart';
 import 'package:sportplays/firebase_options.dart';
-import 'Screens/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Material App',
-      home: Login(),
+      home: SplashScreen(),
     );
   }
 }
