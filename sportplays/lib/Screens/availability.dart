@@ -7,8 +7,7 @@ import '../models/user.dart';
 
 class AvailabilityPage extends StatefulWidget {
   final User passUser;
-  final String sport; // Add the 'sport' parameter
-
+  final String sport; 
   const AvailabilityPage(
       {Key? key, required this.passUser, required this.sport})
       : super(key: key);

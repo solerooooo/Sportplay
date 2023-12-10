@@ -6,7 +6,7 @@ import '../models/user.dart';
 import 'booking.dart';
 import 'qna.dart';
 import 'Availability.dart'; // Import the AvailabilityPage
-import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // Import Font Awesome Icons
+
 
 class Home extends StatefulWidget {
   final User passUser;
@@ -59,11 +59,13 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.purple,
       appBar: AppBar(
         title: const Text('HomePage'),
-        backgroundColor: Colors.lightGreenAccent,
+        backgroundColor: Colors.transparent, // Make app bar transparent
+        elevation: 0, // Remove app bar shadow
       ),
+      extendBodyBehindAppBar: true, // Extend gradient behind the app bar
+      backgroundColor: Colors.transparent, // Make scaffold background transparent
       drawer: Drawer(
         child: ListView(
           children: [
@@ -101,28 +103,36 @@ class _HomeState extends State<Home> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Profile(passUser: widget.passUser)),
+                      builder: (context) => BookingPage(passUser: widget.passUser, selectedTime: 'YourSelectedTimeHere')),
                 );
               },
             ),
           ],
         ),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            Text(
-              'Welcome, ${widget.passUser.getName()}!',
-              style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-                fontStyle: FontStyle.italic,
-                color: Colors.white,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFFb364f3), Color(0xFFD6F454)],
+          ),
+        ),
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              Text(
+                'Welcome, ${widget.passUser.getName()}!',
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.white,
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Container(
+              const SizedBox(height: 10),
+               Container(
               width: 400,
               height: 200,
               decoration: const BoxDecoration(
@@ -326,6 +336,10 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
+            
+          ),
+        
+      
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
