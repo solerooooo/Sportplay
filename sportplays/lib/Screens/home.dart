@@ -7,7 +7,6 @@ import 'booking.dart';
 import 'qna.dart';
 import 'Availability.dart'; // Import the AvailabilityPage
 
-
 class Home extends StatefulWidget {
   final User passUser;
 
@@ -61,14 +60,34 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('HomePage'),
-        backgroundColor: Colors.transparent, // Make app bar transparent
+        backgroundColor: const Color(0xFFb364f3), // Make app bar transparent
         elevation: 0, // Remove app bar shadow
       ),
-      extendBodyBehindAppBar: true, // Extend gradient behind the app bar
-      backgroundColor: Colors.transparent, // Make scaffold background transparent
+
+      backgroundColor:
+          Colors.transparent, // Make scaffold background transparent
       drawer: Drawer(
         child: ListView(
+          padding: EdgeInsets.zero,
           children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color(0xFFb364f3).withOpacity(0.5),
+                image: DecorationImage(
+                  image: AssetImage('images/sporthall.png'),
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(
+                        0.5), 
+                    BlendMode.dstATop,
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Text(
+                'Menu',
+                style: TextStyle(color: Colors.black, fontSize: 30),
+              ),
+            ),
             ListTile(
               title: const Text('Login'),
               onTap: () {
@@ -103,7 +122,9 @@ class _HomeState extends State<Home> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => BookingPage(passUser: widget.passUser, selectedTime: 'YourSelectedTimeHere')),
+                      builder: (context) => BookingPage(
+                          passUser: widget.passUser,
+                          selectedTime: 'YourSelectedTimeHere')),
                 );
               },
             ),
@@ -132,214 +153,216 @@ class _HomeState extends State<Home> {
                 ),
               ),
               const SizedBox(height: 10),
-               Container(
-              width: 400,
-              height: 200,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Today's News!",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Sports Hall Repair News Report',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Text(
-                          'We would like to inform you that the sports hall is currently undergoing essential repairs and maintenance. This initiative is part of our ongoing efforts to enhance the overall facility and ensure a safe and enjoyable environment for everyone.',
-                          style: TextStyle(
-                            fontSize: 15,
-                          ),
-                          textAlign: TextAlign.center,
+              Container(
+                width: 400,
+                height: 200,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Today's News!",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Sports Hall Repair News Report',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Text(
+                            'We would like to inform you that the sports hall is currently undergoing essential repairs and maintenance. This initiative is part of our ongoing efforts to enhance the overall facility and ensure a safe and enjoyable environment for everyone.',
+                            style: TextStyle(
+                              fontSize: 15,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              // Containers for Ping Pong, Badminton, and Squash
+              Container(
+                width: 400, // Set the width to take the full available space
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    // Container for Ping Pong
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AvailabilityPage(
+                              passUser: widget.passUser,
+                              sport:
+                                  'Ping Pong', // Pass the sport type to AvailabilityPage
+                            ),
+                          ),
+                        );
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 100,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'images/pingpong.png',
+                                  height: 50,
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Ping Pong',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Container for Badminton
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AvailabilityPage(
+                              passUser: widget.passUser,
+                              sport:
+                                  'Badminton', // Pass the sport type to AvailabilityPage
+                            ),
+                          ),
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 100,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'images/badminton.png',
+                                  height: 50,
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Badminton',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Container for Squash
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AvailabilityPage(
+                              passUser: widget.passUser,
+                              sport:
+                                  'Squash', // Pass the sport type to AvailabilityPage
+                            ),
+                          ),
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 100,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'images/squash.png',
+                                  height: 50,
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Squash',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            // Containers for Ping Pong, Badminton, and Squash
-            Container(
-              width: 400, // Set the width to take the full available space
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  // Container for Ping Pong
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AvailabilityPage(
-                            passUser: widget.passUser,
-                            sport:
-                                'Ping Pong', // Pass the sport type to AvailabilityPage
-                          ),
-                        ),
-                      );
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                '../images/pingpong.png',
-                                height: 50,
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Ping Pong',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+              const SizedBox(height: 20),
+              Container(
+                width: 600, // Set the width to take the full available space
+                child: Column(
+                  children: [
+                    Image.asset(
+                      'images/sporthall.png',
+                      height:
+                          180, // Set the height to match the other containers
+                      width: 600, // Set the width to match the other containers
                     ),
-                  ),
-                  // Container for Badminton
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AvailabilityPage(
-                            passUser: widget.passUser,
-                            sport:
-                                'Badminton', // Pass the sport type to AvailabilityPage
-                          ),
-                        ),
-                      );
-                    },
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                '../images/badminton.png',
-                                height: 50,
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Badminton',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Container for Squash
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AvailabilityPage(
-                            passUser: widget.passUser,
-                            sport:
-                                'Squash', // Pass the sport type to AvailabilityPage
-                          ),
-                        ),
-                      );
-                    },
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                '../images/squash.png',
-                                height: 50,
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Squash',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                    const SizedBox(height: 10),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              width: 600, // Set the width to take the full available space
-              child: Column(
-                children: [
-                  Image.asset(
-                    '../images/sporthall.png',
-                    height: 180, // Set the height to match the other containers
-                    width: 600, // Set the width to match the other containers
-                  ),
-                  const SizedBox(height: 10),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-            
-          ),
-        
-      
+
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,

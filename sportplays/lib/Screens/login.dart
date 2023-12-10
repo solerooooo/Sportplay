@@ -42,7 +42,7 @@ class _LoginState extends State<Login> {
                 ),
                 const SizedBox(height: 20),
                 Image.asset(
-                  '../images/logo.png',
+                  'images/logo.png',
                   height: 300,
                 ),
                 const SizedBox(height: 20),

@@ -58,7 +58,7 @@ class _BookingPageState extends State<BookingPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sports Hall Booking'),
-        backgroundColor: Colors.green,
+        backgroundColor: const Color(0xFFD6F454),
         actions: [
           IconButton(
             onPressed: () {
@@ -69,7 +69,7 @@ class _BookingPageState extends State<BookingPage> {
         ],
       ),
       body: Container(
-        color: Colors.purple,
+        color: const Color(0xFFb364f3),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
