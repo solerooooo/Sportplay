@@ -1,7 +1,7 @@
 // main.dart
 import 'package:flutter/material.dart';
 import 'package:sportplays/firebase_options.dart';
-import 'Screens/register.dart';
+import 'Screens/Register.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
@@ -10,16 +10,20 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp( const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);  
+  MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Material App',
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Sportplays Booking System',
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+      ),
       home: Register(),
     );
   }

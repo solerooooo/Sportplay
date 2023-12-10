@@ -1,4 +1,3 @@
-// register.dart
 import 'package:flutter/material.dart';
 import 'login.dart';
 import '../models/user.dart';
@@ -106,32 +105,36 @@ class _RegisterState extends State<Register> {
                 height: 70,
                 child: ElevatedButton(
                   onPressed: () async {
-                    // Create a map with user data
-                    Map<String, dynamic> userData = {
-                      'name': nameController.text,
-                      'email': emailController.text,
-                      'password': passwordController.text,
-                      'phone': phoneController.text,
-                      'address': addressController.text,
-                      'gender': genderController.text,
-                      'userId': idController.text,
-                    };
-                    try {
-                      // Add user data to Firestore
-                      await FirebaseFirestore.instance
-                          .collection(
-                              'UserData') // Your collection name in Firestore
-                          .doc(nameController
-                              .text) // Document name based on the 'name'
-                          .set(userData);
+                    // Validate input fields
+                    if (_validateInputs()) {
+                      // Create a map with user data
+                      Map<String, dynamic> userData = {
+                        'name': nameController.text,
+                        'email': emailController.text,
+                        'password': passwordController.text,
+                        'phone': phoneController.text,
+                        'address': addressController.text,
+                        'gender': genderController.text,
+                        'userId': idController.text,
+                      };
+                      try {
+                        // Add user data to Firestore
+                        await FirebaseFirestore.instance
+                            .collection('UserData')
+                            .doc(nameController.text)
+                            .set(userData);
 
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const Login()),
-                      );
-                    } catch (error) {
-                      // Handle any errors that might occur during data insertion
-                      print('Error adding user data to Firestore: $error');
+                        // Navigate to Login screen
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Login(),
+                          ),
+                        );
+                      } catch (error) {
+                        // Handle any errors that might occur during data insertion
+                        print('Error adding user data to Firestore: $error');
+                      }
                     }
                   },
                   child: const Text(
@@ -145,5 +148,11 @@ class _RegisterState extends State<Register> {
         ),
       ),
     );
+  }
+
+  bool _validateInputs() {
+    // Add your validation logic here
+    // Return true if all inputs are valid, otherwise false
+    return true;
   }
 }

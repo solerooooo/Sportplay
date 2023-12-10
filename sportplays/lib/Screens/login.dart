@@ -35,29 +35,29 @@ class _LoginState extends State<Login> {
             children: [
               const SizedBox(height: 10),
               const Text(
-                'Login to SportPlay',
+                'Login to SportPlays',
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
               Image.asset(
-                '../images/logo.png', 
-                height: 300, 
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.person),
-                  label: Text('Name'),
-                  border: OutlineInputBorder(),
-                ),
+                'images/logo.png',
+                height: 300,
               ),
               const SizedBox(height: 20),
               TextField(
                 controller: emailController,
                 decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.mail),
+                  labelText: 'Email Address',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: passwordController,
+                decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.lock),
-                  label: Text('Password'),
+                  labelText: 'Password',
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -67,11 +67,15 @@ class _LoginState extends State<Login> {
                 height: 70,
                 child: ElevatedButton(
                   onPressed: () async {
+                    // Initialize Firebase if not done already
+                    // Firebase.initializeApp();
+
                     // Retrieve user data from Firestore
                     try {
-                      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+                      DocumentSnapshot userSnapshot = await FirebaseFirestore
+                          .instance
                           .collection('UserData')
-                          .doc(nameController.text)
+                          .doc(emailController.text)
                           .get();
 
                       if (userSnapshot.exists) {
