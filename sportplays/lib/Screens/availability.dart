@@ -52,7 +52,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const BookingPage(),
+          builder: (context) =>  BookingPage(passUser: widget.passUser,),
         ),
       );
     }
