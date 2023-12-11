@@ -16,19 +16,31 @@ class _LoginState extends State<Login> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  // Define a custom color
+  Color customPurpleColor = Color(0xFFB364F3);
+
+  // Define text styles to reuse
+  final TextStyle headerTextStyle = TextStyle(
+    color: Colors.lightGreenAccent,
+    fontSize: 30,
+    fontWeight: FontWeight.bold,
+  );
+
+  final TextStyle labelTextStyle = TextStyle(
+    fontSize: 15,
+  );
+
+  final TextStyle buttonTextStlye = TextStyle(
+    fontSize: 20,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'SOLEROOOOO',
-          style: TextStyle(
-            color: Colors.lightGreenAccent,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Colors.purple,
-      ),
+      // Remove the Top AppBar
+      appBar: null,
+      backgroundColor:
+          customPurpleColor, // Set background color to custom purple
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -36,9 +48,9 @@ class _LoginState extends State<Login> {
             child: Column(
               children: [
                 const SizedBox(height: 10),
-                const Text(
-                  'Login to SportPlay',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                Text(
+                  'SOLEROOOOO',
+                  style: headerTextStyle,
                 ),
                 const SizedBox(height: 20),
                 Image.asset(
@@ -48,18 +60,18 @@ class _LoginState extends State<Login> {
                 const SizedBox(height: 20),
                 TextField(
                   controller: nameController,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.person),
-                    label: Text('Name'),
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.mail),
+                    label: Text('Email Address', style: labelTextStyle),
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 20),
                 TextField(
                   controller: emailController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     prefixIcon: Icon(Icons.lock),
-                    label: Text('Password'),
+                    label: Text('Password', style: labelTextStyle),
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -102,22 +114,23 @@ class _LoginState extends State<Login> {
                           print('User not found');
                         }
                       } catch (error) {
-                        print('Error fetching user data from Firestore: $error');
+                        print(
+                            'Error fetching user data from Firestore: $error');
                       }
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.lightGreenAccent,
                     ),
-                    child: const Text(
+                    child: Text(
                       'Log in',
-                      style: TextStyle(fontSize: 20),
+                      style: buttonTextStlye,
                     ),
                   ),
                 ),
                 const SizedBox(height: 10),
-                const Text(
-                  'New to SportPlay?',
-                  style: TextStyle(fontSize: 15),
+                Text(
+                  'New to SportPlay? Register',
+                  style: labelTextStyle,
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
@@ -135,9 +148,9 @@ class _LoginState extends State<Login> {
                     style: ElevatedButton.styleFrom(
                       primary: Colors.lightGreenAccent,
                     ),
-                    child: const Text(
+                    child: Text(
                       'Register',
-                      style: TextStyle(fontSize: 20),
+                      style: buttonTextStlye,
                     ),
                   ),
                 ),

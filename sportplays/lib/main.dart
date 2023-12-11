@@ -18,9 +18,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Sportplays',
+      title: 'Sportplays Booking System',
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+      ),
       home: SplashScreen(),
     );
   }
