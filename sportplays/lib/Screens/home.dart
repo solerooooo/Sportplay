@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:sportplays/Screens/viewbookingdetails.dart';
 import 'login.dart';
 import 'profile.dart';
 import 'register.dart';
 import '../models/user.dart';
 import 'booking.dart';
 import 'qna.dart';
-import 'Availability.dart'; // Import the AvailabilityPage
+import 'Availability.dart'; 
 
 class Home extends StatefulWidget {
   final User passUser;
@@ -113,6 +114,16 @@ class _HomeState extends State<Home> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => Profile(passUser: widget.passUser)),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Booking Details'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ViewBookingApp()),
                 );
               },
             ),
