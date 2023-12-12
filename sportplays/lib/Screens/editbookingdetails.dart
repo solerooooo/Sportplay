@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sportplays/Models/booking.dart';
+import 'package:sportplays/Models/bookingdetails.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 
 class EditBookingDetailsPage extends StatefulWidget {
   final Booking booking;
@@ -8,12 +9,12 @@ class EditBookingDetailsPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _EditBookingDetailsPageState createState() => _EditBookingDetailsPageState();
+  _EditBookingDetailsPageState createState() =>
+      _EditBookingDetailsPageState();
 }
 
 class _EditBookingDetailsPageState extends State<EditBookingDetailsPage> {
   late TextEditingController userNameController;
-  late TextEditingController facilityController;
   late TextEditingController startTimeController;
   late TextEditingController endTimeController;
 
@@ -21,12 +22,12 @@ class _EditBookingDetailsPageState extends State<EditBookingDetailsPage> {
   void initState() {
     super.initState();
     // Initialize controllers with existing booking information
-    userNameController = TextEditingController(text: widget.booking.userName);
-    facilityController = TextEditingController(text: widget.booking.facility);
-    startTimeController =
-        TextEditingController(text: widget.booking.startTime.toString());
-    endTimeController =
-        TextEditingController(text: widget.booking.endTime.toString());
+    userNameController =
+        TextEditingController(text: widget.booking.userName);
+    startTimeController = TextEditingController(
+        text: widget.booking.startTime.toLocal().toString());
+    endTimeController = TextEditingController(
+        text: widget.booking.endTime.toLocal().toString());
   }
 
   @override
@@ -36,64 +37,85 @@ class _EditBookingDetailsPageState extends State<EditBookingDetailsPage> {
         title: Text('Edit Booking Details'),
         backgroundColor: Colors.blue, // Set the app bar color to blue
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'User Name:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            TextField(
-              controller: userNameController,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Facility:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            TextField(
-              controller: facilityController,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Start Time:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            TextField(
-              controller: startTimeController,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'End Time:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            TextField(
-              controller: endTimeController,
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // Implement logic to save changes and update the booking
-                    _saveChanges();
-                  },
-                  child: Text('Save Changes'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    // Implement logic to delete the booking
-                    _deleteBooking();
-                  },
-                  style: ElevatedButton.styleFrom(primary: Colors.red),
-                  child: Text('Delete Booking'),
-                ),
-              ],
-            ),
-          ],
+      body: Container(
+        color: const Color(0xFFb364f3),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'User Name:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              TextField(
+                controller: userNameController,
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Start Time:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              DateTimePicker(
+                type: DateTimePickerType.dateTimeSeparate,
+                controller: startTimeController,
+                dateMask: 'yyyy/MM/dd',
+                firstDate: DateTime.now(),
+                lastDate: DateTime(2101),
+                icon: Icon(Icons.event),
+                dateLabelText: 'Date',
+                timeLabelText: "Time",
+                onChanged: (val) => print(val),
+                validator: (val) {
+                  print(val);
+                  return null;
+                },
+                onSaved: (val) => print(val),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'End Time:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              DateTimePicker(
+                type: DateTimePickerType.dateTimeSeparate,
+                controller: endTimeController,
+                dateMask: 'yyyy/MM/dd',
+                firstDate: DateTime.now(),
+                lastDate: DateTime(2101),
+                icon: Icon(Icons.event),
+                dateLabelText: 'Date',
+                timeLabelText: "Time",
+                onChanged: (val) => print(val),
+                validator: (val) {
+                  print(val);
+                  return null;
+                },
+                onSaved: (val) => print(val),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      // Implement logic to save changes and update the booking
+                      _saveChanges();
+                    },
+                    child: Text('Save Changes'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Implement logic to delete the booking
+                      _deleteBooking();
+                    },
+                    style: ElevatedButton.styleFrom(primary: Colors.red),
+                    child: Text('Delete Booking'),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -105,7 +127,6 @@ class _EditBookingDetailsPageState extends State<EditBookingDetailsPage> {
     // Update the existing booking or save changes to your data source
     // For now, let's just print the updated values
     print('Updated User Name: ${userNameController.text}');
-    print('Updated Facility: ${facilityController.text}');
     print('Updated Start Time: ${startTimeController.text}');
     print('Updated End Time: ${endTimeController.text}');
 

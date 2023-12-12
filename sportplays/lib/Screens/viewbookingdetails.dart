@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sportplays/Models/booking.dart';
+import 'package:sportplays/Models/bookingdetails.dart';
 import 'package:sportplays/Screens/editbookingdetails.dart';
 
 void main() {
