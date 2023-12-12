@@ -8,9 +8,9 @@ class QnASystem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'INSIGHTS',
+      title: 'Insights',
       theme: ThemeData(
-        primaryColor: Colors.purple, // Set the primary color to purple
+        primaryColor:  const Color(0xFFb364f3), // Set the primary color to purple
       ),
     );
   }
@@ -79,9 +79,9 @@ void _onTabSelected(int index) {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('INSIGHTS'),
+        title: Text('Insights'),
         // Set the background color of the AppBar to purple
-        backgroundColor: Colors.purple,
+        backgroundColor: Colors.lightGreenAccent,
       ),
       body: ListView.builder(
         itemCount: qnaList.length,
