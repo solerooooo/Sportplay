@@ -9,7 +9,7 @@ import 'qna.dart';
 import 'Availability.dart'; // Import the AvailabilityPage
 class HomeAdmin extends StatefulWidget {
   final User passUser;
-  const HomeAdmin({Key? key, required this.passUser}) : super(key: key);
+   HomeAdmin({Key? key, required this.passUser}) : super(key: key);
   @override
   _HomeAdminState createState() => _HomeAdminState();
 }
@@ -51,8 +51,8 @@ class _HomeAdminState extends State<HomeAdmin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HomePage (ADMIN)'),
-        backgroundColor: const Color(0xFFb364f3), // Make app bar transparent
+        title:  Text('HomePage (ADMIN)'),
+        backgroundColor:  Color(0xFFb364f3), // Make app bar transparent
         elevation: 0, // Remove app bar shadow
       ),
       backgroundColor:
@@ -80,25 +80,25 @@ class _HomeAdminState extends State<HomeAdmin> {
               ),
             ),
             ListTile(
-              title: const Text('Login'),
+              title:  Text('Login'),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Login()),
+                  MaterialPageRoute(builder: (context) =>  Login()),
                 );
               },
             ),
             ListTile(
-              title: const Text('Register'),
+              title:  Text('Register'),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Register()),
+                  MaterialPageRoute(builder: (context) =>  Register()),
                 );
               },
             ),
             ListTile(
-              title: const Text('Profile'),
+              title:  Text('Profile'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -108,7 +108,7 @@ class _HomeAdminState extends State<HomeAdmin> {
               },
             ),
            ListTile(
-              title: const Text('Booking Page'),
+              title:  Text('Booking Page'),
              onTap: () {
                 Navigator.push(
                   context,
@@ -133,25 +133,25 @@ class _HomeAdminState extends State<HomeAdmin> {
         child: Center(
           child: Column(
             children: [
-              const SizedBox(height: 10),
+               SizedBox(height: 10),
               Text(
                 'haa kerja, ${widget.passUser.getName()}!',
-                style: const TextStyle(
+                style:  TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                   fontStyle: FontStyle.italic,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 10),
+               SizedBox(height: 10),
               Container(
                 width: 400,
                 height: 200,
-                decoration: const BoxDecoration(
+                decoration:  BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
-                child: const Padding(
+                child:  Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -163,7 +163,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 10),
+                       SizedBox(height: 10),
                       Text(
                         'Sports Hall Repair News Report',
                         style: TextStyle(
@@ -172,7 +172,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                           decoration: TextDecoration.underline,
                         ),
                       ),
-                      const SizedBox(height: 10),
+                       SizedBox(height: 10),
                       Expanded(
                         child: SingleChildScrollView(
                           child: Text(
@@ -188,7 +188,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+               SizedBox(height: 20),
               // Containers for Ping Pong, Badminton, and Squash
               Container(
                 width: 400, // Set the width to take the full available space
@@ -227,7 +227,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                                   'images/pingpong.png',
                                   height: 50,
                                 ),
-                                const SizedBox(height: 10),
+                                 SizedBox(height: 10),
                                 Text(
                                   'Ping Pong',
                                   style: TextStyle(
@@ -272,7 +272,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                                   'images/badminton.png',
                                   height: 50,
                                 ),
-                                const SizedBox(height: 10),
+                                 SizedBox(height: 10),
                                 Text(
                                   'Badminton',
                                   style: TextStyle(
@@ -317,7 +317,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                                   'images/squash.png',
                                   height: 50,
                                 ),
-                                const SizedBox(height: 10),
+                                 SizedBox(height: 10),
                                 Text(
                                   'Squash',
                                   style: TextStyle(
@@ -334,7 +334,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+               SizedBox(height: 20),
               Container(
                 width: 600, // Set the width to take the full available space
                 child: Column(
@@ -345,7 +345,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                           180, // Set the height to match the other containers
                       width: 600, // Set the width to match the other containers
                     ),
-                    const SizedBox(height: 10),
+                     SizedBox(height: 10),
                   ],
                 ),
               ),
@@ -360,7 +360,7 @@ class _HomeAdminState extends State<HomeAdmin> {
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.black.withOpacity(0.5),
         showUnselectedLabels: true,
-        items: const [
+        items:  [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
