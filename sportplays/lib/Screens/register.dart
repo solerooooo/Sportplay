@@ -17,8 +17,9 @@ class _RegisterState extends State<Register> {
   final passwordController = TextEditingController();
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
-  final genderController = TextEditingController();
   final idController = TextEditingController();
+
+ String selectedGender = 'Male';  // Added to track selected gender
 
   @override
   Widget build(BuildContext context) {
@@ -92,13 +93,27 @@ class _RegisterState extends State<Register> {
                 ),
               ),
               const SizedBox(height: 20),
-              TextField(
-                controller: genderController,
+              // Replace the TextField with a DropdownButtonFormField
+               DropdownButtonFormField<String>(
+                value: selectedGender,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedGender = newValue!;
+                  });
+                },
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.people),
                   labelText: 'Gender',
                   border: OutlineInputBorder(),
                 ),
+                items: ['Male', 'Female']
+                    .map<DropdownMenuItem<String>>(
+                      (String value) => DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      ),
+                    )
+                    .toList(),
               ),
               const SizedBox(height: 20),
               SizedBox(
@@ -113,16 +128,14 @@ class _RegisterState extends State<Register> {
                       'password': passwordController.text,
                       'phone': phoneController.text,
                       'address': addressController.text,
-                      'gender': genderController.text,
+                      'gender': selectedGender,
                       'userId': idController.text,
                     };
                     try {
                       // Add user data to Firestore
                       await FirebaseFirestore.instance
-                          .collection(
-                              'UserData') // Your collection name in Firestore
-                          .doc(nameController
-                              .text) // Document name based on the 'name'
+                          .collection('UserData')
+                          .doc(nameController.text)
                           .set(userData);
 
                       Navigator.pushReplacement(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'home.dart';
 import 'register.dart';
 import '../models/user.dart';
+import 'home_admin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Login extends StatefulWidget {
@@ -60,15 +61,15 @@ class _LoginState extends State<Login> {
                 const SizedBox(height: 20),
                 TextField(
                   controller: nameController,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.mail),
-                    label: Text('Email Address', style: labelTextStyle),
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.person),
+                    label: Text('Name'),
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 20),
                 TextField(
-                  controller: emailController,
+                  controller: passwordController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.lock),
                     label: Text('Password', style: labelTextStyle),
@@ -83,6 +84,7 @@ class _LoginState extends State<Login> {
                     onPressed: () async {
                       // Retrieve user data from Firestore
                       try {
+                        // Retrieve user data from Firestore
                         DocumentSnapshot userSnapshot = await FirebaseFirestore
                             .instance
                             .collection('UserData')
@@ -90,24 +92,50 @@ class _LoginState extends State<Login> {
                             .get();
 
                         if (userSnapshot.exists) {
-                          // User found in Firestore, create User object
-                          User passUser = User(
-                            name: userSnapshot['name'],
-                            email: userSnapshot['email'],
-                            password: userSnapshot['password'],
-                            phone: userSnapshot['phone'],
-                            address: userSnapshot['address'],
-                            gender: userSnapshot['gender'],
-                            userId: userSnapshot['userId'],
-                          );
+                          // Check if the user is an admin
+                          if (userSnapshot['userId'] == 'ADMIN' &&
+                              userSnapshot['password'] ==
+                                  passwordController.text) {
+                            // Admin found, navigate to HomeAdmin
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomeAdmin(
+                                  passUser: User(
+                                    name: userSnapshot['name'],
+                                    email: userSnapshot['email'],
+                                    password: userSnapshot['password'],
+                                    phone: userSnapshot['phone'],
+                                    address: userSnapshot['address'],
+                                    gender: userSnapshot['gender'],
+                                    userId: userSnapshot['userId'],
+                                  ),
+                                ),
+                              ),
+                            );
+                          } else if (userSnapshot['password'] ==
+                              passwordController.text) {
+                            // Regular user found, navigate to Home
+                            User passUser = User(
+                              name: userSnapshot['name'],
+                              email: userSnapshot['email'],
+                              password: userSnapshot['password'],
+                              phone: userSnapshot['phone'],
+                              address: userSnapshot['address'],
+                              gender: userSnapshot['gender'],
+                              userId: userSnapshot['userId'],
+                            );
 
-                          // Navigate to Home screen with the User object
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Home(passUser: passUser),
-                            ),
-                          );
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Home(passUser: passUser),
+                              ),
+                            );
+                          } else {
+                            // Password incorrect
+                            print('Incorrect password');
+                          }
                         } else {
                           // User not found in Firestore, handle accordingly
                           // For now, you can display a message or take appropriate action
