@@ -168,7 +168,7 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
                           'OR',
                           style: labelTextStyle.copyWith(

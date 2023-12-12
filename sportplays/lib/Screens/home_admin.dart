@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sportplays/Screens/availability_admin.dart';
 import 'login.dart';
 import 'profile.dart';
 import 'register.dart';
@@ -6,24 +7,18 @@ import '../models/user.dart';
 import 'booking.dart';
 import 'qna.dart';
 import 'Availability.dart'; // Import the AvailabilityPage
-
-class Home extends StatefulWidget {
+class HomeAdmin extends StatefulWidget {
   final User passUser;
-
-   Home({Key? key, required this.passUser}) : super(key: key);
-
+  const HomeAdmin({Key? key, required this.passUser}) : super(key: key);
   @override
-  _HomeState createState() => _HomeState();
+  _HomeAdminState createState() => _HomeAdminState();
 }
-
-class _HomeState extends State<Home> {
+class _HomeAdminState extends State<HomeAdmin> {
   int _selectedIndex = 0;
-
   void _onTabSelected(int index) {
     setState(() {
       _selectedIndex = index;
     });
-
     if (index == 1) {
       Navigator.push(
         context,
@@ -32,10 +27,9 @@ class _HomeState extends State<Home> {
             passUser: widget.passUser,
             selectedTime: 'YourSelectedTimeHere',
           ),
-        ),
+       ),
       );
     }
-
     if (index == 2) {
       Navigator.push(
         context,
@@ -44,7 +38,6 @@ class _HomeState extends State<Home> {
         ),
       );
     }
-
     if (index == 3) {
       Navigator.push(
         context,
@@ -54,16 +47,14 @@ class _HomeState extends State<Home> {
       );
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  Text('HomePage'),
-        backgroundColor:  Color(0xFFb364f3), // Make app bar transparent
+        title: const Text('HomePage (ADMIN)'),
+        backgroundColor: const Color(0xFFb364f3), // Make app bar transparent
         elevation: 0, // Remove app bar shadow
       ),
-
       backgroundColor:
           Colors.transparent, // Make scaffold background transparent
       drawer: Drawer(
@@ -89,25 +80,25 @@ class _HomeState extends State<Home> {
               ),
             ),
             ListTile(
-              title:  Text('Login'),
+              title: const Text('Login'),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  Login()),
+                  MaterialPageRoute(builder: (context) => const Login()),
                 );
               },
             ),
             ListTile(
-              title:  Text('Register'),
+              title: const Text('Register'),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  Register()),
+                  MaterialPageRoute(builder: (context) => const Register()),
                 );
               },
             ),
             ListTile(
-              title:  Text('Profile'),
+              title: const Text('Profile'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -116,19 +107,19 @@ class _HomeState extends State<Home> {
                 );
               },
             ),
-            ListTile(
-              title:  Text('Booking Page'),
-              onTap: () {
+           ListTile(
+              title: const Text('Booking Page'),
+             onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => BookingPage(
-                          passUser: widget.passUser,
+                         passUser: widget.passUser,
                           selectedTime: 'YourSelectedTimeHere')),
                 );
               },
-            ),
-          ],
+           ),
+         ],
         ),
       ),
       body: Container(
@@ -142,25 +133,25 @@ class _HomeState extends State<Home> {
         child: Center(
           child: Column(
             children: [
-               SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
-                'Welcome, ${widget.passUser.getName()}!',
-                style:  TextStyle(
+                'haa kerja, ${widget.passUser.getName()}!',
+                style: const TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                   fontStyle: FontStyle.italic,
                   color: Colors.white,
                 ),
               ),
-               SizedBox(height: 10),
+              const SizedBox(height: 10),
               Container(
                 width: 400,
                 height: 200,
-                decoration:  BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
-                child:  Padding(
+                child: const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -172,7 +163,7 @@ class _HomeState extends State<Home> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                       SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(
                         'Sports Hall Repair News Report',
                         style: TextStyle(
@@ -181,7 +172,7 @@ class _HomeState extends State<Home> {
                           decoration: TextDecoration.underline,
                         ),
                       ),
-                       SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Expanded(
                         child: SingleChildScrollView(
                           child: Text(
@@ -197,7 +188,7 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
-               SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Containers for Ping Pong, Badminton, and Squash
               Container(
                 width: 400, // Set the width to take the full available space
@@ -210,7 +201,7 @@ class _HomeState extends State<Home> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AvailabilityPage(
+                            builder: (context) => AvailabilityAdminPage(
                               passUser: widget.passUser,
                               sport:
                                   'Ping Pong', // Pass the sport type to AvailabilityPage
@@ -236,7 +227,7 @@ class _HomeState extends State<Home> {
                                   'images/pingpong.png',
                                   height: 50,
                                 ),
-                                 SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 Text(
                                   'Ping Pong',
                                   style: TextStyle(
@@ -256,7 +247,7 @@ class _HomeState extends State<Home> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AvailabilityPage(
+                            builder: (context) => AvailabilityAdminPage(
                               passUser: widget.passUser,
                               sport:
                                   'Badminton', // Pass the sport type to AvailabilityPage
@@ -281,7 +272,7 @@ class _HomeState extends State<Home> {
                                   'images/badminton.png',
                                   height: 50,
                                 ),
-                                 SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 Text(
                                   'Badminton',
                                   style: TextStyle(
@@ -301,7 +292,7 @@ class _HomeState extends State<Home> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AvailabilityPage(
+                            builder: (context) => AvailabilityAdminPage(
                               passUser: widget.passUser,
                               sport:
                                   'Squash', // Pass the sport type to AvailabilityPage
@@ -326,7 +317,7 @@ class _HomeState extends State<Home> {
                                   'images/squash.png',
                                   height: 50,
                                 ),
-                                 SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 Text(
                                   'Squash',
                                   style: TextStyle(
@@ -343,7 +334,7 @@ class _HomeState extends State<Home> {
                   ],
                 ),
               ),
-               SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
                 width: 600, // Set the width to take the full available space
                 child: Column(
@@ -354,7 +345,7 @@ class _HomeState extends State<Home> {
                           180, // Set the height to match the other containers
                       width: 600, // Set the width to match the other containers
                     ),
-                     SizedBox(height: 10),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),
@@ -362,7 +353,6 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
-
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
@@ -370,7 +360,7 @@ class _HomeState extends State<Home> {
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.black.withOpacity(0.5),
         showUnselectedLabels: true,
-        items:  [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',

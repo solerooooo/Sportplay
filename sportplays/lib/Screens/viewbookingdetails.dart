@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sportplays/Models/bookingdetails.dart';
+import 'package:sportplays/Screens/editbookingdetails.dart';
 
 void main() {
   runApp(ViewBookingApp());
@@ -33,7 +35,7 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('View Booking Details'),
-        backgroundColor: Colors.purple, // Set the app bar color to purple
+        backgroundColor: Colors.purple,
       ),
       body: Column(
         children: [
@@ -64,6 +66,12 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
                   title: Text('Booking by ${filteredBookings[index].userName}'),
                   subtitle: Text(
                       'Facility: ${filteredBookings[index].facility}\nTime: ${filteredBookings[index].startTime} - ${filteredBookings[index].endTime}'),
+                  trailing: IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () {
+                      _redirectToEditPage(filteredBookings[index]);
+                    },
+                  ),
                   onTap: () {
                     _showBookingDetails(filteredBookings[index]);
                   },
@@ -114,13 +122,13 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
       },
     );
   }
-}
 
-class Booking {
-  final String userName;
-  final String facility;
-  final DateTime startTime;
-  final DateTime endTime;
-
-  Booking(this.userName, this.facility, this.startTime, this.endTime);
+  void _redirectToEditPage(Booking booking) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditBookingDetailsPage(booking: booking),
+      ),
+    );
+  }
 }

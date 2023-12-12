@@ -1,4 +1,6 @@
 // setting.dart
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../models/user.dart';
 
@@ -29,7 +31,7 @@ class _SettingState extends State<Setting> {
     genderController.text = user.getGender();
   }
 
-  void saveChanges() {
+  void saveChanges() async {
     final updatedUser = User(
       name: user.getName(),
       email: emailController.text,
@@ -40,8 +42,26 @@ class _SettingState extends State<Setting> {
       userId: user.getId(),
     );
 
+    // Update user data in Firebase
+    await updateUserDataInFirebase(updatedUser);
+
     // Call the callback function to handle the updated user
     widget.onUpdateUser(updatedUser);
+  }
+
+  Future<void> updateUserDataInFirebase(User user) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(user.getId()).set({
+        'name': user.getName(),
+        'email': user.getEmail(),
+        'password': user.getPassword(),
+        'phone': user.getPhone(),
+        'address': user.getAddress(),
+        'gender': user.getGender(),
+      });
+    } catch (e) {
+      print('Error updating user data: $e');
+    }
   }
 
   @override
@@ -50,50 +70,102 @@ class _SettingState extends State<Setting> {
       appBar: AppBar(
         title: const Text('Settings'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-              ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                const CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.amber,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  '${user.getName()}',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 21.5),
+                ),
+                Text(
+                  '${user.getId()}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  width: 300,
+                  height: 40,
+                  decoration: const BoxDecoration(
+                    color: Colors.lightGreenAccent,
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'Active Student',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  width: 300,
+                  height: 300,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      const Text(
+                        'About',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      buildTextField(Icons.person, 'Email', emailController),
+                      const SizedBox(height: 20),
+                      buildTextField(Icons.phone, 'Phone Number', phoneController),
+                      const SizedBox(height: 20),
+                      buildTextField(Icons.home, 'Address', addressController),
+                      const SizedBox(height: 20),
+                      buildTextField(Icons.work, 'Gender', genderController),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: saveChanges,
+                  child: const Text('Save Changes'),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: phoneController,
-              decoration: const InputDecoration(
-                labelText: 'Phone Number',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: addressController,
-              decoration: const InputDecoration(
-                labelText: 'Address',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: genderController,
-              decoration: const InputDecoration(
-                labelText: 'Gender',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: saveChanges,
-              child: const Text('Save Changes'),
-            ),
-          ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget buildTextField(IconData icon, String label, TextEditingController controller) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon),
+        const SizedBox(width: 10),
+        Expanded(
+          child: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              labelText: label,
+              border: OutlineInputBorder(),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

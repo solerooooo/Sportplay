@@ -8,7 +8,8 @@ class BookingPage extends StatefulWidget {
   final User passUser;
   final String selectedTime;
 
-  const BookingPage({Key? key, required this.passUser, required this.selectedTime}) : super(key: key);
+  const BookingPage({Key? key, required this.passUser, required this.selectedTime})
+      : super(key: key);
 
   @override
   _BookingPageState createState() => _BookingPageState();
@@ -29,7 +30,7 @@ class _BookingPageState extends State<BookingPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>  Home(passUser: widget.passUser),
+          builder: (context) => Home(passUser: widget.passUser),
         ),
       );
     }
@@ -48,7 +49,7 @@ class _BookingPageState extends State<BookingPage> {
         context,
         MaterialPageRoute(
           builder: (context) => Profile(passUser: widget.passUser),
-        ),        
+        ),
       );
     }
   }
@@ -75,9 +76,9 @@ class _BookingPageState extends State<BookingPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
+              Text(
                 'Select Activity',
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
               Row(
@@ -91,7 +92,7 @@ class _BookingPageState extends State<BookingPage> {
                     },
                     style: selectedActivity == 'Ping Pong'
                         ? ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green)
+                            backgroundColor: Colors.lightGreenAccent)
                         : null,
                     child: const Text('Ping Pong'),
                   ),
@@ -103,7 +104,7 @@ class _BookingPageState extends State<BookingPage> {
                     },
                     style: selectedActivity == 'Badminton'
                         ? ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green)
+                            backgroundColor: Colors.lightGreenAccent)
                         : null,
                     child: const Text('Badminton'),
                   ),
@@ -115,126 +116,116 @@ class _BookingPageState extends State<BookingPage> {
                     },
                     style: selectedActivity == 'Squash'
                         ? ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green)
+                            backgroundColor: Colors.lightGreenAccent)
                         : null,
                     child: const Text('Squash'),
                   ),
                 ],
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Court Availability'),
-                        content: const Column(
-                          children: [
-                            Text(
-                              'Available Courts:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: 10),
-                            Text('Court A'),
-                            Text('Court B'),
-                            Text('Court C'),
-                          ],
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Select Number of Players',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (playerQuantity > 1) {
+                                playerQuantity--;
+                              }
+                            });
+                          },
+                          icon: const Icon(Icons.remove),
                         ),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
+                        Text(
+                          '$playerQuantity',
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (playerQuantity < 6) {
+                                playerQuantity++;
+                              }
+                            });
+                          },
+                          icon: const Icon(Icons.add),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Select Payment Method',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    Column(
+                      children: [
+                        ListTile(
+                          title: const Text('Cash'),
+                          leading: Radio(
+                            value: 'Cash',
+                            groupValue: selectedPaymentMethod,
+                            onChanged: (String? value) {
+                              setState(() {
+                                selectedPaymentMethod = value!;
+                              });
                             },
-                            child: const Text('OK'),
                           ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                child: const Text('Show Court Availability'),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Select Number of Players',
-                style: TextStyle(fontSize: 20),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        if (playerQuantity > 1) {
-                          playerQuantity--;
-                        }
-                      });
-                    },
-                    icon: const Icon(Icons.remove),
-                  ),
-                  Text(
-                    '$playerQuantity',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        if (playerQuantity < 6) {
-                          playerQuantity++;
-                        }
-                      });
-                    },
-                    icon: const Icon(Icons.add),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Select Payment Method',
-                style: TextStyle(fontSize: 20),
-              ),
-              const SizedBox(height: 10),
-              Column(
-                children: [
-                  ListTile(
-                    title: const Text('Cash'),
-                    leading: Radio(
-                      value: 'Cash',
-                      groupValue: selectedPaymentMethod,
-                      onChanged: (String? value) {
-                        setState(() {
-                          selectedPaymentMethod = value!;
-                        });
-                      },
+                        ),
+                        ListTile(
+                          title: const Text('Free'),
+                          leading: Radio(
+                            value: 'Free',
+                            groupValue: selectedPaymentMethod,
+                            onChanged: (String? value) {
+                              setState(() {
+                                selectedPaymentMethod = value!;
+                              });
+                            },
+                          ),
+                        ),
+                        ListTile(
+                          title: const Text('Online'),
+                          leading: Radio(
+                            value: 'Online',
+                            groupValue: selectedPaymentMethod,
+                            onChanged: (String? value) {
+                              setState(() {
+                                selectedPaymentMethod = value!;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  ListTile(
-                    title: const Text('Free'),
-                    leading: Radio(
-                      value: 'Free',
-                      groupValue: selectedPaymentMethod,
-                      onChanged: (String? value) {
-                        setState(() {
-                          selectedPaymentMethod = value!;
-                        });
-                      },
-                    ),
-                  ),
-                  ListTile(
-                    title: const Text('Online'),
-                    leading: Radio(
-                      value: 'Online',
-                      groupValue: selectedPaymentMethod,
-                      onChanged: (String? value) {
-                        setState(() {
-                          selectedPaymentMethod = value!;
-                        });
-                      },
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
