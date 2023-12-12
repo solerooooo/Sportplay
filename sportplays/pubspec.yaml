@@ -74,6 +74,7 @@ flutter:
 
 
   assets:
+    - images/
     - images/logo.png
     - images/badminton.png
     - images/pingpong.png

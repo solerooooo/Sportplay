@@ -1,3 +1,4 @@
+//home.dart
 import 'package:flutter/material.dart';
 import 'login.dart';
 import 'profile.dart';
@@ -10,7 +11,7 @@ import 'Availability.dart'; // Import the AvailabilityPage
 class Home extends StatefulWidget {
   final User passUser;
 
-  const Home({Key? key, required this.passUser}) : super(key: key);
+   Home({Key? key, required this.passUser}) : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();
@@ -59,8 +60,8 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HomePage'),
-        backgroundColor: const Color(0xFFb364f3), // Make app bar transparent
+        title:  Text('HomePage'),
+        backgroundColor:  Color(0xFFb364f3), // Make app bar transparent
         elevation: 0, // Remove app bar shadow
       ),
 
@@ -89,25 +90,25 @@ class _HomeState extends State<Home> {
               ),
             ),
             ListTile(
-              title: const Text('Login'),
+              title:  Text('Login'),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Login()),
+                  MaterialPageRoute(builder: (context) =>  Login()),
                 );
               },
             ),
             ListTile(
-              title: const Text('Register'),
+              title:  Text('Register'),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Register()),
+                  MaterialPageRoute(builder: (context) =>  Register()),
                 );
               },
             ),
             ListTile(
-              title: const Text('Profile'),
+              title:  Text('Profile'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -117,7 +118,7 @@ class _HomeState extends State<Home> {
               },
             ),
             ListTile(
-              title: const Text('Booking Page'),
+              title:  Text('Booking Page'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -142,25 +143,25 @@ class _HomeState extends State<Home> {
         child: Center(
           child: Column(
             children: [
-              const SizedBox(height: 10),
+               SizedBox(height: 10),
               Text(
                 'Welcome, ${widget.passUser.getName()}!',
-                style: const TextStyle(
+                style:  TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                   fontStyle: FontStyle.italic,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 10),
+               SizedBox(height: 10),
               Container(
                 width: 400,
                 height: 200,
-                decoration: const BoxDecoration(
+                decoration:  BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
-                child: const Padding(
+                child:  Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -172,7 +173,7 @@ class _HomeState extends State<Home> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 10),
+                       SizedBox(height: 10),
                       Text(
                         'Sports Hall Repair News Report',
                         style: TextStyle(
@@ -181,7 +182,7 @@ class _HomeState extends State<Home> {
                           decoration: TextDecoration.underline,
                         ),
                       ),
-                      const SizedBox(height: 10),
+                       SizedBox(height: 10),
                       Expanded(
                         child: SingleChildScrollView(
                           child: Text(
@@ -197,7 +198,7 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+               SizedBox(height: 20),
               // Containers for Ping Pong, Badminton, and Squash
               Container(
                 width: 400, // Set the width to take the full available space
@@ -236,7 +237,7 @@ class _HomeState extends State<Home> {
                                   'images/pingpong.png',
                                   height: 50,
                                 ),
-                                const SizedBox(height: 10),
+                                 SizedBox(height: 10),
                                 Text(
                                   'Ping Pong',
                                   style: TextStyle(
@@ -281,7 +282,7 @@ class _HomeState extends State<Home> {
                                   'images/badminton.png',
                                   height: 50,
                                 ),
-                                const SizedBox(height: 10),
+                                 SizedBox(height: 10),
                                 Text(
                                   'Badminton',
                                   style: TextStyle(
@@ -326,7 +327,7 @@ class _HomeState extends State<Home> {
                                   'images/squash.png',
                                   height: 50,
                                 ),
-                                const SizedBox(height: 10),
+                                 SizedBox(height: 10),
                                 Text(
                                   'Squash',
                                   style: TextStyle(
@@ -343,7 +344,7 @@ class _HomeState extends State<Home> {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+               SizedBox(height: 20),
               Container(
                 width: 600, // Set the width to take the full available space
                 child: Column(
@@ -354,7 +355,7 @@ class _HomeState extends State<Home> {
                           180, // Set the height to match the other containers
                       width: 600, // Set the width to match the other containers
                     ),
-                    const SizedBox(height: 10),
+                     SizedBox(height: 10),
                   ],
                 ),
               ),
@@ -370,7 +371,7 @@ class _HomeState extends State<Home> {
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.black.withOpacity(0.5),
         showUnselectedLabels: true,
-        items: const [
+        items:  [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',

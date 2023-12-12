@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:sportplays/Screens/login.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+   SplashScreen({Key? key}) : super(key: key);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -17,10 +17,10 @@ class _SplashScreenState extends State<SplashScreen>
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed( Duration(seconds: 2), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-        builder: (_) => const Login(),
+        builder: (_) =>  Login(),
       ));
     });
   }
@@ -37,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
         body: Container(
             width: double.infinity,
-            decoration: const BoxDecoration(
+            decoration:  BoxDecoration(
               gradient: LinearGradient(
                 colors: [Colors.lightGreenAccent, Colors.purple],
                 begin: Alignment.topRight,
@@ -51,8 +51,8 @@ class _SplashScreenState extends State<SplashScreen>
                   'images/logo.png',
                   height: 300,
                 ),
-                const SizedBox(height: 20),
-                const Text(
+                 SizedBox(height: 20),
+                 Text(
                   'SOLEROOOOO',
                   style: TextStyle(
                     fontStyle: FontStyle.italic,
