@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sportplays/Screens/availability.dart';
 import 'home.dart';
 import '../models/user.dart';
@@ -9,9 +10,11 @@ class BookingPage extends StatefulWidget {
   final User passUser;
   final String selectedTime;
 
-  const BookingPage(
-      {Key? key, required this.passUser, required this.selectedTime})
-      : super(key: key);
+  const BookingPage({
+    Key? key,
+    required this.passUser,
+    required this.selectedTime,
+  }) : super(key: key);
 
   @override
   _BookingPageState createState() => _BookingPageState();
@@ -22,6 +25,8 @@ class _BookingPageState extends State<BookingPage> {
   int playerQuantity = 1;
   String selectedPaymentMethod = 'Cash';
   int _selectedIndex = 0;
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   void _onTabSelected(int index) {
     setState(() {
@@ -53,6 +58,27 @@ class _BookingPageState extends State<BookingPage> {
           builder: (context) => Profile(passUser: widget.passUser),
         ),
       );
+    }
+  }
+
+  Future<void> _saveDataToFirestore() async {
+    try {
+      CollectionReference bookings = _firestore.collection('bookings');
+
+      // Use the user's name as the document ID
+      String userName = widget.passUser.getName();
+      DocumentReference userBookingRef = bookings.doc(userName);
+
+      await userBookingRef.set({
+        'selectedActivity': selectedActivity,
+        'playerQuantity': playerQuantity,
+        'selectedPaymentMethod': selectedPaymentMethod,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      print('Data saved to Firestore successfully!');
+    } catch (e) {
+      print('Error saving data to Firestore: $e');
     }
   }
 
@@ -137,11 +163,11 @@ class _BookingPageState extends State<BookingPage> {
                     ),
                   );
                 },
-                style: selectedActivity == 'Court Availibility'
+                style: selectedActivity == 'Court Availability'
                     ? ElevatedButton.styleFrom(
                         backgroundColor: Colors.lightGreenAccent)
                     : null,
-                child: const Text('Court Availibility'),
+                child: const Text('Court Availability'),
               ),
               const SizedBox(height: 20),
               Container(
@@ -255,6 +281,8 @@ class _BookingPageState extends State<BookingPage> {
                 onPressed: () {
                   // Implement payment logic here
                   print('Selected Payment Method: $selectedPaymentMethod');
+                  // Save data to Firestore
+                  _saveDataToFirestore();
                 },
                 child: const Text('Make Payment'),
               ),
