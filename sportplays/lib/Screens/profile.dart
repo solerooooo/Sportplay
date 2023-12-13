@@ -201,3 +201,4 @@ class _NotiSwitchState extends State<NotiSwitch> {
     );
   }
 }
+

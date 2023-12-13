@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home.dart';
 import '../models/user.dart';
-import 'booking.dart';
+import 'viewbookingdetails.dart';
 import 'profile.dart';
 
 class QnASystem extends StatelessWidget {
@@ -10,15 +10,15 @@ class QnASystem extends StatelessWidget {
     return MaterialApp(
       title: 'Insights',
       theme: ThemeData(
-        primaryColor:  const Color(0xFFb364f3), // Set the primary color to purple
+        primaryColor:
+            const Color(0xFFb364f3), // Set the primary color to purple
       ),
     );
   }
 }
 
 class QnAPage extends StatefulWidget {
-
-   final User passUser;
+  final User passUser;
 
   const QnAPage({Key? key, required this.passUser}) : super(key: key);
   @override
@@ -28,13 +28,19 @@ class QnAPage extends StatefulWidget {
 class _QnAPageState extends State<QnAPage> {
   int _selectedIndex = 0;
   List<Map<String, String>> qnaList = [
-    {'question': 'What are the available payment methods?', 'answer': 'Pay for your bookings using any of the following supported payment options: FPX Online Banking or Cash'},
-    {'question': 'How can I view my booking details?', 'answer': '1. Click on your Profile page. 2. Click on the History button.  3. You’ll be able to view the details of your booking, including the date and time of your booking.'},
+    {
+      'question': 'What are the available payment methods?',
+      'answer':
+          'Pay for your bookings using any of the following supported payment options: FPX Online Banking or Cash'
+    },
+    {
+      'question': 'How can I view my booking details?',
+      'answer':
+          '1. Click on your Profile page. 2. Click on the History button.  3. You’ll be able to view the details of your booking, including the date and time of your booking.'
+    },
     // Add more questions and answers as needed
-
-    
   ];
-void _onTabSelected(int index) {
+  void _onTabSelected(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -43,7 +49,7 @@ void _onTabSelected(int index) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>  Home(passUser: widget.passUser),
+          builder: (context) => Home(passUser: widget.passUser),
         ),
       );
     }
@@ -52,7 +58,8 @@ void _onTabSelected(int index) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>  BookingPage(passUser: widget.passUser, selectedTime: 'YourSelectedTimeHere',),
+          builder: (context) => ViewBookingPage(
+          ),
         ),
       );
     }
@@ -75,6 +82,7 @@ void _onTabSelected(int index) {
       );
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,7 +108,7 @@ void _onTabSelected(int index) {
           );
         },
       ),
-     bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
         onTap: _onTabSelected,
@@ -114,7 +122,7 @@ void _onTabSelected(int index) {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
-            label: 'Booking',
+            label: 'View Booking',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.question_answer),
