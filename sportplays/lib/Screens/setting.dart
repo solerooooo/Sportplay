@@ -1,4 +1,5 @@
 // setting.dart
+import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../models/user.dart';
@@ -7,7 +8,8 @@ class Setting extends StatefulWidget {
   final User passUser;
   final Function(User) onUpdateUser;
 
-  const Setting({Key? key, required this.passUser, required this.onUpdateUser}) : super(key: key);
+  const Setting({Key? key, required this.passUser, required this.onUpdateUser})
+      : super(key: key);
 
   @override
   State<Setting> createState() => _SettingState();
@@ -19,6 +21,7 @@ class _SettingState extends State<Setting> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   String selectedGender = '';
+  late String originalGender;
 
   @override
   void initState() {
@@ -27,7 +30,8 @@ class _SettingState extends State<Setting> {
     emailController.text = user.getEmail();
     phoneController.text = user.getPhone();
     addressController.text = user.getAddress();
-    selectedGender = user.getGender();
+    originalGender = user.getGender();
+    selectedGender = originalGender;
   }
 
   void saveChanges() async {
@@ -41,8 +45,8 @@ class _SettingState extends State<Setting> {
       userId: user.getId(),
     );
 
-    // Update user data in Firestore
-    await updateUserDataInFirestore(updatedUser);
+    // Update user data in Firebase
+    await updateUserDataInFirebase(updatedUser);
 
     // Call the callback function to handle the updated user
     widget.onUpdateUser(updatedUser);
@@ -51,9 +55,9 @@ class _SettingState extends State<Setting> {
     Navigator.pop(context);
   }
 
-  Future<void> updateUserDataInFirestore(User user) async {
+  Future<void> updateUserDataInFirebase(User user) async {
     try {
-      await FirebaseFirestore.instance.collection('users').doc(user.getId()).update({
+      await FirebaseFirestore.instance.collection('users').doc(user.getId()).set({
         'name': user.getName(),
         'email': user.getEmail(),
         'password': user.getPassword(),
@@ -114,7 +118,7 @@ class _SettingState extends State<Setting> {
                 Container(
                   width: 400,
                   height: 400,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
@@ -130,7 +134,7 @@ class _SettingState extends State<Setting> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      buildTextField(Icons.person, 'Email', emailController),
+                      buildTextField(Icons.email, 'Email', emailController),
                       const SizedBox(height: 20),
                       buildTextField(Icons.phone, 'Phone Number', phoneController),
                       const SizedBox(height: 20),
@@ -154,65 +158,58 @@ class _SettingState extends State<Setting> {
     );
   }
 
-  // setting.dart
-
-// ...
-
-Widget buildTextField(IconData icon, String label, TextEditingController controller) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Icon(icon),
-      const SizedBox(width: 10),
-      Expanded(
-        child: SizedBox(
-          width: 250, // Adjust the width as needed
-          child: TextField(
-            controller: controller,
-            decoration: InputDecoration(
-              labelText: label,
-              border: OutlineInputBorder(),
-              prefixIcon: Icon(icon), // Add prefix icon
+  Widget buildTextField(IconData icon, String label, TextEditingController controller) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(width: 10),
+        Expanded(
+          child: SizedBox(
+            width: 250,
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                labelText: label,
+                border: OutlineInputBorder(),
+                  prefixIcon: Icon(icon),
+              ),
             ),
           ),
         ),
-      ),
-    ],
-  );
-}
+      ],
+    );
+  }
 
-Widget buildGenderDropdown() {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Icon(Icons.work),
-      const SizedBox(width: 10),
-      Expanded(
-        child: SizedBox(
-          width: 250, // Adjust the width as needed
-          child: DropdownButtonFormField<String>(
-            value: selectedGender,
-            onChanged: (String? value) {
-              setState(() {
-                selectedGender = value!;
-              });
-            },
-            items: ['Female', 'Male']
-                .map((gender) => DropdownMenuItem(
-                      value: gender,
-                      child: Text(gender),
-                    ))
-                .toList(),
-            decoration: InputDecoration(
-              labelText: 'Gender',
-              border: OutlineInputBorder(),
-              prefixIcon: const Icon(Icons.work), // Add prefix icon
+  Widget buildGenderDropdown() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(width: 10),
+        Expanded(
+          child: SizedBox(
+            width: 250,
+            child: DropdownButtonFormField<String>(
+              value: selectedGender,
+              onChanged: (String? value) {
+                setState(() {
+                  selectedGender = value!;
+                });
+              },
+              items: ['Female', 'Male']
+                  .map((gender) => DropdownMenuItem(
+                        value: gender,
+                        child: Text(gender),
+                      ))
+                  .toList(),
+              decoration: InputDecoration(
+                labelText: 'Gender',
+                border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.person),
+              ),
             ),
           ),
         ),
-      ),
-    ],
-  );
+      ],
+    );
+  }
 }
-}
-
