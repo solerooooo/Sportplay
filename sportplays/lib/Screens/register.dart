@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
 import '../models/user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Register extends StatefulWidget {
   Register({Key? key}) : super(key: key);
@@ -19,8 +20,8 @@ class _RegisterState extends State<Register> {
   final passwordController = TextEditingController();
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
-  final genderController = TextEditingController();
-  
+
+  String selectedGender = 'Male';
 
   @override
   Widget build(BuildContext context) {
@@ -114,35 +115,59 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  TextField(
-                    controller: genderController,
-                    decoration: InputDecoration(
+                  DropdownButtonFormField<String>(
+                    value: selectedGender,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedGender = newValue!;
+                      });
+                    },
+                    decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.people),
                       labelText: 'Gender',
                       border: OutlineInputBorder(),
                     ),
+                    items: ['Male', 'Female']
+                        .map<DropdownMenuItem<String>>(
+                          (String value) => DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          ),
+                        )
+                        .toList(),
                   ),
-                  
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   SizedBox(
                     width: 300,
                     height: 40,
                     child: ElevatedButton(
-                      onPressed: () {
-                        User passUser = User(
-                          name: nameController.text,
-                          userId: idController.text,
-                          email: emailController.text,
-                          password: passwordController.text,
-                          phone: phoneController.text,
-                          address: addressController.text,
-                          gender: genderController.text,
-                        );
-                      
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => Login()),
-                        );
+                      onPressed: () async {
+                        // Create a map with user data
+                        Map<String, dynamic> userData = {
+                          'name': nameController.text,
+                          'email': emailController.text,
+                          'password': passwordController.text,
+                          'phone': phoneController.text,
+                          'address': addressController.text,
+                          'gender': selectedGender,
+                          'userId': idController.text,
+                        };
+
+                        try {
+                          // Add user data to Firestore
+                          await FirebaseFirestore.instance
+                              .collection('UserData')
+                              .doc(nameController.text)
+                              .set(userData);
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => Login()),
+                          );
+                        } catch (error) {
+                          // Handle any errors that might occur during data insertion
+                          print('Error adding user data to Firestore: $error');
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         primary: Color(0xFF444444),
@@ -154,7 +179,8 @@ class _RegisterState extends State<Register> {
                             'Register',
                             style: TextStyle(
                               fontSize: 20,
-                              color: Colors.white, // Set the text color to white
+                              color:
+                                  Colors.white, // Set the text color to white
                             ),
                           ),
                           Icon(
