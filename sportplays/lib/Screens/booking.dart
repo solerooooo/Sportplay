@@ -281,14 +281,15 @@ class _BookingPageState extends State<BookingPage> {
                 onPressed: () {
                   // Implement payment logic here
                   print('Selected Payment Method: $selectedPaymentMethod');
-                  // Save data to Firestore
-                  _saveDataToFirestore();
                 },
                 child: const Text('Make Payment'),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  // Save data to Firestore
+                  _saveDataToFirestore();
+                },
                 child: const Text('Done'),
               ),
             ],
