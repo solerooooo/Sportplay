@@ -29,8 +29,7 @@ class _HomeState extends State<Home> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ViewBookingPage(
-          ),
+          builder: (context) => ViewBookingPage(),
         ),
       );
     }
@@ -208,12 +207,11 @@ class _HomeState extends State<Home> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AvailabilityPage(
-                              passUser: widget.passUser,
-                              sport:
-                                  'Ping Pong', // Pass the sport type to AvailabilityPage
-                            ),
-                          ),
+                              builder: (context) => BookingPage(
+                                    passUser: widget.passUser,
+                                    selectedTime: 'YourSelectedTimeHere',
+                                  ) // Pass the sport type to AvailabilityPage
+                              ),
                         );
                       },
                       child: Column(
@@ -254,12 +252,13 @@ class _HomeState extends State<Home> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AvailabilityPage(
-                              passUser: widget.passUser,
-                              sport:
-                                  'Badminton', // Pass the sport type to AvailabilityPage
-                            ),
-                          ),
+                              builder: (context) => BookingPage(
+                                    passUser: widget.passUser,
+                                    selectedTime: 'YourSelectedTimeHere',
+                                  )
+// Pass the sport type to AvailabilityPage
+
+                              ),
                         );
                       },
                       child: Column(
@@ -299,10 +298,10 @@ class _HomeState extends State<Home> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AvailabilityPage(
+                            builder: (context) => BookingPage(
                               passUser: widget.passUser,
-                              sport:
-                                  'Squash', // Pass the sport type to AvailabilityPage
+                              selectedTime: 'YourSelectedTimeHere',
+                              // Pass the sport type to AvailabilityPage
                             ),
                           ),
                         );
