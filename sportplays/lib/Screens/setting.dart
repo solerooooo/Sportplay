@@ -77,84 +77,93 @@ class _SettingState extends State<Setting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFb364f3),
       appBar: AppBar(
         backgroundColor: Colors.lightGreenAccent,
         title: const Text('Settings'),
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.amber,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  '${user.getName()}',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 21.5),
-                ),
-                Text(
-                  '${user.getId()}',
-                  style: const TextStyle(fontSize: 16),
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  width: 300,
-                  height: 40,
-                  decoration: const BoxDecoration(
-                    color: Colors.lightGreenAccent,
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("images/background.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  const CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.amber,
                   ),
-                  child: const Center(
-                    child: Text(
-                      'Active Student',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  const SizedBox(height: 10),
+                  Text(
+                    '${user.getName()}',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 21.5),
+                  ),
+                  Text(
+                    '${user.getId()}',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    width: 300,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      color: Colors.lightGreenAccent,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Active Student',
+                        style:
+                            TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  width: 400,
-                  height: 400,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      const Text(
-                        'About',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                  const SizedBox(height: 10),
+                  Container(
+                    width: 400,
+                    height: 400,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 20),
+                        const Text(
+                          'About',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      buildTextField(Icons.email, 'Email', emailController),
-                      const SizedBox(height: 20),
-                      buildTextField(Icons.phone, 'Phone Number', phoneController),
-                      const SizedBox(height: 20),
-                      buildTextField(Icons.home, 'Address', addressController),
-                      const SizedBox(height: 20),
-                      buildGenderDropdown(),
-                      const SizedBox(height: 20),
-                    ],
+                        const SizedBox(height: 20),
+                        buildTextField(Icons.email, 'Email', emailController),
+                        const SizedBox(height: 20),
+                        buildTextField(Icons.phone, 'Phone Number', phoneController),
+                        const SizedBox(height: 20),
+                        buildTextField(Icons.home, 'Address', addressController),
+                        const SizedBox(height: 20),
+                        buildGenderDropdown(),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: saveChanges,
-                  child: const Text('Save Changes'),
-                ),
-              ],
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: saveChanges,
+                    child: const Text('Save Changes'),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -175,7 +184,7 @@ class _SettingState extends State<Setting> {
               decoration: InputDecoration(
                 labelText: label,
                 border: OutlineInputBorder(),
-                  prefixIcon: Icon(icon),
+                prefixIcon: Icon(icon),
               ),
             ),
           ),
@@ -208,7 +217,7 @@ class _SettingState extends State<Setting> {
               decoration: InputDecoration(
                 labelText: 'Gender',
                 border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.person),
+                prefixIcon: Icon(Icons.person),
               ),
             ),
           ),

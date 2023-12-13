@@ -42,7 +42,6 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFb364f3),
       appBar: AppBar(
         backgroundColor: Colors.lightGreenAccent,
         title: const Text(
@@ -55,7 +54,6 @@ class _ProfileState extends State<Profile> {
                 builder: (context) => Setting(
                   passUser: passUser,
                   onUpdateUser: (User updatedUser) {
-                    // Update the profile page with the new user data
                     setState(() {
                       passUser = updatedUser;
                     });
@@ -68,7 +66,17 @@ class _ProfileState extends State<Profile> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("images/background.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+
+        child: SingleChildScrollView(
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -160,8 +168,10 @@ class _ProfileState extends State<Profile> {
           ),
         ),
       ),
+    ),
     );
   }
+  
 }
 
 class NotiSwitch extends StatefulWidget {
