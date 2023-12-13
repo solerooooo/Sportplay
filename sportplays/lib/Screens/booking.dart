@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sportplays/Screens/availability.dart';
 import 'home.dart';
 import '../models/user.dart';
 import 'qna.dart';
@@ -8,7 +9,8 @@ class BookingPage extends StatefulWidget {
   final User passUser;
   final String selectedTime;
 
-  const BookingPage({Key? key, required this.passUser, required this.selectedTime})
+  const BookingPage(
+      {Key? key, required this.passUser, required this.selectedTime})
       : super(key: key);
 
   @override
@@ -123,6 +125,25 @@ class _BookingPageState extends State<BookingPage> {
                 ],
               ),
               const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AvailabilityPage(
+                        passUser: widget.passUser,
+                        sport: selectedActivity,
+                      ),
+                    ),
+                  );
+                },
+                style: selectedActivity == 'Court Availibility'
+                    ? ElevatedButton.styleFrom(
+                        backgroundColor: Colors.lightGreenAccent)
+                    : null,
+                child: const Text('Court Availibility'),
+              ),
+              const SizedBox(height: 20),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -134,7 +155,8 @@ class _BookingPageState extends State<BookingPage> {
                   children: [
                     const Text(
                       'Select Number of Players',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
                     Row(
@@ -181,7 +203,8 @@ class _BookingPageState extends State<BookingPage> {
                   children: [
                     const Text(
                       'Select Payment Method',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
                     Column(
