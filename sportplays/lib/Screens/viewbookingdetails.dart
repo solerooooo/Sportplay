@@ -18,9 +18,9 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
   int _selectedIndex = 0;
 
   List<Booking> bookings = [
-    Booking('John Doe', 'Squash Court', DateTime(2023, 11, 1, 14, 30),
+    Booking('Ping Pong', '', DateTime(2023, 11, 1, 14, 30),
         DateTime(2023, 11, 1, 16, 30)),
-    Booking('Jane Smith', 'Badminton', DateTime(2023, 11, 2, 10, 0),
+    Booking('Badminton', '', DateTime(2023, 11, 2, 10, 0),
         DateTime(2023, 11, 2, 12, 0)),
     // Add more booking instances as needed
   ];
@@ -79,7 +79,7 @@ void _onTabSelected(int index) {
             _buildTabContent(_getPastBookings()),
           ],
         ),
-      bottomNavigationBar: BottomNavigationBar(
+        bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
         onTap: _onTabSelected,
@@ -119,9 +119,9 @@ void _onTabSelected(int index) {
             itemCount: filteredBookings.length,
             itemBuilder: (context, index) {
               return ListTile(
-                title: Text('Booking by ${filteredBookings[index].userName}'),
+                title: Text('Activity ${filteredBookings[index].userName}'),
                 subtitle: Text(
-                  'Facility: ${filteredBookings[index].facility}\nTime: ${filteredBookings[index].startTime} - ${filteredBookings[index].endTime}',
+                  'Time: ${filteredBookings[index].startTime} - ${filteredBookings[index].endTime}',
                 ),
                 trailing: IconButton(
                   icon: Icon(Icons.edit),
@@ -161,8 +161,7 @@ void _onTabSelected(int index) {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('User: ${booking.userName}'),
-              Text('Facility: ${booking.facility}'),
+              Text('Activity: ${booking.userName}'),
               Text('Start Time: ${booking.startTime}'),
               Text('End Time: ${booking.endTime}'),
             ],
