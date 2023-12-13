@@ -107,7 +107,7 @@ class _ProfileState extends State<Profile> {
                 Container(
                   width: 300,
                   height: 300,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
@@ -201,4 +201,3 @@ class _NotiSwitchState extends State<NotiSwitch> {
     );
   }
 }
-

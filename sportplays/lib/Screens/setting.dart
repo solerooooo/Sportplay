@@ -1,5 +1,4 @@
 // setting.dart
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../models/user.dart';
@@ -19,7 +18,7 @@ class _SettingState extends State<Setting> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  TextEditingController genderController = TextEditingController();
+  String selectedGender = '';
 
   @override
   void initState() {
@@ -28,7 +27,7 @@ class _SettingState extends State<Setting> {
     emailController.text = user.getEmail();
     phoneController.text = user.getPhone();
     addressController.text = user.getAddress();
-    genderController.text = user.getGender();
+    selectedGender = user.getGender();
   }
 
   void saveChanges() async {
@@ -38,20 +37,23 @@ class _SettingState extends State<Setting> {
       password: user.getPassword(),
       phone: phoneController.text,
       address: addressController.text,
-      gender: genderController.text,
+      gender: selectedGender,
       userId: user.getId(),
     );
 
-    // Update user data in Firebase
-    await updateUserDataInFirebase(updatedUser);
+    // Update user data in Firestore
+    await updateUserDataInFirestore(updatedUser);
 
     // Call the callback function to handle the updated user
     widget.onUpdateUser(updatedUser);
+
+    // Navigate back to the Profile page
+    Navigator.pop(context);
   }
 
-  Future<void> updateUserDataInFirebase(User user) async {
+  Future<void> updateUserDataInFirestore(User user) async {
     try {
-      await FirebaseFirestore.instance.collection('users').doc(user.getId()).set({
+      await FirebaseFirestore.instance.collection('users').doc(user.getId()).update({
         'name': user.getName(),
         'email': user.getEmail(),
         'password': user.getPassword(),
@@ -67,7 +69,9 @@ class _SettingState extends State<Setting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFb364f3),
       appBar: AppBar(
+        backgroundColor: Colors.lightGreenAccent,
         title: const Text('Settings'),
       ),
       body: SingleChildScrollView(
@@ -110,7 +114,7 @@ class _SettingState extends State<Setting> {
                 Container(
                   width: 300,
                   height: 300,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
@@ -132,7 +136,7 @@ class _SettingState extends State<Setting> {
                       const SizedBox(height: 20),
                       buildTextField(Icons.home, 'Address', addressController),
                       const SizedBox(height: 20),
-                      buildTextField(Icons.work, 'Gender', genderController),
+                      buildGenderDropdown(),
                       const SizedBox(height: 20),
                     ],
                   ),
@@ -157,11 +161,47 @@ class _SettingState extends State<Setting> {
         Icon(icon),
         const SizedBox(width: 10),
         Expanded(
-          child: TextField(
-            controller: controller,
-            decoration: InputDecoration(
-              labelText: label,
-              border: OutlineInputBorder(),
+          child: SizedBox(
+            width: 250, // Adjust the width as needed
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                labelText: label,
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildGenderDropdown() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.work),
+        const SizedBox(width: 10),
+        Expanded(
+          child: SizedBox(
+            width: 250, // Adjust the width as needed
+            child: DropdownButtonFormField<String>(
+              value: selectedGender,
+              onChanged: (String? value) {
+                setState(() {
+                  selectedGender = value!;
+                });
+              },
+              items: ['Female', 'Male']
+                  .map((gender) => DropdownMenuItem(
+                        value: gender,
+                        child: Text(gender),
+                      ))
+                  .toList(),
+              decoration: const InputDecoration(
+                labelText: 'Gender',
+                border: OutlineInputBorder(),
+              ),
             ),
           ),
         ),
