@@ -1,4 +1,5 @@
 //home_admin.dart
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sportplays/Screens/availability_admin.dart';
 import 'login.dart';
@@ -94,7 +95,7 @@ class _HomeAdminState extends State<HomeAdmin> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  Register()),
+                  MaterialPageRoute(builder: (context) =>  Register(firestore: FirebaseFirestore.instance,)),
                 );
               },
             ),

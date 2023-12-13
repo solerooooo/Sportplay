@@ -1,10 +1,11 @@
 // profile.dart
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../models/user.dart';
 import 'setting.dart';
 
 class Profile extends StatefulWidget {
-  final User passUser;
+   final User passUser;
 
   const Profile({Key? key, required this.passUser}) : super(key: key);
 
@@ -58,7 +59,7 @@ class _ProfileState extends State<Profile> {
                     setState(() {
                       passUser = updatedUser;
                     });
-                  },
+                  }, firestore: FirebaseFirestore.instance,
                 ),
               );
               Navigator.push(context, route);

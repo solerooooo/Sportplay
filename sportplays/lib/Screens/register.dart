@@ -7,8 +7,9 @@ import '../models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Register extends StatefulWidget {
-  Register({Key? key}) : super(key: key);
+  final FirebaseFirestore firestore;
 
+  Register({Key? key, required this.firestore}) : super(key: key);
   @override
   State createState() => _RegisterState();
 }

@@ -53,7 +53,7 @@ void _onTabSelected(int index) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Profile(passUser: widget.passUser),
+          builder: (context) => Profile(passUser: widget.passUser,),
         ),
       );
     }

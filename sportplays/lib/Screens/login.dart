@@ -224,7 +224,7 @@ class _LoginState extends State<Login> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Register(),
+                            builder: (context) => Register(firestore: FirebaseFirestore.instance,),
                           ),
                         );
                       },

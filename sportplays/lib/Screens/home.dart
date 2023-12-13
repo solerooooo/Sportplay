@@ -1,4 +1,5 @@
 //home.dart
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'login.dart';
 import 'profile.dart';
@@ -101,7 +102,7 @@ class _HomeState extends State<Home> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Register()),
+                  MaterialPageRoute(builder: (context) => Register(firestore: FirebaseFirestore.instance,)),
                 );
               },
             ),

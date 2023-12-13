@@ -1,5 +1,3 @@
-// setting.dart
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../models/user.dart';
@@ -7,9 +5,14 @@ import '../models/user.dart';
 class Setting extends StatefulWidget {
   final User passUser;
   final Function(User) onUpdateUser;
+  final FirebaseFirestore firestore;
 
-  const Setting({Key? key, required this.passUser, required this.onUpdateUser})
-      : super(key: key);
+  const Setting({
+    Key? key,
+    required this.passUser,
+    required this.onUpdateUser,
+    required this.firestore,
+  }) : super(key: key);
 
   @override
   State<Setting> createState() => _SettingState();
@@ -45,8 +48,8 @@ class _SettingState extends State<Setting> {
       userId: user.getId(),
     );
 
-    // Update user data in Firebase
-    await updateUserDataInFirebase(updatedUser);
+    // Update user data in Firestore
+    await updateUserDataInFirestore(updatedUser);
 
     // Call the callback function to handle the updated user
     widget.onUpdateUser(updatedUser);
@@ -55,15 +58,16 @@ class _SettingState extends State<Setting> {
     Navigator.pop(context);
   }
 
-  Future<void> updateUserDataInFirebase(User user) async {
+  Future<void> updateUserDataInFirestore(User user) async {
     try {
-      await FirebaseFirestore.instance.collection('users').doc(user.getId()).set({
+      await widget.firestore.collection('UserData').doc(user.getName()).set({
         'name': user.getName(),
         'email': user.getEmail(),
         'password': user.getPassword(),
         'phone': user.getPhone(),
         'address': user.getAddress(),
         'gender': user.getGender(),
+        'userId': user.getId(),
       });
     } catch (e) {
       print('Error updating user data: $e');
