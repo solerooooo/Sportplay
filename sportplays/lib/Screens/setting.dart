@@ -112,8 +112,8 @@ class _SettingState extends State<Setting> {
                 ),
                 const SizedBox(height: 10),
                 Container(
-                  width: 300,
-                  height: 300,
+                  width: 400,
+                  height: 400,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -154,58 +154,65 @@ class _SettingState extends State<Setting> {
     );
   }
 
-  Widget buildTextField(IconData icon, String label, TextEditingController controller) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon),
-        const SizedBox(width: 10),
-        Expanded(
-          child: SizedBox(
-            width: 250, // Adjust the width as needed
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                labelText: label,
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  // setting.dart
 
-  Widget buildGenderDropdown() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(Icons.work),
-        const SizedBox(width: 10),
-        Expanded(
-          child: SizedBox(
-            width: 250, // Adjust the width as needed
-            child: DropdownButtonFormField<String>(
-              value: selectedGender,
-              onChanged: (String? value) {
-                setState(() {
-                  selectedGender = value!;
-                });
-              },
-              items: ['Female', 'Male']
-                  .map((gender) => DropdownMenuItem(
-                        value: gender,
-                        child: Text(gender),
-                      ))
-                  .toList(),
-              decoration: const InputDecoration(
-                labelText: 'Gender',
-                border: OutlineInputBorder(),
-              ),
+// ...
+
+Widget buildTextField(IconData icon, String label, TextEditingController controller) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Icon(icon),
+      const SizedBox(width: 10),
+      Expanded(
+        child: SizedBox(
+          width: 250, // Adjust the width as needed
+          child: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              labelText: label,
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(icon), // Add prefix icon
             ),
           ),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 }
+
+Widget buildGenderDropdown() {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Icon(Icons.work),
+      const SizedBox(width: 10),
+      Expanded(
+        child: SizedBox(
+          width: 250, // Adjust the width as needed
+          child: DropdownButtonFormField<String>(
+            value: selectedGender,
+            onChanged: (String? value) {
+              setState(() {
+                selectedGender = value!;
+              });
+            },
+            items: ['Female', 'Male']
+                .map((gender) => DropdownMenuItem(
+                      value: gender,
+                      child: Text(gender),
+                    ))
+                .toList(),
+            decoration: InputDecoration(
+              labelText: 'Gender',
+              border: OutlineInputBorder(),
+              prefixIcon: const Icon(Icons.work), // Add prefix icon
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+}
+
