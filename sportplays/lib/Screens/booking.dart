@@ -74,6 +74,7 @@ class _BookingPageState extends State<BookingPage> {
         'selectedActivity': selectedActivity,
         'playerQuantity': playerQuantity,
         'selectedPaymentMethod': selectedPaymentMethod,
+        'selectedTime': widget.selectedTime,
         'timestamp': FieldValue.serverTimestamp(),
       });
 
@@ -87,7 +88,7 @@ class _BookingPageState extends State<BookingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sports Hall Booking'),
+        title: const Text('Booking'),
         backgroundColor: const Color(0xFFD6F454),
         actions: [
           IconButton(
@@ -98,202 +99,236 @@ class _BookingPageState extends State<BookingPage> {
           ),
         ],
       ),
-      body: Container(
-        color: const Color(0xFFb364f3),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Select Activity',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        selectedActivity = 'Ping Pong';
-                      });
-                    },
-                    style: selectedActivity == 'Ping Pong'
-                        ? ElevatedButton.styleFrom(
-                            backgroundColor: Colors.lightGreenAccent)
-                        : null,
-                    child: const Text('Ping Pong'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        selectedActivity = 'Badminton';
-                      });
-                    },
-                    style: selectedActivity == 'Badminton'
-                        ? ElevatedButton.styleFrom(
-                            backgroundColor: Colors.lightGreenAccent)
-                        : null,
-                    child: const Text('Badminton'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        selectedActivity = 'Squash';
-                      });
-                    },
-                    style: selectedActivity == 'Squash'
-                        ? ElevatedButton.styleFrom(
-                            backgroundColor: Colors.lightGreenAccent)
-                        : null,
-                    child: const Text('Squash'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AvailabilityPage(
-                        passUser: widget.passUser,
-                        sport: selectedActivity,
+      body: SingleChildScrollView(
+        child: Container(
+          color: const Color(0xFFb364f3),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Select Activity',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          selectedActivity = 'Ping Pong';
+                        });
+                      },
+                      style: selectedActivity == 'Ping Pong'
+                          ? ElevatedButton.styleFrom(
+                              backgroundColor: Colors.lightGreenAccent)
+                          : null,
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'images/pingpong.png', // Provide the correct path
+                            height: 50,
+                          ),
+                          const SizedBox(height: 5),
+                          const Text('Ping Pong'),
+                        ],
                       ),
                     ),
-                  );
-                },
-                style: selectedActivity == 'Court Availability'
-                    ? ElevatedButton.styleFrom(
-                        backgroundColor: Colors.lightGreenAccent)
-                    : null,
-                child: const Text('Court Availability'),
-              ),
-              const SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Select Number of Players',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          selectedActivity = 'Badminton';
+                        });
+                      },
+                      style: selectedActivity == 'Badminton'
+                          ? ElevatedButton.styleFrom(
+                              backgroundColor: Colors.lightGreenAccent)
+                          : null,
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'images/badminton.png', // Provide the correct path
+                            height: 50,
+                          ),
+                          const SizedBox(height: 5),
+                          const Text('Badminton'),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              if (playerQuantity > 1) {
-                                playerQuantity--;
-                              }
-                            });
-                          },
-                          icon: const Icon(Icons.remove),
-                        ),
-                        Text(
-                          '$playerQuantity',
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              if (playerQuantity < 6) {
-                                playerQuantity++;
-                              }
-                            });
-                          },
-                          icon: const Icon(Icons.add),
-                        ),
-                      ],
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          selectedActivity = 'Squash';
+                        });
+                      },
+                      style: selectedActivity == 'Squash'
+                          ? ElevatedButton.styleFrom(
+                              backgroundColor: Colors.lightGreenAccent)
+                          : null,
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'images/squash.png', // Provide the correct path
+                            height: 50,
+                          ),
+                          const SizedBox(height: 5),
+                          const Text('Squash'),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10.0),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AvailabilityPage(
+                          passUser: widget.passUser,
+                          sport: selectedActivity,
+                          selectedTime: widget.selectedTime,
+                        ),
+                      ),
+                    );
+                  },
+                  style: selectedActivity == 'Choose your time slot'
+                      ? ElevatedButton.styleFrom(
+                          backgroundColor: Colors.lightGreenAccent)
+                      : null,
+                  child: Text(
+                    widget.selectedTime.isEmpty
+                        ? 'Choose your time slot'
+                        :  '${widget.selectedTime}',
+                  ),
                 ),
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Select Payment Method',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-                    Column(
-                      children: [
-                        ListTile(
-                          title: const Text('Cash'),
-                          leading: Radio(
-                            value: 'Cash',
-                            groupValue: selectedPaymentMethod,
-                            onChanged: (String? value) {
+                const SizedBox(height: 20),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Select Number of Players',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                            onPressed: () {
                               setState(() {
-                                selectedPaymentMethod = value!;
+                                if (playerQuantity > 1) {
+                                  playerQuantity--;
+                                }
                               });
                             },
+                            icon: const Icon(Icons.remove),
                           ),
-                        ),
-                        ListTile(
-                          title: const Text('Free'),
-                          leading: Radio(
-                            value: 'Free',
-                            groupValue: selectedPaymentMethod,
-                            onChanged: (String? value) {
+                          Text(
+                            '$playerQuantity',
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                          IconButton(
+                            onPressed: () {
                               setState(() {
-                                selectedPaymentMethod = value!;
+                                if (playerQuantity < 6) {
+                                  playerQuantity++;
+                                }
                               });
                             },
+                            icon: const Icon(Icons.add),
                           ),
-                        ),
-                        ListTile(
-                          title: const Text('Online'),
-                          leading: Radio(
-                            value: 'Online',
-                            groupValue: selectedPaymentMethod,
-                            onChanged: (String? value) {
-                              setState(() {
-                                selectedPaymentMethod = value!;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // Implement payment logic here
-                  print('Selected Payment Method: $selectedPaymentMethod');
-                },
-                child: const Text('Make Payment'),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // Save data to Firestore
-                  _saveDataToFirestore();
-                },
-                child: const Text('Done'),
-              ),
-            ],
+                const SizedBox(height: 20),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Select Payment Method',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      Column(
+                        children: [
+                          ListTile(
+                            title: const Text('Cash'),
+                            leading: Radio(
+                              value: 'Cash',
+                              groupValue: selectedPaymentMethod,
+                              onChanged: (String? value) {
+                                setState(() {
+                                  selectedPaymentMethod = value!;
+                                });
+                              },
+                            ),
+                          ),
+                          ListTile(
+                            title: const Text('Free'),
+                            leading: Radio(
+                              value: 'Free',
+                              groupValue: selectedPaymentMethod,
+                              onChanged: (String? value) {
+                                setState(() {
+                                  selectedPaymentMethod = value!;
+                                });
+                              },
+                            ),
+                          ),
+                          ListTile(
+                            title: const Text('Online'),
+                            leading: Radio(
+                              value: 'Online',
+                              groupValue: selectedPaymentMethod,
+                              onChanged: (String? value) {
+                                setState(() {
+                                  selectedPaymentMethod = value!;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    // Implement payment logic here
+                    print('Selected Payment Method: $selectedPaymentMethod');
+                  },
+                  child: const Text('Make Payment'),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    // Save data to Firestore
+                    _saveDataToFirestore();
+                  },
+                  child: const Text('Done'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

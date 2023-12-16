@@ -1,4 +1,4 @@
-//login.dart 
+//login.dart
 import 'package:flutter/material.dart';
 import 'package:sportplays/Screens/home.dart';
 import 'package:sportplays/Screens/home_admin.dart';
@@ -89,67 +89,70 @@ class _LoginState extends State<Login> {
                     child: ElevatedButton(
                       onPressed: () async {
                         // Retrieve user data from Firestore
-                     try {
-  DocumentSnapshot userSnapshot =
-      await FirebaseFirestore.instance
-          .collection('UserData')
-          .doc(nameController.text)
-          .get();
+                        try {
+                          DocumentSnapshot userSnapshot =
+                              await FirebaseFirestore.instance
+                                  .collection('UserData')
+                                  .doc(nameController.text)
+                                  .get();
 
-  if (userSnapshot.exists) {
-    // Check if the user is an admin
-    if (userSnapshot['userId'] == 'ADMIN' &&
-        userSnapshot['password'] == passwordController.text) {
-      // Admin found, navigate to HomeAdmin
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomeAdmin(
-            passUser: User(
-              name: userSnapshot['name'],
-              email: userSnapshot['email'],
-              password: userSnapshot['password'],
-              phone: userSnapshot['phone'],
-              address: userSnapshot['address'],
-              gender: userSnapshot['gender'],
-              userId: userSnapshot['userId'],
-            ),
-          ),
-        ),
-      );
-    } else if (userSnapshot['password'] == passwordController.text) {
-      // Regular user found, navigate to Home
-      User passUser = User(
-        name: userSnapshot['name'],
-        email: userSnapshot['email'],
-        password: userSnapshot['password'],
-        phone: userSnapshot['phone'],
-        address: userSnapshot['address'],
-        gender: userSnapshot['gender'],
-        userId: userSnapshot['userId'],
-      );
+                          if (userSnapshot.exists) {
+                            // Check if the user is an admin
+                            if (userSnapshot['userId'] == 'ADMIN' &&
+                                userSnapshot['password'] ==
+                                    passwordController.text) {
+                              // Admin found, navigate to HomeAdmin
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomeAdmin(
+                                    passUser: User(
+                                      name: userSnapshot['name'],
+                                      email: userSnapshot['email'],
+                                      password: userSnapshot['password'],
+                                      phone: userSnapshot['phone'],
+                                      address: userSnapshot['address'],
+                                      gender: userSnapshot['gender'],
+                                      userId: userSnapshot['userId'],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else if (userSnapshot['password'] ==
+                                passwordController.text) {
+                              // Regular user found, navigate to Home
+                              User passUser = User(
+                                name: userSnapshot['name'],
+                                email: userSnapshot['email'],
+                                password: userSnapshot['password'],
+                                phone: userSnapshot['phone'],
+                                address: userSnapshot['address'],
+                                gender: userSnapshot['gender'],
+                                userId: userSnapshot['userId'],
+                              );
 
-      // Navigate to Home screen with the User object
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Home(passUser: passUser),
-        ),
-      );
-    } else {
-      // Password incorrect
-      print('Incorrect password');
-    }
-  } else {
-    // User not found
-    print('User not found');
-  }
-} catch (error) {
-  // Handle errors
-  print('Error fetching user data from Firestore: $error');
-}
-
-                  },
+                              // Navigate to Home screen with the User object
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      Home(passUser: passUser),
+                                ),
+                              );
+                            } else {
+                              // Password incorrect
+                              print('Incorrect password');
+                            }
+                          } else {
+                            // User not found
+                            print('User not found');
+                          }
+                        } catch (error) {
+                          // Handle errors
+                          print(
+                              'Error fetching user data from Firestore: $error');
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         primary: Color(0xFF444444),
                       ),
@@ -224,7 +227,9 @@ class _LoginState extends State<Login> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Register(firestore: FirebaseFirestore.instance,),
+                            builder: (context) => Register(
+                              firestore: FirebaseFirestore.instance,
+                            ),
                           ),
                         );
                       },

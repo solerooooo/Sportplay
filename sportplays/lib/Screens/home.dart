@@ -1,4 +1,3 @@
-//home.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'login.dart';
@@ -8,7 +7,8 @@ import '../models/user.dart';
 import 'booking.dart';
 import 'viewbookingdetails.dart';
 import 'qna.dart';
-import 'Availability.dart'; // Import the AvailabilityPage
+import 'contact.dart'; // Import the new ContactPage
+import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
   final User passUser;
@@ -31,8 +31,7 @@ class _HomeState extends State<Home> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ViewBookingPage(passUser: widget.passUser
-          ),
+          builder: (context) => ViewBookingPage(passUser: widget.passUser),
         ),
       );
     }
@@ -54,6 +53,15 @@ class _HomeState extends State<Home> {
         ),
       );
     }
+
+    if (index == 4) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ContactInfoApp(), // Navigate to ContactPage
+        ),
+      );
+    }
   }
 
   @override
@@ -61,12 +69,10 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: Text('HomePage'),
-        backgroundColor: Color(0xFFb364f3), // Make app bar transparent
-        elevation: 0, // Remove app bar shadow
+        backgroundColor: Color(0xFFb364f3),
+        elevation: 0,
       ),
-
-      backgroundColor:
-          Colors.transparent, // Make scaffold background transparent
+      backgroundColor: Color(0xFFE6DFF1),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -102,7 +108,10 @@ class _HomeState extends State<Home> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Register(firestore: FirebaseFirestore.instance,)),
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        Register(firestore: FirebaseFirestore.instance),
+                  ),
                 );
               },
             ),
@@ -112,7 +121,8 @@ class _HomeState extends State<Home> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Profile(passUser: widget.passUser)),
+                    builder: (context) => Profile(passUser: widget.passUser),
+                  ),
                 );
               },
             ),
@@ -122,9 +132,22 @@ class _HomeState extends State<Home> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => BookingPage(
-                          passUser: widget.passUser,
-                          selectedTime: 'YourSelectedTimeHere')),
+                    builder: (context) => BookingPage(
+                      passUser: widget.passUser,
+                      selectedTime: 'Choose your time slot',
+                    ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Contact'), // Add Contact to the drawer
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ContactInfoApp(),
+                  ),
                 );
               },
             ),
@@ -132,229 +155,277 @@ class _HomeState extends State<Home> {
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFFb364f3), Color(0xFFD6F454)],
-          ),
-        ),
         child: Center(
           child: Column(
             children: [
-              SizedBox(height: 10),
-              Text(
-                'Welcome, ${widget.passUser.getName()}!',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(height: 10),
               Container(
-                width: 400,
-                height: 200,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Today's News!",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Sports Hall Repair News Report',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Text(
-                            'We would like to inform you that the sports hall is currently undergoing essential repairs and maintenance. This initiative is part of our ongoing efforts to enhance the overall facility and ensure a safe and enjoyable environment for everyone.',
-                            style: TextStyle(
-                              fontSize: 15,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              // Containers for Ping Pong, Badminton, and Squash
-              Container(
-                width: 400, // Set the width to take the full available space
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                color: Color(0xFFE6DFF1),
+                child: Column(
                   children: [
-                    // Container for Ping Pong
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BookingPage(
-                                    passUser: widget.passUser,
-                                    selectedTime: 'YourSelectedTimeHere',
-                                  ) // Pass the sport type to AvailabilityPage
-                              ),
-                        );
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 100,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'images/pingpong.png',
-                                  height: 50,
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  'Ping Pong',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                    SizedBox(height: 40),
+                    Text(
+                      'Welcome, ${widget.passUser.getName()}!',
+                      style: GoogleFonts.notoSerif(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic,
+                        color: Colors.black,
                       ),
                     ),
-                    // Container for Badminton
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BookingPage(
-                                    passUser: widget.passUser,
-                                    selectedTime: 'YourSelectedTimeHere',
-                                  )
-// Pass the sport type to AvailabilityPage
+                    SizedBox(height: 40),
+                    StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('news')
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (!snapshot.hasData) {
+                          return CircularProgressIndicator();
+                        }
 
-                              ),
-                        );
-                      },
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 100,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'images/badminton.png',
-                                  height: 50,
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  'Badminton',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                        List<QueryDocumentSnapshot> newsList =
+                            snapshot.data!.docs;
+
+                        return SizedBox(
+                          height: 200,
+                          child: PageView.builder(
+                            itemCount: newsList.length,
+                            controller: PageController(viewportFraction: 0.87),
+                            itemBuilder: (context, index) {
+                              DateTime newsDate =
+                                  (newsList[index]['date'] as Timestamp)
+                                      .toDate();
+
+                              return Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 400,
+                                margin: EdgeInsets.symmetric(horizontal: 10.0),
+                                child: Card(
+                                  color: Colors.white,
+                                  elevation: 5.0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(16.0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              newsList[index]['title'],
+                                              style: TextStyle(
+                                                fontSize: 18.0,
+                                                fontWeight: FontWeight.bold,
+                                                decoration:
+                                                    TextDecoration.underline,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(height: 10),
+                                            Expanded(
+                                              child: SingleChildScrollView(
+                                                child: Text(
+                                                  newsList[index]['contents'],
+                                                  style:
+                                                      TextStyle(fontSize: 15.0),
+                                                  textAlign: TextAlign.justify,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(height: 10),
+                                            Text(
+                                              'Posted Date: ${newsDate.day}/${newsDate.month}/${newsDate.year}',
+                                              style: TextStyle(fontSize: 12.0),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Container for Squash
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BookingPage(
-                              passUser: widget.passUser,
-                              selectedTime: 'YourSelectedTimeHere',
-                              // Pass the sport type to AvailabilityPage
-                            ),
+                              );
+                            },
                           ),
                         );
                       },
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 100,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'images/squash.png',
-                                  height: 50,
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  'Squash',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
                   ],
                 ),
               ),
               SizedBox(height: 20),
               Container(
-                width: 600, // Set the width to take the full available space
+                width: 320,
+                height: 130,
+                decoration: BoxDecoration(
+                  color: Color(0xFF444444),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      'images/sporthall.png',
-                      height:
-                          180, // Set the height to match the other containers
-                      width: 600, // Set the width to match the other containers
+                    SizedBox(height: 10),
+                    Text(
+                      'Want to book a court?',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     SizedBox(height: 10),
+                    Container(
+                      width: 250, // Adjust the width as needed
+                      height: 60, // Adjust the height as needed
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BookingPage(
+                                passUser: widget.passUser,
+                                selectedTime: 'Book Here',
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xFFD6F454),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          shadowColor: Colors.black.withOpacity(0.5),
+                          elevation: 5,
+                        ),
+                        child: Text(
+                          'Go to Availability Page',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 40),
+                 Container(
+                width: 400,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildCircularButton(
+                      icon: Icons.home,
+                      label: 'Home',
+                      onPressed: () {
+                        // Navigate to Home
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Home(passUser: widget.passUser),
+                          ),
+                        );
+                      },
+                    ),
+                    _buildCircularButton(
+                      icon: Icons.add,
+                      label: 'Booking',
+                      onPressed: () {
+                        // Navigate to BookingPage
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookingPage(
+                              passUser: widget.passUser,
+                              selectedTime: 'Choose your time slot',
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    _buildCircularButton(
+                      icon: Icons.question_answer,
+                      label: 'Q&A',
+                      onPressed: () {
+                        // Navigate to QnAPage
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => QnAPage(passUser: widget.passUser),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 5),
+              Container(
+                width: 400,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildCircularButton(
+                      icon: Icons.contact_mail,
+                      label: 'Contact',
+                      onPressed: () {
+                        // Navigate to ContactPage
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ContactInfoApp(),
+                          ),
+                        );
+                      },
+                    ),
+                    _buildCircularButton(
+                      icon: Icons.person,
+                      label: 'Profile',
+                      onPressed: () {
+                        // Navigate to Profile
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Profile(passUser: widget.passUser),
+                          ),
+                        );
+                      },
+                    ),
+                    _buildCircularButton(
+                      icon: Icons.person,
+                      label: 'Booking details',
+                      onPressed: () {
+                        // Navigate to ViewBookingPage
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ViewBookingPage(passUser: widget.passUser),
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -362,33 +433,55 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
+    );
+  }
 
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        onTap: _onTabSelected,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black.withOpacity(0.5),
-        showUnselectedLabels: true,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+  Widget _buildCircularButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return Container(
+      width: 80,
+      height: 120,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFFb364f3), Color(0xFFD6F454)],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: MaterialButton(
+              onPressed: onPressed,
+              shape: CircleBorder(),
+              padding: EdgeInsets.all(10),
+              child: Icon(icon, size: 30, color: Colors.white),
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'View Booking',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.question_answer),
-            label: 'Q&A',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+          SizedBox(height: 5),
+          Text(
+            label,
+            style: TextStyle(fontSize: 10, color: Colors.black),
           ),
         ],
       ),
     );
   }
 }
+
+

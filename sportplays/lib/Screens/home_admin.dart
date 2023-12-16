@@ -8,6 +8,7 @@ import 'register.dart';
 import '../models/user.dart';
 import 'booking.dart';
 import 'qna.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomeAdmin extends StatefulWidget {
   final User passUser;
@@ -33,7 +34,7 @@ class _HomeAdminState extends State<HomeAdmin> {
         MaterialPageRoute(
           builder: (context) => BookingPage(
             passUser: widget.passUser,
-            selectedTime: 'YourSelectedTimeHere',
+            selectedTime: 'Choose your time slot',
           ),
         ),
       );
@@ -76,11 +77,19 @@ class _HomeAdminState extends State<HomeAdmin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('HomePage (ADMIN)'),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFFb364f3), Color(0xFFD6F454)],
+            ),
+          ),
+        ),
       ),
-      backgroundColor: Colors.transparent,
+      backgroundColor: Color(0xFFE6DFF1),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -143,7 +152,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                   MaterialPageRoute(
                     builder: (context) => BookingPage(
                       passUser: widget.passUser,
-                      selectedTime: 'YourSelectedTimeHere',
+                      selectedTime: 'Choose your time slot',
                     ),
                   ),
                 );
@@ -153,75 +162,101 @@ class _HomeAdminState extends State<HomeAdmin> {
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFFb364f3), Color(0xFFD6F454)],
-          ),
-        ),
         child: Center(
           child: Column(
             children: [
-              SizedBox(height: 10),
+              SizedBox(height: 30),
               Text(
-                'haa kerja, ${widget.passUser.getName()}!',
-                style: TextStyle(
+                'Welcome, ${widget.passUser.getName()}!',
+                  style: GoogleFonts.notoSerif(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                   fontStyle: FontStyle.italic,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 30),
               Container(
                 width: 600,
                 child: Column(
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Add News'),
-                              content: Column(
-                                children: [
-                                  TextField(
-                                    controller: _titleController,
-                                    decoration:
-                                        InputDecoration(labelText: 'Title'),
+                    Container(
+                      width: 100,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Column(children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Add News'),
+                                  content: Column(
+                                    children: [
+                                      TextField(
+                                        controller: _titleController,
+                                        decoration:
+                                            InputDecoration(labelText: 'Title'),
+                                      ),
+                                      TextField(
+                                        controller: _contentsController,
+                                        decoration: InputDecoration(
+                                            labelText: 'Contents'),
+                                      ),
+                                    ],
                                   ),
-                                  TextField(
-                                    controller: _contentsController,
-                                    decoration:
-                                        InputDecoration(labelText: 'Contents'),
-                                  ),
-                                ],
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('Cancel'),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    _addNews();
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('Add'),
-                                ),
-                              ],
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Cancel'),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        _addNews();
+                                        Navigator.of(context).pop();
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Color(0xFF444444),
+                                      ),
+                                      child: Text(
+                                        'Add',
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 10),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
                             );
                           },
-                        );
-                      },
-                      child: Text('Add News'),
+                          style: ElevatedButton.styleFrom(
+                            primary: Color(0xFF444444),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Icon(
+                                Icons.add,
+                                color: Color(0xFFC9DB7E),
+                                size: 20, // Adjust the size as needed
+                              ),
+                              Text(
+                                ' Add',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ]),
                     ),
-                    // Existing code...
-
+                    SizedBox(height: 10),
                     StreamBuilder(
                       stream: FirebaseFirestore.instance
                           .collection('news')
@@ -268,7 +303,8 @@ class _HomeAdminState extends State<HomeAdmin> {
                                               style: TextStyle(
                                                 fontSize: 18.0,
                                                 fontWeight: FontWeight.bold,
-                                                decoration: TextDecoration.underline,
+                                                decoration:
+                                                    TextDecoration.underline,
                                               ),
                                               textAlign: TextAlign.center,
                                             ),
@@ -321,82 +357,147 @@ class _HomeAdminState extends State<HomeAdmin> {
                         );
                       },
                     ),
-
                     SizedBox(height: 20),
                     Container(
-                      width: 300,
-                      height: 100,
+                      width: 320,
+                      height: 130,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Color(0xFF444444),
                         borderRadius: BorderRadius.all(Radius.circular(10)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
                       ),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(height: 10),
-                          Text(
-                            'Update the time slot',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 10),
+                            Text(
+                              'Update the time slot',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 10),
-                          ElevatedButton(
+                            SizedBox(height: 10),
+                            Container(
+                              width: 250, // Adjust the width as needed
+                              height: 60, // Adjust the height as needed
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          AvailabilityAdminPage(
+                                        passUser: widget.passUser,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  primary: Color(0xFFD6F454),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  shadowColor: Colors.black.withOpacity(0.5),
+                                  elevation: 5,
+                                ),
+                                child: Text(
+                                  'Go to Availability Page',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                          ]),
+                    ),
+                    SizedBox(height: 40),
+                    Container(
+                      width: 400,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildCircularButton(
+                            icon: Icons.home,
+                            label: 'Home',
                             onPressed: () {
+                              // Navigate to home_admin.dart
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => AvailabilityAdminPage(
+                                  builder: (context) =>
+                                      HomeAdmin(passUser: widget.passUser),
+                                ),
+                              );
+                            },
+                          ),
+                          _buildCircularButton(
+                            icon: Icons.add,
+                            label: 'Booking',
+                            onPressed: () {
+                              // Navigate to BookingPage
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BookingPage(
                                     passUser: widget.passUser,
+                                    selectedTime: 'Choose your time slot',
                                   ),
                                 ),
                               );
                             },
-                            child: Text('Go to Availability Page'),
+                          ),
+                          _buildCircularButton(
+                            icon: Icons.question_answer,
+                            label: 'Q&A',
+                            onPressed: () {
+                              // Navigate to QnAPage
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      QnAPage(passUser: widget.passUser),
+                                ),
+                              );
+                            },
+                          ),
+                          _buildCircularButton(
+                            icon: Icons.person,
+                            label: 'Profile',
+                            onPressed: () {
+                              // Navigate to Profile
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      Profile(passUser: widget.passUser),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 20),
-                    Image.asset(
-                      'images/sporthall.png',
-                      height: 180,
-                      width: 600,
-                    ),
-                    SizedBox(height: 10),
                   ],
                 ),
               ),
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        onTap: _onTabSelected,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black.withOpacity(0.5),
-        showUnselectedLabels: true,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Booking',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.question_answer),
-            label: 'Q&A',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
       ),
     );
   }
@@ -406,5 +507,52 @@ class _HomeAdminState extends State<HomeAdmin> {
         FirebaseFirestore.instance.collection('news');
 
     await newsCollection.doc(documentId).delete();
+  }
+
+  Widget _buildCircularButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return Container(
+      width: 80,
+      height: 120,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFFb364f3), Color(0xFFD6F454)],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: MaterialButton(
+              onPressed: onPressed,
+              shape: CircleBorder(),
+              padding: EdgeInsets.all(10),
+              child: Icon(icon, size: 30, color: Colors.white),
+            ),
+          ),
+          SizedBox(height: 5),
+          Text(
+            label,
+            style: TextStyle(fontSize: 10, color: Colors.black),
+          ),
+        ],
+      ),
+    );
   }
 }

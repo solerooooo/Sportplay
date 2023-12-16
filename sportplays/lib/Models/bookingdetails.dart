@@ -5,7 +5,6 @@ class Booking {
   final DateTime startTime;
   final DateTime endTime;
 
-
   Booking(this.userName, this.facility, this.startTime, this.endTime);
 
    static String selectedTime = ''; // Make it global

@@ -6,6 +6,7 @@ import 'profile.dart';
 import 'qna.dart';
 import '../models/user.dart';
 
+
 class AvailabilityAdminPage extends StatefulWidget {
   final User passUser;
 
@@ -66,7 +67,7 @@ class _AvailabilityAdminPageState extends State<AvailabilityAdminPage> {
         MaterialPageRoute(
           builder: (context) => BookingPage(
             passUser: widget.passUser,
-            selectedTime: 'YourSelectedTimeHere',
+            selectedTime: 'Choose you time slot',
           ),
         ),
       );
