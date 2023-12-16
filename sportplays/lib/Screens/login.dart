@@ -5,6 +5,7 @@ import 'package:sportplays/Screens/home_admin.dart';
 import 'package:sportplays/Screens/register.dart';
 import 'package:sportplays/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Login extends StatefulWidget {
   Login({Key? key});
@@ -17,12 +18,6 @@ class _LoginState extends State<Login> {
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
 
-  // Define text styles to reuse
-  final TextStyle headerTextStyle = TextStyle(
-    color: Colors.lightGreenAccent,
-    fontSize: 30,
-    fontWeight: FontWeight.bold,
-  );
 
   final TextStyle labelTextStyle = TextStyle(
     fontSize: 15,
@@ -53,9 +48,12 @@ class _LoginState extends State<Login> {
                 children: [
                   SizedBox(height: 20),
                   Text(
-                    'SOLEROOOOO',
-                    style:
-                        headerTextStyle.copyWith(fontStyle: FontStyle.italic),
+                    'SPORTPLAY',
+                    style: GoogleFonts.bungee(
+                        color: Color(0xFFD6F454),
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20),

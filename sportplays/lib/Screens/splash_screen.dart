@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sportplays/Screens/login.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SplashScreen extends StatefulWidget {
    SplashScreen({Key? key}) : super(key: key);
@@ -55,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen>
                  SizedBox(height: 20),
                  Text(
                   'SOLEROOOOO',
-                  style: TextStyle(
+                  style: GoogleFonts.macondoSwashCaps(
                     fontStyle: FontStyle.italic,
                     color: Colors.white,
                   ),

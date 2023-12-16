@@ -92,16 +92,14 @@ class _BookingPageState extends State<BookingPage> {
         backgroundColor: const Color(0xFFD6F454),
         actions: [
           IconButton(
-            onPressed: () {
-              // Add functionality for profile action
-            },
+            onPressed: () {},
             icon: const Icon(Icons.account_circle),
           ),
         ],
       ),
-      body: SingleChildScrollView(
+     body: SingleChildScrollView(
         child: Container(
-          color: const Color(0xFFb364f3),
+          color: Color(0xFFE6DFF1),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -115,68 +113,20 @@ class _BookingPageState extends State<BookingPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          selectedActivity = 'Ping Pong';
-                        });
-                      },
-                      style: selectedActivity == 'Ping Pong'
-                          ? ElevatedButton.styleFrom(
-                              backgroundColor: Colors.lightGreenAccent)
-                          : null,
-                      child: Column(
-                        children: [
-                          Image.asset(
-                            'images/pingpong.png', // Provide the correct path
-                            height: 50,
-                          ),
-                          const SizedBox(height: 5),
-                          const Text('Ping Pong'),
-                        ],
-                      ),
+                    _buildActivityButton(
+                      activityName: 'Ping Pong',
+                      imagePath: 'images/pingpong.png',
+                      label: 'Ping Pong',
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          selectedActivity = 'Badminton';
-                        });
-                      },
-                      style: selectedActivity == 'Badminton'
-                          ? ElevatedButton.styleFrom(
-                              backgroundColor: Colors.lightGreenAccent)
-                          : null,
-                      child: Column(
-                        children: [
-                          Image.asset(
-                            'images/badminton.png', // Provide the correct path
-                            height: 50,
-                          ),
-                          const SizedBox(height: 5),
-                          const Text('Badminton'),
-                        ],
-                      ),
+                    _buildActivityButton(
+                      activityName: 'Badminton',
+                      imagePath: 'images/badminton.png',
+                      label: 'Badminton',
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          selectedActivity = 'Squash';
-                        });
-                      },
-                      style: selectedActivity == 'Squash'
-                          ? ElevatedButton.styleFrom(
-                              backgroundColor: Colors.lightGreenAccent)
-                          : null,
-                      child: Column(
-                        children: [
-                          Image.asset(
-                            'images/squash.png', // Provide the correct path
-                            height: 50,
-                          ),
-                          const SizedBox(height: 5),
-                          const Text('Squash'),
-                        ],
-                      ),
+                    _buildActivityButton(
+                      activityName: 'Squash',
+                      imagePath: 'images/squash.png',
+                      label: 'Squash',
                     ),
                   ],
                 ),
@@ -201,7 +151,7 @@ class _BookingPageState extends State<BookingPage> {
                   child: Text(
                     widget.selectedTime.isEmpty
                         ? 'Choose your time slot'
-                        :  '${widget.selectedTime}',
+                        : '${widget.selectedTime}',
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -358,6 +308,41 @@ class _BookingPageState extends State<BookingPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildActivityButton({
+    required String activityName,
+    required String imagePath,
+    required String label,
+  }) {
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              selectedActivity = activityName;
+            });
+          },
+          style: selectedActivity == activityName
+              ? ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightGreenAccent,
+                )
+              : null,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Image.asset(
+              imagePath,
+              height: 30,
+            ),
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          label,
+          style: TextStyle(fontSize: 12, color: Colors.black),
+        ),
+      ],
     );
   }
 }

@@ -83,130 +83,130 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
   }
 
   void _onTimeSelected(String selectedTime) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => BookingPage(
-        passUser: widget.passUser,
-        selectedTime: selectedTime,
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BookingPage(
+          passUser: widget.passUser,
+          selectedTime: selectedTime,
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFb364f3),
+      backgroundColor: Color(0xFFE6DFF1),
       appBar: AppBar(
         title: const Text('Court Availability'),
-        backgroundColor: Color(0xFFD6F454),
+        backgroundColor:const Color(0xFFD6F454),
       ),
       body: SingleChildScrollView(
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(height: 10),
-              const Text(
-                'Court Availability',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
-                  color: Colors.white,
-                ),
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const SizedBox(height: 30),
+            const Text(
+              'Court Availability',
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic,
+                color: Colors.black,
               ),
-              const SizedBox(height: 20),
-              Container(
-                width: 200,
-                height: 100,
-                decoration: const BoxDecoration(
-                  color: Colors.lightGreenAccent,
-                  borderRadius: BorderRadius.all(Radius.circular(50)),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '${widget.sport}',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+            ),
+            const SizedBox(height: 30),
+            Container(
+              width: 250,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Color(0xFF444444),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: Offset(0, 3),
                   ),
-                ),
+                ],
               ),
-              const SizedBox(height: 10),
-              Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.access_time),
-                            SizedBox(width: 8),
-                            Text(
-                              'Time',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      for (int i = 0; i < availableTimes.length; i += 2)
-                        Column(
-                          children: [
-                            SizedBox(
-                              height: 75,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () =>
-                                        _onTimeSelected(availableTimes[i]),
-                                    child:
-                                        _buildTimeContainer(availableTimes[i]),
-                                  ),
-                                  if (i + 1 < availableTimes.length)
-                                    GestureDetector(
-                                      onTap: () => _onTimeSelected(
-                                          availableTimes[i + 1]),
-                                      child: _buildTimeContainer(
-                                          availableTimes[i + 1]),
-                                    ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                          ],
-                        ),
-                    ],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 10),
+                  Text(
+                    '${widget.sport}',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
+          
+          const SizedBox(height: 10),
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.access_time),
+                        SizedBox(width: 8),
+                        Text(
+                          'Time',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  for (int i = 0; i < availableTimes.length; i += 2)
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 75,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              GestureDetector(
+                                onTap: () => _onTimeSelected(availableTimes[i]),
+                                child: _buildTimeContainer(availableTimes[i]),
+                              ),
+                              if (i + 1 < availableTimes.length)
+                                GestureDetector(
+                                  onTap: () =>
+                                      _onTimeSelected(availableTimes[i + 1]),
+                                  child: _buildTimeContainer(
+                                      availableTimes[i + 1]),
+                                ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        ]),
+      ),)
     );
   }
 

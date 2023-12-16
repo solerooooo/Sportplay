@@ -295,7 +295,7 @@ class _HomeState extends State<Home> {
                             MaterialPageRoute(
                               builder: (context) => BookingPage(
                                 passUser: widget.passUser,
-                                selectedTime: 'Book Here',
+                                selectedTime: 'Choose your time slot',
                               ),
                             ),
                           );
@@ -309,7 +309,7 @@ class _HomeState extends State<Home> {
                           elevation: 5,
                         ),
                         child: Text(
-                          'Go to Availability Page',
+                          'Book Now',
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 15,
