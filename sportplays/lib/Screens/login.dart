@@ -1,4 +1,5 @@
-// ignore_for_file: deprecated_member_use
+//login.dart
+//ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:sportplays/Screens/home.dart';
@@ -14,9 +15,19 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final _formKey = GlobalKey<FormState>();
+
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   // Define text styles to reuse
   final TextStyle headerTextStyle = TextStyle(
@@ -41,7 +52,7 @@ class _LoginState extends State<Login> {
         height: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("images/background.jpg"), //set image file name here
+            image: AssetImage("images/background.jpg"),
             fit: BoxFit.cover,
           ),
         ),
@@ -49,178 +60,182 @@ class _LoginState extends State<Login> {
           child: Padding(
             padding: EdgeInsets.all(40),
             child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(height: 20),
-                  Text(
-                  'SOLEROOOOO',
-                    style: headerTextStyle.copyWith(fontStyle: FontStyle.italic),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 20),
-                  Image.asset(
-                    'images/logo.png',
-                    height: 300,
-                  ),
-                  SizedBox(height: 20),
-                  TextField(
-                    controller: nameController,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.person),
-                      label: Text('Name', style: labelTextStyle),
-                      border: OutlineInputBorder(),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    SizedBox(height: 20),
+                    Text(
+                      'SOLEROOOOO',
+                      style: headerTextStyle.copyWith(fontStyle: FontStyle.italic),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  TextField(
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.lock),
-                      label: Text('Password', style: labelTextStyle),
-                      border: OutlineInputBorder(),
+                    SizedBox(height: 20),
+                    Image.asset(
+                      'images/logo.png',
+                      height: 300,
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  SizedBox(
-                    width: 300,
-                    height: 40,
-                    child: ElevatedButton(
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: nameController,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.person),
+                        label: Text('Username', style: labelTextStyle),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your username';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.lock),
+                        label: Text('Password', style: labelTextStyle),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+                      return null;
+                    },
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
                       onPressed: () async {
-                        // Retrieve user data from Firestore
-                        try {
-                          DocumentSnapshot userSnapshot = await FirebaseFirestore
-                              .instance
-                              .collection('UserData')
-                              .doc(nameController.text)
-                              .get();
+                        if (_formKey.currentState!.validate()) {
+                          try {
+                            DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+                                .collection('UserData')
+                                .doc(nameController.text)
+                                .get();
 
-                          if (userSnapshot.exists) {
-                            // User found in Firestore, create User object
-                            User passUser = User(
-                              name: userSnapshot['name'],
-                              email: userSnapshot['email'],
-                              password: userSnapshot['password'],
-                              phone: userSnapshot['phone'],
-                              address: userSnapshot['address'],
-                              gender: userSnapshot['gender'],
-                              userId: userSnapshot['userId'],
-                            );
+                            if (userSnapshot.exists) {
+                              User passUser = User(
+                                name: userSnapshot['name'],
+                                email: userSnapshot['email'],
+                                password: userSnapshot['password'],
+                                phone: userSnapshot['phone'],
+                                address: userSnapshot['address'],
+                                gender: userSnapshot['gender'],
+                                userId: userSnapshot['userId'],
+                              );
 
-                            // Navigate to Home screen with the User object
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Home(passUser: passUser),
-                              ),
-                            );
-                          } else {
-                            // User not found in Firestore, handle accordingly
-                            // For now, you can display a message or take appropriate action
-                            print('User not found');
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Home(passUser: passUser),
+                                ),
+                              );
+                            } else {
+                              print('User not found');
+                            }
+                          } catch (error) {
+                            print('Error fetching user data from Firestore: $error');
                           }
-                        } catch (error) {
-                          print(
-                              'Error fetching user data from Firestore: $error');
                         }
                       },
                       style: ElevatedButton.styleFrom(
                         primary: Color(0xFF444444),
                       ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Log in',
-                    style: buttonTextStlye.copyWith(color: Colors.white),
-                  ),
-                  Icon(
-                    Icons.arrow_forward,
-                    color: Color(0xFFC9DB7E),
-                  ),
-                ],
-              ),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  RichText(
-                  text: TextSpan(
-                    text: "Forgot password? ",
-                    style: labelTextStyle.copyWith(color: Colors.black),
-                    children: [
-                      TextSpan(
-                        text: "Reset password",
-                        style: labelTextStyle.copyWith(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                  SizedBox(
-                  width: 300,
-                  height: 40,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          color: Colors.black,
-                          height: 40,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          'OR',
-                          style: labelTextStyle.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Log in',
+                            style: buttonTextStlye.copyWith(color: Colors.white),
                           ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          color: Colors.black,
-                          height: 40,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                  SizedBox(height: 10),
-                  SizedBox(
-                    width: 300,
-                    height: 40,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Register(),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: Color(0xFFC9DB7E),
                           ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: Color(0xFF444444),
+                        ],
                       ),
-               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Register here',
-                    style: buttonTextStlye.copyWith(color: Colors.white),
-                  ),
-                  Icon(
-                    Icons.arrow_forward,
-                    color: Color(0xFFC9DB7E),
-                  ),
-                ],
-              ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 20),
+                    RichText(
+                      text: TextSpan(
+                        text: "Forgot password? ",
+                        style: labelTextStyle.copyWith(color: Colors.black),
+                        children: [
+                          TextSpan(
+                            text: "Reset password",
+                            style: labelTextStyle.copyWith(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 300,
+                      height: 40,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              color: Colors.black,
+                              height: 40,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: Text(
+                              'OR',
+                              style: labelTextStyle.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Divider(
+                              color: Colors.black,
+                              height: 40,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    SizedBox(
+                      width: 300,
+                      height: 40,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Register(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xFF444444),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Register here',
+                              style: buttonTextStlye.copyWith(color: Colors.white),
+                            ),
+                            Icon(
+                              Icons.arrow_forward,
+                              color: Color(0xFFC9DB7E),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
