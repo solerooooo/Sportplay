@@ -1,10 +1,11 @@
 // profile.dart
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../models/user.dart';
 import 'setting.dart';
 
 class Profile extends StatefulWidget {
-  final User passUser;
+   final User passUser;
 
   const Profile({Key? key, required this.passUser}) : super(key: key);
 
@@ -41,7 +42,6 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFb364f3),
       appBar: AppBar(
         backgroundColor: Colors.lightGreenAccent,
         title: const Text(
@@ -54,11 +54,10 @@ class _ProfileState extends State<Profile> {
                 builder: (context) => Setting(
                   passUser: passUser,
                   onUpdateUser: (User updatedUser) {
-                    // Update the profile page with the new user data
                     setState(() {
                       passUser = updatedUser;
                     });
-                  },
+                  }, firestore: FirebaseFirestore.instance,
                 ),
               );
               Navigator.push(context, route);
@@ -67,7 +66,17 @@ class _ProfileState extends State<Profile> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("images/background.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+
+        child: SingleChildScrollView(
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -107,7 +116,7 @@ class _ProfileState extends State<Profile> {
                 Container(
                   width: 300,
                   height: 300,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
@@ -159,8 +168,10 @@ class _ProfileState extends State<Profile> {
           ),
         ),
       ),
+    ),
     );
   }
+  
 }
 
 class NotiSwitch extends StatefulWidget {
@@ -201,4 +212,3 @@ class _NotiSwitchState extends State<NotiSwitch> {
     );
   }
 }
-

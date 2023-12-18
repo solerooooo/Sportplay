@@ -1,88 +1,146 @@
+//viewbookingdetails.dart
 import 'package:flutter/material.dart';
 import 'package:sportplays/Models/bookingdetails.dart';
 import 'package:sportplays/Screens/editbookingdetails.dart';
-
-void main() {
-  runApp(ViewBookingApp());
-}
-
-class ViewBookingApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'View Booking Details',
-      home: ViewBookingPage(),
-    );
-  }
-}
+import 'home.dart';
+import '../models/user.dart';
+import 'qna.dart';
+import 'profile.dart';
 
 class ViewBookingPage extends StatefulWidget {
+  final User passUser;
+
+  const ViewBookingPage({Key? key, required this.passUser}) : super(key: key);
   @override
   _ViewBookingPageState createState() => _ViewBookingPageState();
 }
 
 class _ViewBookingPageState extends State<ViewBookingPage> {
+  int _selectedIndex = 0;
+
   List<Booking> bookings = [
-    Booking('John Doe', 'Squash Court', DateTime(2023, 11, 1, 14, 30),
+    Booking('Ping Pong', '', DateTime(2023, 11, 1, 14, 30),
         DateTime(2023, 11, 1, 16, 30)),
-    Booking('Jane Smith', 'Badminton', DateTime(2023, 11, 2, 10, 0),
+    Booking('Badminton', '', DateTime(2023, 11, 2, 10, 0),
         DateTime(2023, 11, 2, 12, 0)),
     // Add more booking instances as needed
   ];
 
+void _onTabSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    if (index == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Home(passUser: widget.passUser),
+        ),
+      );
+    }
+
+    if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => QnAPage(passUser: widget.passUser),
+        ),
+      );
+    }
+
+    if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Profile(passUser: widget.passUser,),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('View Booking Details'),
-        backgroundColor: Colors.purple,
-      ),
-      body: Column(
-        children: [
-          _buildBookingList("Upcoming", _getUpcomingBookings()),
-          _buildBookingList("Past", _getPastBookings()),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('View Booking Details'),
+              backgroundColor: Colors.lightGreenAccent,
+          bottom: TabBar(
+            tabs: [
+              Tab(text: 'Upcoming'),
+              Tab(text: 'Past'),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            _buildTabContent(_getUpcomingBookings()),
+            _buildTabContent(_getPastBookings()),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _selectedIndex,
+        onTap: _onTabSelected,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black.withOpacity(0.5),
+        showUnselectedLabels: true,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Booking',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.question_answer),
+            label: 'Q&A',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
         ],
+      ),
       ),
     );
   }
 
-  Widget _buildBookingList(String title, List<Booking> filteredBookings) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              title,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: filteredBookings.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text('Booking by ${filteredBookings[index].userName}'),
-                  subtitle: Text(
-                      'Facility: ${filteredBookings[index].facility}\nTime: ${filteredBookings[index].startTime} - ${filteredBookings[index].endTime}'),
-                  trailing: IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () {
-                      _redirectToEditPage(filteredBookings[index]);
-                    },
-                  ),
-                  onTap: () {
-                    _showBookingDetails(filteredBookings[index]);
+  Widget _buildTabContent(List<Booking> filteredBookings) {
+  return Container(
+    color: const Color(0xFFb364f3), // Set the desired background color
+    child: Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            itemCount: filteredBookings.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text('Activity ${filteredBookings[index].userName}'),
+                subtitle: Text(
+                  'Time: ${filteredBookings[index].startTime} - ${filteredBookings[index].endTime}',
+                ),
+                trailing: IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    _redirectToEditPage(filteredBookings[index]);
                   },
-                );
-              },
-            ),
+                ),
+                onTap: () {
+                  _showBookingDetails(filteredBookings[index]);
+                },
+              );
+            },
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 
   List<Booking> _getUpcomingBookings() {
     final now = DateTime.now();
@@ -104,8 +162,7 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('User: ${booking.userName}'),
-              Text('Facility: ${booking.facility}'),
+              Text('Activity: ${booking.userName}'),
               Text('Start Time: ${booking.startTime}'),
               Text('End Time: ${booking.endTime}'),
             ],
@@ -132,3 +189,5 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
     );
   }
 }
+
+

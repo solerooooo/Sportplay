@@ -1,3 +1,4 @@
+//qna.dart
 import 'package:flutter/material.dart';
 import 'home.dart';
 import '../models/user.dart';
@@ -58,7 +59,7 @@ class _QnAPageState extends State<QnAPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ViewBookingPage(
+          builder: (context) => ViewBookingPage(passUser: widget.passUser
           ),
         ),
       );

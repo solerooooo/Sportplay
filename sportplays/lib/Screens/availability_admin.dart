@@ -5,16 +5,23 @@ import 'home.dart';
 import 'profile.dart';
 import 'qna.dart';
 import '../models/user.dart';
+
+
 class AvailabilityAdminPage extends StatefulWidget {
   final User passUser;
-  final String sport;
-  const AvailabilityAdminPage(
-      {Key? key, required this.passUser, required this.sport})
+
+  const AvailabilityAdminPage({Key? key, required this.passUser})
       : super(key: key);
   @override
   _AvailabilityAdminPageState createState() => _AvailabilityAdminPageState();
 }
+
 class _AvailabilityAdminPageState extends State<AvailabilityAdminPage> {
+
+  int pingPongCourts = 0;
+  int badmintonCourts = 0;
+  int squashCourts = 0;
+
   List<String> availableTimes = [
     '8AM-9AM',
     '9AM-10AM',
@@ -31,15 +38,20 @@ class _AvailabilityAdminPageState extends State<AvailabilityAdminPage> {
     '8PM-9PM',
     '9PM-10PM',
   ];
+  Map<String, int> selectedCourts = {};
   Set<String> selectedTimes = Set();
   // Add Firestore instance
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-   // Function to update availability in Firestore
-  void _updateAvailability(String time, bool isAvailable) {
+  // Function to update availability in Firestore
+  void _updateAvailability(
+      String time, int pingPongCourts, int badmintonCourts, int squashCourts) {
     _firestore.collection('availability').doc(time).set({
-      'availability': isAvailable,
+      'pingPongCourts': pingPongCourts,
+      'badmintonCourts': badmintonCourts,
+      'squashCourts': squashCourts,
     });
   }
+
   void _onTabSelected(int index) {
     if (index == 0) {
       Navigator.push(
@@ -55,7 +67,7 @@ class _AvailabilityAdminPageState extends State<AvailabilityAdminPage> {
         MaterialPageRoute(
           builder: (context) => BookingPage(
             passUser: widget.passUser,
-            selectedTime: 'YourSelectedTimeHere',
+            selectedTime: 'Choose you time slot',
           ),
         ),
       );
@@ -77,17 +89,84 @@ class _AvailabilityAdminPageState extends State<AvailabilityAdminPage> {
       );
     }
   }
+
   void _onTimeSelected(String selectedTime) {
-    setState(() {
-      if (selectedTimes.contains(selectedTime)) {
-        selectedTimes.remove(selectedTime);
-        _updateAvailability(selectedTime, true); // Set as available
-      } else {
-        selectedTimes.add(selectedTime);
-        _updateAvailability(selectedTime, false); // Set as unavailable
-      }
-    });
+    int currentPingPongCourts = selectedCourts['pingPong_$selectedTime'] ?? 0;
+    int currentBadmintonCourts = selectedCourts['badminton_$selectedTime'] ?? 0;
+    int currentSquashCourts = selectedCourts['squash_$selectedTime'] ?? 0;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        int selectedPingPongCourts = currentPingPongCourts;
+        int selectedBadmintonCourts = currentBadmintonCourts;
+        int selectedSquashCourts = currentSquashCourts;
+
+        return AlertDialog(
+          title: Text('Select number of courts for $selectedTime'),
+          content: Column(
+            children: [
+              _buildCourtDropdown(
+                'Ping Pong Courts',
+                selectedPingPongCourts,
+                (value) {
+                  setState(() {
+                    selectedPingPongCourts = value!;
+                  });
+                },
+              ),
+              _buildCourtDropdown(
+                'Badminton Courts',
+                selectedBadmintonCourts,
+                (value) {
+                  setState(() {
+                    selectedBadmintonCourts = value!;
+                  });
+                },
+              ),
+              _buildCourtDropdown(
+                'Squash Courts',
+                selectedSquashCourts,
+                (value) {
+                  setState(() {
+                    selectedSquashCourts = value!;
+                  });
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  selectedCourts['pingPong_$selectedTime'] =
+                      selectedPingPongCourts;
+                  selectedCourts['badminton_$selectedTime'] =
+                      selectedBadmintonCourts;
+                  selectedCourts['squash_$selectedTime'] = selectedSquashCourts;
+                  _updateAvailability(
+                    selectedTime,
+                    selectedPingPongCourts,
+                    selectedBadmintonCourts,
+                    selectedSquashCourts,
+                  );
+                  Navigator.of(context).pop();
+                });
+              },
+              child: Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -125,7 +204,7 @@ class _AvailabilityAdminPageState extends State<AvailabilityAdminPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        '${widget.sport}',
+                        'Update Court Availability',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -138,54 +217,57 @@ class _AvailabilityAdminPageState extends State<AvailabilityAdminPage> {
               const SizedBox(height: 10),
               Container(
                 width: 400,
-                height: 800,
+                height: 550,
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.access_time),
-                            SizedBox(width: 8),
-                            Text(
-                              'Update Time Availability',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                  child: SingleChildScrollView(
+                    // Wrap with SingleChildScrollView
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.access_time),
+                              SizedBox(width: 8),
+                              Text(
+                                'Update Time Availability',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      for (int i = 0; i < availableTimes.length; i += 2)
-                        Column(
-                          children: [
-                            SizedBox(
-                              height: 90, // Changed height to 100
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  _buildTimeContainer(availableTimes[i], i),
-                                  if (i + 1 < availableTimes.length)
-                                    _buildTimeContainer(
-                                        availableTimes[i + 1], i + 1),
-                                ],
+                        const SizedBox(height: 10),
+                        for (int i = 0; i < availableTimes.length; i += 2)
+                          Column(
+                            children: [
+                              SizedBox(
+                                height: 110, // Changed height to 100
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    _buildTimeContainer(availableTimes[i], i),
+                                    if (i + 1 < availableTimes.length)
+                                      _buildTimeContainer(
+                                          availableTimes[i + 1], i + 1),
+                                  ],
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 10),
-                          ],
-                        ),
-                    ],
+                              const SizedBox(height: 10),
+                            ],
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -195,28 +277,104 @@ class _AvailabilityAdminPageState extends State<AvailabilityAdminPage> {
       ),
     );
   }
-   Widget _buildTimeContainer(String time, int index) {
-    return Container(
-      width: 155,
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Column(
-        children: [
-          Center(
-            child: Text(
-              time,
-              style: const TextStyle(fontSize: 16),
+
+  Widget _buildTimeContainer(String time, int index) {
+    return StreamBuilder<DocumentSnapshot>(
+      stream: _firestore.collection('availability').doc(time).snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || !snapshot.data!.exists) {
+          return CircularProgressIndicator();
+        }
+
+        // Ensure that the fields exist in the document
+        pingPongCourts = snapshot.data!['pingPongCourts'] ?? 0;
+        badmintonCourts = snapshot.data!['badmintonCourts'] ?? 0;
+        squashCourts = snapshot.data!['squashCourts'] ?? 0;
+
+        return GestureDetector(
+          onTap: () {
+            _onTimeSelected(time);
+          },
+          child: Container(
+            width: 155,
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Column(
+              children: [
+                Center(
+                  child: Text(
+                    time,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text('Ping Pong: $pingPongCourts'),
+                Text('Badminton: $badmintonCourts'),
+                Text('Squash: $squashCourts'),
+              ],
             ),
           ),
-          Switch(
-            value: selectedTimes.contains(time),
-            onChanged: (value) => _onTimeSelected(time),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
+
+Widget _buildCourtDropdown(
+    String label, int value, void Function(int?) onChanged) {
+  return FormField<int>(
+    builder: (FormFieldState<int> state) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(fontSize: 16),
+          ),
+          Row(
+            children: [
+              Text(
+                'Current $label: ${getCourtsByLabel(label)}',
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+            ],
+          ),
+          DropdownButtonFormField<int>(
+            value: value,
+            onChanged: (newValue) {
+              setState(() {
+                value = newValue!;
+              });
+              onChanged(newValue);
+            },
+            items: List.generate(4, (index) => index)
+                .map((int value) => DropdownMenuItem<int>(
+                      value: value,
+                      child: Text(value.toString()),
+                    ))
+                .toList(),
+          ),
+        ],
+      );
+    },
+  );
 }
+
+  int getCourtsByLabel(String label) {
+    switch (label) {
+      case 'Ping Pong Courts':
+        return pingPongCourts;
+      case 'Badminton Courts':
+        return badmintonCourts;
+      case 'Squash Courts':
+        return squashCourts;
+      default:
+        return 0;
+    }
+  }
+}
+
+
