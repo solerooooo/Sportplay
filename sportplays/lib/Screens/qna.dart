@@ -5,18 +5,6 @@ import '../models/user.dart';
 import 'viewbookingdetails.dart';
 import 'profile.dart';
 
-class QnASystem extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Insights',
-      theme: ThemeData(
-        primaryColor:
-            const Color(0xFFb364f3), // Set the primary color to purple
-      ),
-    );
-  }
-}
 
 class QnAPage extends StatefulWidget {
   final User passUser;
