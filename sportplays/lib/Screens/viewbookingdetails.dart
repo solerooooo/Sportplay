@@ -69,8 +69,8 @@ void _onTabSelected(int index) {
               backgroundColor: Colors.lightGreenAccent,
           bottom: TabBar(
             tabs: [
-              Tab(text: 'Upcoming'),
               Tab(text: 'Past'),
+              Tab(text: 'Upcoming'),
             ],
           ),
         ),
@@ -142,15 +142,16 @@ void _onTabSelected(int index) {
   );
 }
 
-  List<Booking> _getUpcomingBookings() {
-    final now = DateTime.now();
-    return bookings.where((booking) => booking.startTime.isAfter(now)).toList();
-  }
+List<Booking> _getUpcomingBookings() {
+  final now = DateTime.now();
+  return bookings.where((booking) => booking.startTime.isAfter(now) || booking.endTime.isAfter(now)).toList();
+}
 
-  List<Booking> _getPastBookings() {
-    final now = DateTime.now();
-    return bookings.where((booking) => booking.endTime.isBefore(now)).toList();
-  }
+List<Booking> _getPastBookings() {
+  final now = DateTime.now();
+  return bookings.where((booking) => booking.endTime.isBefore(now) && booking.startTime.isBefore(now)).toList();
+}
+
 
   void _showBookingDetails(Booking booking) {
     showDialog(
@@ -163,7 +164,7 @@ void _onTabSelected(int index) {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text('Activity: ${booking.userName}'),
-              Text('Start Time: ${booking.startTime}'),
+              Text('Time Slot: ${booking.startTime}'),
               Text('End Time: ${booking.endTime}'),
             ],
           ),
