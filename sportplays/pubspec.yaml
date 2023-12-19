@@ -31,6 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
   date_time_picker: ^2.0.0
+  flutter_local_notifications: ^9.1.3
+
 
 
 

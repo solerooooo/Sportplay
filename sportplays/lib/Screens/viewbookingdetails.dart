@@ -185,7 +185,7 @@ List<Booking> _getPastBookings() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditBookingDetailsPage(booking: booking),
+        builder: (context) => EditBookingDetailsPage(passUser: widget.passUser, selectedTime: ''),
       ),
     );
   }
