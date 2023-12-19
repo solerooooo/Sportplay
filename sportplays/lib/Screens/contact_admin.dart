@@ -46,16 +46,13 @@ class _ContactAdminState extends State<ContactAdmin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Color(0xFFE6DFF1),
       appBar: AppBar(
+        backgroundColor: Color(0xFFb364f3), 
+        elevation: 0,
         title: Text('Admin Contacts'),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("images/background.jpg"), 
-            fit: BoxFit.cover,
-          ),
-        ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(

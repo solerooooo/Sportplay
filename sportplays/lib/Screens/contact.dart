@@ -23,12 +23,7 @@ class _ContactInfoAppState extends State<ContactInfoApp> {
       ),
       backgroundColor: Color(0xFFE6DFF1),
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("images/background.jpg"), 
-            fit: BoxFit.cover,
-          ),
-        ),
+        
         child: Center(
           child: Column(
             children: [
