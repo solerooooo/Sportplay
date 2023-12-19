@@ -184,7 +184,7 @@ void _onTabSelected(int index) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditBookingDetailsPage(booking: booking),
+        builder: (context) => EditBookingDetailsPage(passUser: widget.passUser, selectedTime: '', booking: booking,),
       ),
     );
   }
