@@ -1,6 +1,5 @@
 // user.dart
 
-
 class User {
   String name;
   String email;
@@ -10,14 +9,16 @@ class User {
   String gender;
   String userId;
 
+
   User({
     required this.name,
     required this.email,
     required this.password,
     required this.phone,
     required this.address,
-    required this.userId, 
+    required this.userId,
     required this.gender,
+
   });
 
   // Getters
