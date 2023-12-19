@@ -68,9 +68,19 @@ class _BookingPageState extends State<BookingPage> {
 
       // Use the user's name as the document ID
       String userName = widget.passUser.getName();
-      DocumentReference userBookingRef = bookings.doc(userName);
 
-      await userBookingRef.set({
+      // Get the number of existing bookings for the user
+      QuerySnapshot userBookingsSnapshot =
+          await bookings.doc(userName).collection('userBookings').get();
+      int numberOfBookings = userBookingsSnapshot.docs.length + 1;
+
+      // Use the sequential number as the document ID
+      DocumentReference bookingRef = bookings
+          .doc(userName)
+          .collection('userBookings')
+          .doc(numberOfBookings.toString());
+
+      await bookingRef.set({
         'selectedActivity': selectedActivity,
         'playerQuantity': playerQuantity,
         'selectedPaymentMethod': selectedPaymentMethod,
@@ -97,7 +107,7 @@ class _BookingPageState extends State<BookingPage> {
           ),
         ],
       ),
-     body: SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Container(
           color: Color(0xFFE6DFF1),
           child: Padding(
