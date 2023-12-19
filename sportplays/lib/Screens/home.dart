@@ -67,10 +67,18 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('HomePage'),
-        backgroundColor: Color(0xFFb364f3),
+       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         elevation: 0,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFFb364f3), Color(0xFFD6F454)],
+            ),
+          ),
+        ),
       ),
       backgroundColor: Color(0xFFE6DFF1),
       drawer: Drawer(

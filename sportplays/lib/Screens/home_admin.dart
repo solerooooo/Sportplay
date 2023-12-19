@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:sportplays/Screens/availability_admin.dart';
 import 'package:sportplays/Screens/notification.dart';
+import 'package:sportplays/Screens/qna_admin.dart';
 import 'login.dart';
 import 'profile.dart';
 import 'register.dart';
@@ -44,7 +45,7 @@ class _HomeAdminState extends State<HomeAdmin> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => QnAPage(passUser: widget.passUser),
+          builder: (context) => QnAAdmin(passUser: widget.passUser),
         ),
       );
     }
@@ -474,7 +475,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      QnAPage(passUser: widget.passUser),
+                                      QnAAdmin(passUser: widget.passUser),
                                 ),
                               );
                             },
