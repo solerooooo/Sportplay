@@ -16,24 +16,32 @@ class QnAAdmin extends StatefulWidget {
   _QnAAdminState createState() => _QnAAdminState();
 }
 
+// ... (previous imports and class definition)
+
 class _QnAAdminState extends State<QnAAdmin> {
   int _selectedIndex = 0;
-  List<Map<String, String>> qnaList = [
-    {
-      'question': 'What are the available payment methods?',
-      'answer': 'Pay for your bookings using any of the following supported payment options: FPX Online Banking or Cash'
-    },
-    {
-      'question': 'How can I view my booking details?',
-      'answer': '1. Click on your Profile page. 2. Click on the History button. 3. You’ll be able to view the details of your booking, including the date and time of your booking.'
-    },
-  ];
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  TextEditingController _questionController = TextEditingController();
+  TextEditingController _answerController = TextEditingController();
+  List<Map<String, dynamic>> qnaList = [];
+
+  Stream<List<Map<String, dynamic>>> getQnAStream() {
+    return _firestore.collection('qna').snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return {
+          'question': data['question'],
+          'answer': data['answer'],
+          'documentId': doc.id,
+        };
+      }).toList();
+    });
+  }
 
   Future<void> addQnA(String question, String answer) async {
     try {
-      await _firestore.collection('qna').add({
+      await _firestore.collection('qna').doc(question).set({
         'question': question,
         'answer': answer,
       });
@@ -84,28 +92,100 @@ class _QnAAdminState extends State<QnAAdmin> {
     }
   }
 
-  @override
+  void _showAddQnAPopup() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Add New Q&A'),
+          content: Column(
+            children: [
+              TextField(
+                controller: _questionController,
+                decoration: InputDecoration(labelText: 'Question'),
+              ),
+              TextField(
+                controller: _answerController,
+                decoration: InputDecoration(labelText: 'Answer'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Validate and add the new Q&A
+                String question = _questionController.text.trim();
+                String answer = _answerController.text.trim();
+                if (question.isNotEmpty && answer.isNotEmpty) {
+                  addQnA(question, answer);
+                  _questionController.clear();
+                  _answerController.clear();
+                  Navigator.pop(context);
+                }
+              },
+              child: Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+    @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Insights'),
         backgroundColor: Colors.lightGreenAccent,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              _showAddQnAPopup();
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              _showDeleteQnAList();
+            },
+          ),
+        ],
       ),
-      body: ListView.builder(
-        itemCount: qnaList.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: EdgeInsets.all(8.0),
-            child: ExpansionTile(
-              title: Text(qnaList[index]['question']!),
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(qnaList[index]['answer']!),
-                ),
-              ],
-            ),
-          );
+      body: StreamBuilder<List<Map<String, dynamic>>>(
+        stream: getQnAStream(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            qnaList = snapshot.data ?? [];
+
+            return ListView.builder(
+              itemCount: qnaList.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  margin: EdgeInsets.all(8.0),
+                  child: ExpansionTile(
+                    title: Text(qnaList[index]['question']),
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text(qnaList[index]['answer']),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -147,5 +227,39 @@ class _QnAAdminState extends State<QnAAdmin> {
             )
           : null,
     );
+  }
+
+
+  void _showDeleteQnAList() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Select Q&A to Delete'),
+          content: Column(
+            children: List.generate(
+              qnaList.length,
+              (index) {
+                return ListTile(
+                  title: Text(qnaList[index]['question']),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _deleteQnA(qnaList[index]['documentId']);
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteQnA(String documentId) async {
+    try {
+      await _firestore.collection('qna').doc(documentId).delete();
+    } catch (e) {
+      print('Error deleting Q&A: $e');
+    }
   }
 }

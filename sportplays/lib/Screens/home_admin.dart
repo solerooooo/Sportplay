@@ -22,43 +22,9 @@ class HomeAdmin extends StatefulWidget {
 }
 
 class _HomeAdminState extends State<HomeAdmin> {
-  int _selectedIndex = 0;
-
+ 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentsController = TextEditingController();
-
-  void _onTabSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BookingPage(
-            passUser: widget.passUser,
-            selectedTime: 'Choose your time slot',
-          ),
-        ),
-      );
-    }
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => QnAAdmin(passUser: widget.passUser),
-        ),
-      );
-    }
-    if (index == 3) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Profile(passUser: widget.passUser),
-        ),
-      );
-    }
-  }
 
   void _addNews() async {
     CollectionReference newsCollection =
@@ -151,12 +117,23 @@ class _HomeAdminState extends State<HomeAdmin> {
               },
             ),
             ListTile(
-              title: Text('Profile'),
+              title: Text('Contact'),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => ContactAdmin(),
+                  ),
+                );
+              },
+            ),
+             ListTile(
+              title: Text('QnA'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => QnAAdmin( passUser: widget.passUser,),
                   ),
                 );
               },
