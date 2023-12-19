@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:sportplays/Screens/availability_admin.dart';
+import 'package:sportplays/Screens/notification.dart';
 import 'login.dart';
 import 'profile.dart';
 import 'register.dart';
@@ -64,13 +65,16 @@ class _HomeAdminState extends State<HomeAdmin> {
     DateTime currentDate = DateTime.now();
 
     await newsCollection.doc(_titleController.text).set({
-      'title': _titleController.text,
-      'contents': _contentsController.text,
-      'date': currentDate, // Add the date field
-    });
+    'title': _titleController.text,
+    'contents': _contentsController.text,
+    'date': currentDate,
+  });
 
-    _titleController.clear();
-    _contentsController.clear();
+  _titleController.clear();
+  _contentsController.clear();
+
+  // Show notification
+  Notifications.showNewsAddedNotification(_titleController.text);
   }
 
   @override
