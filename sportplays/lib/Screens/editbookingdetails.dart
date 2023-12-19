@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sportplays/Models/bookingdetails.dart';
 import 'home.dart';
 import '../models/user.dart';
 import 'qna.dart';
@@ -13,14 +12,14 @@ class EditBookingDetailsPage extends StatefulWidget {
   const EditBookingDetailsPage({
     Key? key,
     required this.passUser,
-    required this.selectedTime, required Booking booking,
+    required this.selectedTime,
   }) : super(key: key);
 
   @override
-  _EditBookingPageState createState() => _EditBookingPageState();
+  _EditBookingDetailsPageState createState() => _EditBookingDetailsPageState();
 }
 
-class _EditBookingPageState extends State<EditBookingDetailsPage> {
+class _EditBookingDetailsPageState extends State<EditBookingDetailsPage> {
   String selectedActivity = 'Ping Pong';
   int playerQuantity = 1;
   String selectedPaymentMethod = 'Cash';
@@ -85,7 +84,7 @@ class _EditBookingPageState extends State<EditBookingDetailsPage> {
     }
   }
 
-  Future <void> _saveDataToFirestore() async {
+  Future<void> _saveDataToFirestore() async {
     try {
       String userName = widget.passUser.getName();
       DocumentReference userBookingRef =
@@ -144,41 +143,17 @@ class _EditBookingPageState extends State<EditBookingDetailsPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        selectedActivity = 'Ping Pong';
-                      });
-                    },
-                    style: selectedActivity == 'Ping Pong'
-                        ? ElevatedButton.styleFrom(
-                            backgroundColor: Colors.lightGreenAccent)
-                        : null,
-                    child: const Text('Ping Pong'),
+                  _buildActivityButton(
+                    activityName: 'Ping Pong',
+                    label: 'Ping Pong',
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        selectedActivity = 'Badminton';
-                      });
-                    },
-                    style: selectedActivity == 'Badminton'
-                        ? ElevatedButton.styleFrom(
-                            backgroundColor: Colors.lightGreenAccent)
-                        : null,
-                    child: const Text('Badminton'),
+                  _buildActivityButton(
+                    activityName: 'Badminton',
+                    label: 'Badminton',
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        selectedActivity = 'Squash';
-                      });
-                    },
-                    style: selectedActivity == 'Squash'
-                        ? ElevatedButton.styleFrom(
-                            backgroundColor: Colors.lightGreenAccent)
-                        : null,
-                    child: const Text('Squash'),
+                  _buildActivityButton(
+                    activityName: 'Squash',
+                    label: 'Squash',
                   ),
                 ],
               ),
@@ -335,6 +310,31 @@ class _EditBookingPageState extends State<EditBookingDetailsPage> {
             label: 'Profile',
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildActivityButton({
+    required String activityName,
+    required String label,
+  }) {
+    return ElevatedButton(
+      onPressed: () {
+        setState(() {
+          selectedActivity = activityName;
+        });
+      },
+      style: selectedActivity == activityName
+          ? ElevatedButton.styleFrom(
+              backgroundColor: Colors.lightGreenAccent,
+            )
+          : null,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Text(
+          label,
+          style: TextStyle(fontSize: 16),
+        ),
       ),
     );
   }
