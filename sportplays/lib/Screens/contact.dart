@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ContactInfoApp extends StatefulWidget {
@@ -9,6 +10,9 @@ class ContactInfoApp extends StatefulWidget {
 }
 
 class _ContactInfoAppState extends State<ContactInfoApp> {
+  final CollectionReference contactsCollection =
+      FirebaseFirestore.instance.collection('contacts');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,69 +43,49 @@ class _ContactInfoAppState extends State<ContactInfoApp> {
                 ),
               ),
               SizedBox(height: 20),
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Mr. Sharul bin Mohd. Shahimi',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Sports & Youth Officer',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Phone : 07-5535776',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    SizedBox(height: 10),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Mr. Azman bin Jamalludin',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Sports & Youth Assistant Officer',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Phone : 07-5535776',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    SizedBox(height: 10),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'General Office',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Phone : 07-5535775/35766/35774',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    SizedBox(height: 10),
-                  ],
-                ),
+              StreamBuilder<QuerySnapshot>(
+                stream: contactsCollection.snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+
+                  List<Widget> contactWidgets = snapshot.data!.docs
+                      .map((DocumentSnapshot document) {
+                        Map<String, dynamic> data =
+                            document.data() as Map<String, dynamic>;
+
+                        return Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                data['name'],
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                data['position'],
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                'Phone : ${data['phone']}',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              SizedBox(height: 10),
+                            ],
+                          ),
+                        );
+                      })
+                      .toList();
+
+                  return Column(children: contactWidgets);
+                },
               ),
             ],
           ),
