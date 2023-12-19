@@ -102,27 +102,7 @@ class _HomeState extends State<Home> {
                 style: TextStyle(color: Colors.black, fontSize: 30),
               ),
             ),
-            ListTile(
-              title: Text('Login'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Login()),
-                );
-              },
-            ),
-            ListTile(
-              title: Text('Register'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        Register(firestore: FirebaseFirestore.instance),
-                  ),
-                );
-              },
-            ),
+            
             ListTile(
               title: Text('Profile'),
               onTap: () {
@@ -144,6 +124,17 @@ class _HomeState extends State<Home> {
                       passUser: widget.passUser,
                       selectedTime: 'Choose your time slot',
                     ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('View Booking Details'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewBookingPage(passUser: widget.passUser),
                   ),
                 );
               },
