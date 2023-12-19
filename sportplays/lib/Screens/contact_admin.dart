@@ -16,21 +16,31 @@ class _ContactAdminState extends State<ContactAdmin> {
   TextEditingController positionController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
-  void addContact() async {
-    await contactCollection.add({
-      'name': nameController.text,
-      'position': positionController.text,
-      'phone': phoneController.text,
-    });
+  Future<void> addContact() async {
+    try {
+      await contactCollection.add({
+        'name': nameController.text,
+        'position': positionController.text,
+        'phone': phoneController.text,
+      });
 
-    // Clear the text controllers after adding a contact
-    nameController.clear();
-    positionController.clear();
-    phoneController.clear();
+      // Clear the text controllers after adding a contact
+      nameController.clear();
+      positionController.clear();
+      phoneController.clear();
+    } catch (e) {
+      // Handle errors during the add operation
+      print('Error adding contact: $e');
+    }
   }
 
-  void deleteContact(String docId) async {
-    await contactCollection.doc(docId).delete();
+  Future<void> deleteContact(String docId) async {
+    try {
+      await contactCollection.doc(docId).delete();
+    } catch (e) {
+      // Handle errors during the delete operation
+      print('Error deleting contact: $e');
+    }
   }
 
   @override
@@ -39,56 +49,64 @@ class _ContactAdminState extends State<ContactAdmin> {
       appBar: AppBar(
         title: Text('Admin Contacts'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Add New Contact:'),
-            TextField(
-              controller: nameController,
-              decoration: InputDecoration(labelText: 'Name'),
-            ),
-            TextField(
-              controller: positionController,
-              decoration: InputDecoration(labelText: 'Position'),
-            ),
-            TextField(
-              controller: phoneController,
-              decoration: InputDecoration(labelText: 'Phone Number'),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: addContact,
-              child: Text('Add Contact'),
-            ),
-            SizedBox(height: 32),
-            Text('Existing Contacts:'),
-            StreamBuilder(
-              stream: contactCollection.snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                }
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("images/background.jpg"), 
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Add New Contact:'),
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(labelText: 'Name'),
+              ),
+              TextField(
+                controller: positionController,
+                decoration: InputDecoration(labelText: 'Position'),
+              ),
+              TextField(
+                controller: phoneController,
+                decoration: InputDecoration(labelText: 'Phone Number'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: addContact,
+                child: Text('Add Contact'),
+              ),
+              SizedBox(height: 30),
+              Text('Existing Contacts:'),
+              StreamBuilder(
+                stream: contactCollection.snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
 
-                return Column(
-                  children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                    Map<String, dynamic> data =
-                        document.data() as Map<String, dynamic>;
+                  return Column(
+                    children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                      Map<String, dynamic> data =
+                          document.data() as Map<String, dynamic>;
 
-                    return ListTile(
-                      title: Text(data['name']),
-                      subtitle: Text('${data['position']} ${data['phone']}'),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () => deleteContact(document.id),
-                      ),
-                    );
-                  }).toList(),
-                );
-              },
-            ),
-          ],
+                      return ListTile(
+                        title: Text(data['name']),
+                        subtitle: Text('${data['position']} ${data['phone']}'),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () => deleteContact(document.id),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -16,12 +16,19 @@ class _ContactInfoAppState extends State<ContactInfoApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       appBar: AppBar(
         backgroundColor: Color(0xFFb364f3),
         elevation: 0,
       ),
       backgroundColor: Color(0xFFE6DFF1),
       body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("images/background.jpg"), 
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Center(
           child: Column(
             children: [
@@ -74,7 +81,7 @@ class _ContactInfoAppState extends State<ContactInfoApp> {
                               ),
                               SizedBox(height: 10),
                               Text(
-                                'Phone : ${data['phone']}',
+                                data['phone'],
                                 style: TextStyle(fontSize: 16),
                               ),
                               SizedBox(height: 10),
