@@ -105,7 +105,12 @@ class _BookingPageState extends State<BookingPage> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Home(passUser: widget.passUser),
+                  ),
+                ); // Close the dialog
               },
               child: Text('OK'),
             ),
