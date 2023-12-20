@@ -9,6 +9,7 @@ class User {
   String gender;
   String userId;
 
+
   User({
     required this.name,
     required this.email,
@@ -17,6 +18,7 @@ class User {
     required this.address,
     required this.userId,
     required this.gender,
+
   });
 
   /*toJson() {

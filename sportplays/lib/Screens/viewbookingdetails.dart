@@ -1,4 +1,3 @@
-//viewbookingdetails.dart
 import 'package:flutter/material.dart';
 import 'package:sportplays/Models/bookingdetails.dart';
 import 'package:sportplays/Screens/editbookingdetails.dart';
@@ -6,11 +5,13 @@ import 'home.dart';
 import '../models/user.dart';
 import 'qna.dart';
 import 'profile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ViewBookingPage extends StatefulWidget {
   final User passUser;
 
   const ViewBookingPage({Key? key, required this.passUser}) : super(key: key);
+
   @override
   _ViewBookingPageState createState() => _ViewBookingPageState();
 }
@@ -18,15 +19,17 @@ class ViewBookingPage extends StatefulWidget {
 class _ViewBookingPageState extends State<ViewBookingPage> {
   int _selectedIndex = 0;
 
-  List<Booking> bookings = [
-    Booking('Ping Pong', '', DateTime(2023, 11, 1, 14, 30),
-        DateTime(2023, 11, 1, 16, 30)),
-    Booking('Badminton', '', DateTime(2023, 11, 2, 10, 0),
-        DateTime(2023, 11, 2, 12, 0)),
-    // Add more booking instances as needed
-  ];
+  List<Booking> bookings = []; // Initialize an empty list
 
-void _onTabSelected(int index) {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchBookingsFromFirestore();
+  }
+
+  void _onTabSelected(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -53,7 +56,7 @@ void _onTabSelected(int index) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Profile(passUser: widget.passUser,),
+          builder: (context) => Profile(passUser: widget.passUser),
         ),
       );
     }
@@ -66,11 +69,11 @@ void _onTabSelected(int index) {
       child: Scaffold(
         appBar: AppBar(
           title: Text('View Booking Details'),
-              backgroundColor: Colors.lightGreenAccent,
+          backgroundColor: Colors.lightGreenAccent,
           bottom: TabBar(
             tabs: [
-              Tab(text: 'Upcoming'),
               Tab(text: 'Past'),
+              Tab(text: 'Upcoming'),
             ],
           ),
         ),
@@ -81,75 +84,81 @@ void _onTabSelected(int index) {
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        onTap: _onTabSelected,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black.withOpacity(0.5),
-        showUnselectedLabels: true,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Booking',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.question_answer),
-            label: 'Q&A',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _selectedIndex,
+          onTap: _onTabSelected,
+          selectedItemColor: Colors.black,
+          unselectedItemColor: Colors.black.withOpacity(0.5),
+          showUnselectedLabels: true,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add),
+              label: 'Booking',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.question_answer),
+              label: 'Q&A',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildTabContent(List<Booking> filteredBookings) {
-  return Container(
-    color: const Color(0xFFb364f3), // Set the desired background color
-    child: Column(
-      children: [
-        Expanded(
-          child: ListView.builder(
-            itemCount: filteredBookings.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text('Activity ${filteredBookings[index].userName}'),
-                subtitle: Text(
-                  'Time: ${filteredBookings[index].startTime} - ${filteredBookings[index].endTime}',
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    _redirectToEditPage(filteredBookings[index]);
+    return Container(
+      color: const Color(0xFFb364f3), // Set the desired background color
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: filteredBookings.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text('Activity ${filteredBookings[index].userName}'),
+                  subtitle: Text(
+                    'Time: ${filteredBookings[index].startTime} - ${filteredBookings[index].endTime}',
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () {
+                      _redirectToEditPage(filteredBookings[index]);
+                    },
+                  ),
+                  onTap: () {
+                    _showBookingDetails(filteredBookings[index]);
                   },
-                ),
-                onTap: () {
-                  _showBookingDetails(filteredBookings[index]);
-                },
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   List<Booking> _getUpcomingBookings() {
     final now = DateTime.now();
-    return bookings.where((booking) => booking.startTime.isAfter(now)).toList();
+    return bookings
+        .where((booking) =>
+            booking.startTime.isAfter(now) || booking.endTime.isAfter(now))
+        .toList();
   }
 
   List<Booking> _getPastBookings() {
     final now = DateTime.now();
-    return bookings.where((booking) => booking.endTime.isBefore(now)).toList();
+    return bookings
+        .where((booking) =>
+            booking.endTime.isBefore(now) && booking.startTime.isBefore(now))
+        .toList();
   }
 
   void _showBookingDetails(Booking booking) {
@@ -163,7 +172,7 @@ void _onTabSelected(int index) {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text('Activity: ${booking.userName}'),
-              Text('Start Time: ${booking.startTime}'),
+              Text('Time Slot: ${booking.startTime}'),
               Text('End Time: ${booking.endTime}'),
             ],
           ),
@@ -184,10 +193,39 @@ void _onTabSelected(int index) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditBookingDetailsPage(booking: booking),
+        builder: (context) =>
+            EditBookingDetailsPage(passUser: widget.passUser, selectedTime: '', bookingId: '',),
       ),
     );
   }
+
+  void _fetchBookingsFromFirestore() async {
+    try {
+      String userName = widget.passUser.getName();
+      QuerySnapshot bookingSnapshot = await _firestore
+          .collection('bookings')
+          .doc(userName)
+          .collection('userBookings')
+          .get();
+
+      List<Booking> fetchedBookings = [];
+
+      bookingSnapshot.docs.forEach((doc) {
+        fetchedBookings.add(
+          Booking(
+            doc['selectedActivity'],
+            doc['selectedTime'],
+            (doc['startTime'] as Timestamp).toDate(),
+            (doc['endTime'] as Timestamp).toDate(),
+          ),
+        );
+      });
+
+      setState(() {
+        bookings = fetchedBookings;
+      });
+    } catch (e) {
+      print('Error fetching bookings: $e');
+    }
+  }
 }
-
-

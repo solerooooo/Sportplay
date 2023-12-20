@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'login.dart';
+import 'package:sportplays/Models/bookingdetails.dart';
+import 'package:sportplays/Screens/login.dart';
 import 'profile.dart';
-import 'register.dart';
 import '../models/user.dart';
 import 'booking.dart';
 import 'viewbookingdetails.dart';
 import 'qna.dart';
-import 'contact.dart'; // Import the new ContactPage
+import 'contact.dart'; 
 import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
@@ -31,7 +31,7 @@ class _HomeState extends State<Home> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ViewBookingPage(passUser: widget.passUser),
+          builder: (context) => ViewBookingPage(passUser: widget.passUser,),
         ),
       );
     }
@@ -64,13 +64,30 @@ class _HomeState extends State<Home> {
     }
   }
 
+  void _logout() {
+    // Navigate to the login page and clear all routes
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => Login()),
+      (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('HomePage'),
-        backgroundColor: Color(0xFFb364f3),
+        backgroundColor: Colors.transparent,
         elevation: 0,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFFb364f3), Color(0xFFD6F454)],
+            ),
+          ),
+        ),
       ),
       backgroundColor: Color(0xFFE6DFF1),
       drawer: Drawer(
@@ -93,27 +110,6 @@ class _HomeState extends State<Home> {
                 'Menu',
                 style: TextStyle(color: Colors.black, fontSize: 30),
               ),
-            ),
-            ListTile(
-              title: Text('Login'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Login()),
-                );
-              },
-            ),
-            ListTile(
-              title: Text('Register'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        Register(firestore: FirebaseFirestore.instance),
-                  ),
-                );
-              },
             ),
             ListTile(
               title: Text('Profile'),
@@ -141,6 +137,18 @@ class _HomeState extends State<Home> {
               },
             ),
             ListTile(
+              title: Text('View Booking Details'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ViewBookingPage(passUser: widget.passUser),
+                  ),
+                );
+              },
+            ),
+            ListTile(
               title: Text('Contact'), // Add Contact to the drawer
               onTap: () {
                 Navigator.push(
@@ -150,6 +158,10 @@ class _HomeState extends State<Home> {
                   ),
                 );
               },
+            ),
+            ListTile(
+              title: Text('Logout'), // Add Logout button
+              onTap: _logout,
             ),
           ],
         ),

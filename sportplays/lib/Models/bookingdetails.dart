@@ -7,8 +7,8 @@ class Booking {
 
   Booking(this.userName, this.facility, this.startTime, this.endTime);
 
-   static String selectedTime = ''; // Make it global
-  static Map<String, int> selectedCourts = {}; // Make it global
+  static String selectedTime = ''; // Make it global
+  static Map<String, int> selectedCourts = {};
 
   static void updateAvailability(String time, int pingPongCourts, int badmintonCourts, int squashCourts) {
     selectedTime = time;

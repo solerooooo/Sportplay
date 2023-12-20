@@ -2,6 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:sportplays/Screens/availability_admin.dart';
+import 'package:sportplays/Screens/contact_admin.dart';
+import 'package:sportplays/Screens/notification.dart';
+import 'package:sportplays/Screens/qna_admin.dart';
+import 'package:sportplays/Screens/viewbookingdetails_admin.dart';
 import 'login.dart';
 import 'profile.dart';
 import 'register.dart';
@@ -19,43 +23,9 @@ class HomeAdmin extends StatefulWidget {
 }
 
 class _HomeAdminState extends State<HomeAdmin> {
-  int _selectedIndex = 0;
-
+ 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentsController = TextEditingController();
-
-  void _onTabSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BookingPage(
-            passUser: widget.passUser,
-            selectedTime: 'Choose your time slot',
-          ),
-        ),
-      );
-    }
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => QnAPage(passUser: widget.passUser),
-        ),
-      );
-    }
-    if (index == 3) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Profile(passUser: widget.passUser),
-        ),
-      );
-    }
-  }
 
   void _addNews() async {
     CollectionReference newsCollection =
@@ -64,13 +34,16 @@ class _HomeAdminState extends State<HomeAdmin> {
     DateTime currentDate = DateTime.now();
 
     await newsCollection.doc(_titleController.text).set({
-      'title': _titleController.text,
-      'contents': _contentsController.text,
-      'date': currentDate, // Add the date field
-    });
+    'title': _titleController.text,
+    'contents': _contentsController.text,
+    'date': currentDate,
+  });
 
-    _titleController.clear();
-    _contentsController.clear();
+  _titleController.clear();
+  _contentsController.clear();
+
+  // Show notification
+  Notifications.showNewsAddedNotification(_titleController.text);
   }
 
   @override
@@ -140,6 +113,39 @@ class _HomeAdminState extends State<HomeAdmin> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => Profile(passUser: widget.passUser),
+                  ),
+                );
+              },
+            ),
+              ListTile(
+              title: Text('User Booking Details'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewBookingDetailsAdmin(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Contact'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ContactAdmin(),
+                  ),
+                );
+              },
+            ),
+             ListTile(
+              title: Text('QnA'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => QnAAdmin( passUser: widget.passUser,),
                   ),
                 );
               },
@@ -470,7 +476,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      QnAPage(passUser: widget.passUser),
+                                      QnAAdmin(passUser: widget.passUser),
                                 ),
                               );
                             },
