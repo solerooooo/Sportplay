@@ -68,7 +68,7 @@ class _QnAAdminState extends State<QnAAdmin> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ViewBookingPage(passUser: widget.passUser),
+          builder: (context) => ViewBookingPage(passUser: widget.passUser,),
         ),
       );
     }

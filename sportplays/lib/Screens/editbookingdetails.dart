@@ -1,18 +1,19 @@
+// editbookingdetails.dart
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'home.dart';
+import 'package:sportplays/Screens/availability.dart';
 import '../models/user.dart';
-import 'qna.dart';
-import 'profile.dart';
 
 class EditBookingDetailsPage extends StatefulWidget {
   final User passUser;
-  final String selectedTime;
+  final String bookingId;
+  final String selectedTime; 
 
   const EditBookingDetailsPage({
     Key? key,
     required this.passUser,
-    required this.selectedTime,
+    required this.bookingId,
+    required this.selectedTime, 
   }) : super(key: key);
 
   @override
@@ -23,89 +24,67 @@ class _EditBookingDetailsPageState extends State<EditBookingDetailsPage> {
   String selectedActivity = 'Ping Pong';
   int playerQuantity = 1;
   String selectedPaymentMethod = 'Cash';
-  int _selectedIndex = 0;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchBookingData();
-  }
-
-  void _fetchBookingData() async {
+  // Fetch booking details from Firestore based on bookingId
+  Future<void> _fetchBookingDetails() async {
     try {
-      String userName = widget.passUser.getName();
-      DocumentSnapshot userBookingSnapshot =
-          await _firestore.collection('bookings').doc(userName).get();
+      DocumentSnapshot bookingSnapshot = await _firestore
+          .collection('bookings')
+          .doc(widget.passUser.getName())
+          .collection('userBookings')
+          .doc(widget.bookingId)
+          .get();
 
-      if (userBookingSnapshot.exists) {
-        setState(() {
-          selectedActivity =
-              userBookingSnapshot['selectedActivity'] ?? 'Ping Pong';
-          playerQuantity = userBookingSnapshot['playerQuantity'] ?? 1;
-          selectedPaymentMethod =
-              userBookingSnapshot['selectedPaymentMethod'] ?? 'Cash';
-        });
-      }
+      // Update state with fetched booking details
+      setState(() {
+        selectedActivity = bookingSnapshot['selectedActivity'];
+        playerQuantity = bookingSnapshot['playerQuantity'];
+        selectedPaymentMethod = bookingSnapshot['selectedPaymentMethod'];
+        // Add more fields as needed
+      });
     } catch (e) {
-      print('Error fetching booking data: $e');
+      print('Error fetching booking details: $e');
     }
   }
 
-  void _onTabSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    if (index == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Home(passUser: widget.passUser),
-        ),
-      );
-    }
-
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => QnAPage(passUser: widget.passUser),
-        ),
-      );
-    }
-
-    if (index == 3) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Profile(passUser: widget.passUser),
-        ),
-      );
-    }
-  }
-
-  Future<void> _saveDataToFirestore() async {
+  // Update booking details in Firestore
+  Future<void> _updateBookingDetails() async {
     try {
-      String userName = widget.passUser.getName();
-      DocumentReference userBookingRef =
-          _firestore.collection('bookings').doc(userName);
+      DocumentReference bookingRef = _firestore
+          .collection('bookings')
+          .doc(widget.passUser.getName())
+          .collection('userBookings')
+          .doc(widget.bookingId);
 
-      await userBookingRef.update({
+      await bookingRef.update({
         'selectedActivity': selectedActivity,
         'playerQuantity': playerQuantity,
         'selectedPaymentMethod': selectedPaymentMethod,
-        'timestamp': FieldValue.serverTimestamp(),
+        // Add more fields as needed
       });
 
-      // Show SnackBar when changes are saved
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Current booking changes saved!'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+      print('Booking details updated successfully!');
+    } catch (e) {
+      print('Error updating booking details: $e');
+    }
+  }
+
+  // Save data to Firestore
+  Future<void> _saveDataToFirestore() async {
+    try {
+      DocumentReference bookingRef = _firestore
+          .collection('bookings')
+          .doc(widget.passUser.getName())
+          .collection('userBookings')
+          .doc(widget.bookingId);
+
+      await bookingRef.update({
+        'selectedActivity': selectedActivity,
+        'playerQuantity': playerQuantity,
+        'selectedPaymentMethod': selectedPaymentMethod,
+      });
 
       print('Data saved to Firestore successfully!');
     } catch (e) {
@@ -113,39 +92,42 @@ class _EditBookingDetailsPageState extends State<EditBookingDetailsPage> {
     }
   }
 
+  // Delete booking from Firestore
   Future<void> _deleteBooking() async {
     try {
-      String userName = widget.passUser.getName();
-      await _firestore.collection('bookings').doc(userName).delete();
+      await _firestore
+          .collection('bookings')
+          .doc(widget.passUser.getName())
+          .collection('userBookings')
+          .doc(widget.bookingId)
+          .delete();
 
-      // Show SnackBar when booking is deleted
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Booking deleted successfully!'),
-          duration: Duration(seconds: 2),
-        ),
-      );
-
-      // Navigate back to the previous screen
-      Navigator.pop(context);
+      print('Booking deleted successfully!');
+      // Navigate back to the previous screen or handle navigation as needed
     } catch (e) {
       print('Error deleting booking: $e');
     }
   }
 
   @override
+  void initState() {
+    super.initState();
+    _fetchBookingDetails();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Similar UI structure as BookingPage, with fields prefilled with fetched details
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Booking'),
-        backgroundColor: const Color(0xFFD6F454),
+        // Add other app bar customization as needed
       ),
-      body: Container(
-        color: const Color(0xFFb364f3),
-        child: Padding(
+      body: SingleChildScrollView(
+        child: Container(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Select Activity',
@@ -155,58 +137,233 @@ class _EditBookingDetailsPageState extends State<EditBookingDetailsPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Your activity buttons go here (same as your original code)
+                  _buildActivityButton(
+                    activityName: 'Ping Pong',
+                    imagePath: 'images/pingpong.png',
+                    label: 'Ping Pong',
+                  ),
+                  _buildActivityButton(
+                    activityName: 'Badminton',
+                    imagePath: 'images/badminton.png',
+                    label: 'Badminton',
+                  ),
+                  _buildActivityButton(
+                    activityName: 'Squash',
+                    imagePath: 'images/squash.png',
+                    label: 'Squash',
+                  ),
                 ],
               ),
               const SizedBox(height: 20),
-              // Remaining code for player quantity and payment method (same as your original code)
+              ElevatedButton(
+                onPressed: () {
+                  // Implement logic to navigate to AvailabilityPage
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AvailabilityPage(
+                        passUser: widget.passUser,
+                        sport: selectedActivity,
+                        selectedTime: widget.selectedTime, // Add this line
+                      ),
+                    ),
+                  );
+                },
+                style: selectedActivity == 'Choose your time slot'
+                    ? ElevatedButton.styleFrom(
+                        backgroundColor: Colors.lightGreenAccent)
+                    : null,
+                child: Text(
+                  widget.selectedTime.isEmpty
+                      ? 'Choose your time slot'
+                      : '${widget.selectedTime}',
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Select Number of Players',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (playerQuantity > 1) {
+                                playerQuantity--;
+                              }
+                            });
+                          },
+                          icon: const Icon(Icons.remove),
+                        ),
+                        Text(
+                          '$playerQuantity',
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (playerQuantity < 6) {
+                                playerQuantity++;
+                              }
+                            });
+                          },
+                          icon: const Icon(Icons.add),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Select Payment Method',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    Column(
+                      children: [
+                        ListTile(
+                          title: const Text('Cash'),
+                          leading: Radio(
+                            value: 'Cash',
+                            groupValue: selectedPaymentMethod,
+                            onChanged: (String? value) {
+                              setState(() {
+                                selectedPaymentMethod = value!;
+                              });
+                            },
+                          ),
+                        ),
+                        ListTile(
+                          title: const Text('Free'),
+                          leading: Radio(
+                            value: 'Free',
+                            groupValue: selectedPaymentMethod,
+                            onChanged: (String? value) {
+                              setState(() {
+                                selectedPaymentMethod = value!;
+                              });
+                            },
+                          ),
+                        ),
+                        ListTile(
+                          title: const Text('Online'),
+                          leading: Radio(
+                            value: 'Online',
+                            groupValue: selectedPaymentMethod,
+                            onChanged: (String? value) {
+                              setState(() {
+                                selectedPaymentMethod = value!;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Implement payment logic here
+                  print('Selected Payment Method: $selectedPaymentMethod');
+                },
+                child: const Text('Make Payment'),
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   // Save data to Firestore
                   _saveDataToFirestore();
                 },
-                child: const Text('Save Changes'),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // Delete booking
-                  _deleteBooking();
-                },
-                style: ElevatedButton.styleFrom(primary: Colors.red),
-                child: const Text('Delete Booking'),
+                child: const Text('Done'),
               ),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        onTap: _onTabSelected,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black.withOpacity(0.5),
-        showUnselectedLabels: true,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Booking',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.question_answer),
-            label: 'Q&A',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                // Save changes
+                _updateBookingDetails();
+                // Navigate back to the previous screen or handle navigation as needed
+              },
+              child: const Text('Save Changes'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Delete booking
+                _deleteBooking();
+                // Navigate back to the previous screen or handle navigation as needed
+              },
+              child: const Text('Delete Booking'),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildActivityButton({
+    required String activityName,
+    required String imagePath,
+    required String label,
+  }) {
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              selectedActivity = activityName;
+            });
+          },
+          style: selectedActivity == activityName
+              ? ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightGreenAccent,
+                )
+              : null,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Image.asset(
+              imagePath,
+              height: 30,
+            ),
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          label,
+          style: TextStyle(fontSize: 12, color: Colors.black),
+        ),
+      ],
     );
   }
 }

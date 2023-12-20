@@ -194,7 +194,7 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
       context,
       MaterialPageRoute(
         builder: (context) =>
-            EditBookingDetailsPage(passUser: widget.passUser, selectedTime: ''),
+            EditBookingDetailsPage(passUser: widget.passUser, selectedTime: '', bookingId: '',),
       ),
     );
   }

@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'login.dart';
+import 'package:sportplays/Models/bookingdetails.dart';
+import 'package:sportplays/Screens/login.dart';
 import 'profile.dart';
-import 'register.dart';
 import '../models/user.dart';
 import 'booking.dart';
 import 'viewbookingdetails.dart';
 import 'qna.dart';
-import 'contact.dart'; // Import the new ContactPage
+import 'contact.dart'; 
 import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
@@ -31,7 +31,7 @@ class _HomeState extends State<Home> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ViewBookingPage(passUser: widget.passUser),
+          builder: (context) => ViewBookingPage(passUser: widget.passUser,),
         ),
       );
     }
@@ -64,10 +64,19 @@ class _HomeState extends State<Home> {
     }
   }
 
+  void _logout() {
+    // Navigate to the login page and clear all routes
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => Login()),
+      (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         flexibleSpace: Container(
@@ -102,7 +111,6 @@ class _HomeState extends State<Home> {
                 style: TextStyle(color: Colors.black, fontSize: 30),
               ),
             ),
-            
             ListTile(
               title: Text('Profile'),
               onTap: () {
@@ -134,7 +142,8 @@ class _HomeState extends State<Home> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ViewBookingPage(passUser: widget.passUser),
+                    builder: (context) =>
+                        ViewBookingPage(passUser: widget.passUser),
                   ),
                 );
               },
@@ -149,6 +158,10 @@ class _HomeState extends State<Home> {
                   ),
                 );
               },
+            ),
+            ListTile(
+              title: Text('Logout'), // Add Logout button
+              onTap: _logout,
             ),
           ],
         ),
