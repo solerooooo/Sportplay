@@ -4,7 +4,25 @@ import 'home.dart';
 import '../models/user.dart';
 import 'viewbookingdetails.dart';
 import 'profile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+
+class QnAService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Stream<List<Map<String, dynamic>>> getQnAStream() {
+    return _firestore.collection('qna').snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return {
+          'question': data['question'],
+          'answer': data['answer'],
+          'documentId': doc.id,
+        };
+      }).toList();
+    });
+  }
+}
 
 class QnAPage extends StatefulWidget {
   final User passUser;
@@ -14,21 +32,13 @@ class QnAPage extends StatefulWidget {
   _QnAPageState createState() => _QnAPageState();
 }
 
+
 class _QnAPageState extends State<QnAPage> {
   int _selectedIndex = 0;
-  List<Map<String, String>> qnaList = [
-    {
-      'question': 'What are the available payment methods?',
-      'answer':
-          'Pay for your bookings using any of the following supported payment options: FPX Online Banking or Cash'
-    },
-    {
-      'question': 'How can I view my booking details?',
-      'answer':
-          '1. Click on your Profile page. 2. Click on the History button.  3. You’ll be able to view the details of your booking, including the date and time of your booking.'
-    },
-    // Add more questions and answers as needed
-  ];
+  List<Map<String, dynamic>> qnaList = [];
+
+  final QnAService _qnAService = QnAService();
+
   void _onTabSelected(int index) {
     setState(() {
       _selectedIndex = index;
@@ -72,29 +82,41 @@ class _QnAPageState extends State<QnAPage> {
     }
   }
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Insights'),
-        // Set the background color of the AppBar to purple
         backgroundColor: Colors.lightGreenAccent,
       ),
-      body: ListView.builder(
-        itemCount: qnaList.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: EdgeInsets.all(8.0),
-            child: ExpansionTile(
-              title: Text(qnaList[index]['question']!),
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(qnaList[index]['answer']!),
-                ),
-              ],
-            ),
-          );
+      body: StreamBuilder<List<Map<String, dynamic>>>(
+        stream: _qnAService.getQnAStream(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            qnaList = snapshot.data ?? [];
+
+            return ListView.builder(
+              itemCount: qnaList.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  margin: EdgeInsets.all(8.0),
+                  child: ExpansionTile(
+                    title: Text(qnaList[index]['question']),
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text(qnaList[index]['answer']),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
