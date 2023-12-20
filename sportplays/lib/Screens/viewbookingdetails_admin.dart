@@ -15,12 +15,16 @@ class _ViewBookingDetailsAdminState extends State<ViewBookingDetailsAdmin> {
     try {
       DocumentSnapshot bookingSnapshot = await _firestore
           .collection('bookings')
-          .doc(userName)
+          .doc(userName) // Assuming 'userName' is the document ID
           .collection('userBookings')
-          .doc(bookingId)
+          .doc(bookingId) // Assuming 'bookingId' is the document ID
           .get();
 
-      print('Booking details: ${bookingSnapshot.data()}');
+      if (bookingSnapshot.exists) {
+        print('Booking details: ${bookingSnapshot.data()}');
+      } else {
+        print('Booking not found.');
+      }
     } catch (e) {
       print('Error fetching booking details: $e');
     }
@@ -51,15 +55,13 @@ class _ViewBookingDetailsAdminState extends State<ViewBookingDetailsAdmin> {
           return ListView.builder(
             itemCount: bookings.length,
             itemBuilder: (context, index) {
-              String userName = bookings[index].id;
+              String userName = bookings[index]['userName']; 
 
               return ListTile(
                 title: Text('Name: $userName'),
                 subtitle: FutureBuilder(
                   future: _firestore
                       .collection('bookings')
-                      .doc(userName)
-                      .collection('userBookings')
                       .doc(bookings[index].id)
                       .get(),
                   builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
@@ -67,13 +69,11 @@ class _ViewBookingDetailsAdminState extends State<ViewBookingDetailsAdmin> {
                       return Text('Loading...');
                     }
 
-                    if (!snapshot.hasData) {
+                    if (!snapshot.hasData || !snapshot.data!.exists) {
                       return Text('Error loading data');
                     }
 
-                    Map<String, dynamic> userBookings = snapshot.data!.data() as Map<String, dynamic>;
-
-                    return Text('Booking ID: ${userBookings['bookingId']}');
+                    return Text('Booking ID: ${snapshot.data!.id}');
                   },
                 ),
                 onTap: () {
@@ -98,6 +98,7 @@ class _ViewBookingDetailsAdminState extends State<ViewBookingDetailsAdmin> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
+              Text('Name: ${booking['userName']}'),
               Text('Activity: ${booking['selectedActivity']}'),
               Text('Player Quantity: ${booking['playerQuantity']}'),
               Text('Payment Method: ${booking['selectedPaymentMethod']}'),
