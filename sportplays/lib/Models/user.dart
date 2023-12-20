@@ -21,6 +21,15 @@ class User {
 
   });
 
+  /*toJson() {
+    return {
+      "Name": name,
+      "Email": email,
+      "Phone": phone,
+      "Password": password,
+    };
+  }*/
+
   // Getters
   String getName() => name;
   String getEmail() => email;

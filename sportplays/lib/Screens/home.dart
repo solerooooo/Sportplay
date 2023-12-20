@@ -166,10 +166,11 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
-      body: Container(
-        child: Center(
-          child: Column(
-            children: [
+      body: SingleChildScrollView( 
+        child: Container(
+          child: Center(
+            child: Column(
+              children: [
               Container(
                 color: Color(0xFFE6DFF1),
                 child: Column(
@@ -441,10 +442,12 @@ class _HomeState extends State<Home> {
                   ],
                 ),
               ),
+              SizedBox(height: 10),
             ],
           ),
         ),
       ),
+      )
     );
   }
 

@@ -16,8 +16,6 @@ class QnAAdmin extends StatefulWidget {
   _QnAAdminState createState() => _QnAAdminState();
 }
 
-// ... (previous imports and class definition)
-
 class _QnAAdminState extends State<QnAAdmin> {
   int _selectedIndex = 0;
 
@@ -119,7 +117,7 @@ class _QnAAdminState extends State<QnAAdmin> {
             ),
             TextButton(
               onPressed: () {
-                // Validate and add the new Q&A
+              
                 String question = _questionController.text.trim();
                 String answer = _answerController.text.trim();
                 if (question.isNotEmpty && answer.isNotEmpty) {
@@ -141,7 +139,7 @@ class _QnAAdminState extends State<QnAAdmin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Insights'),
+        title: Text('Frequently Asked Questions'),
         backgroundColor: Colors.lightGreenAccent,
         actions: [
           IconButton(
@@ -158,6 +156,7 @@ class _QnAAdminState extends State<QnAAdmin> {
           ),
         ],
       ),
+      backgroundColor: Color(0xFFE6DFF1),
       body: StreamBuilder<List<Map<String, dynamic>>>(
         stream: getQnAStream(),
         builder: (context, snapshot) {
@@ -173,12 +172,19 @@ class _QnAAdminState extends State<QnAAdmin> {
               itemBuilder: (context, index) {
                 return Card(
                   margin: EdgeInsets.all(8.0),
+                  color: Color(0xFF444444), // Set the background color here
                   child: ExpansionTile(
-                    title: Text(qnaList[index]['question']),
+                    title: Text(
+                      qnaList[index]['question'],
+                      style: TextStyle(color: Colors.white), // Set text color
+                    ),
                     children: [
                       Padding(
                         padding: EdgeInsets.all(16.0),
-                        child: Text(qnaList[index]['answer']),
+                        child: Text(
+                          qnaList[index]['answer'],
+                          style: TextStyle(color: Colors.white), // Set text color
+                        ),
                       ),
                     ],
                   ),
