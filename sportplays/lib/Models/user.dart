@@ -1,6 +1,5 @@
 // user.dart
 
-
 class User {
   String name;
   String email;
@@ -16,9 +15,18 @@ class User {
     required this.password,
     required this.phone,
     required this.address,
-    required this.userId, 
+    required this.userId,
     required this.gender,
   });
+
+  /*toJson() {
+    return {
+      "Name": name,
+      "Email": email,
+      "Phone": phone,
+      "Password": password,
+    };
+  }*/
 
   // Getters
   String getName() => name;
