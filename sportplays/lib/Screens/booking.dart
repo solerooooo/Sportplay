@@ -82,6 +82,7 @@ class _BookingPageState extends State<BookingPage> {
           .doc(numberOfBookings.toString());
 
       await bookingRef.set({
+        'userName': userName,
         'selectedActivity': selectedActivity,
         'playerQuantity': playerQuantity,
         'selectedPaymentMethod': selectedPaymentMethod,
