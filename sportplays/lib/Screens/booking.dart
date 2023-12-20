@@ -10,7 +10,6 @@ import 'profile.dart';
 class BookingPage extends StatefulWidget {
   final User passUser;
   final String selectedTime;
-  
 
   const BookingPage({
     Key? key,
@@ -95,7 +94,26 @@ class _BookingPageState extends State<BookingPage> {
     }
   }
 
-  
+  Future<void> _showDoneBookingDialog() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Done Booking'),
+          content: Text('Your booking has been successfully completed!'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -284,6 +302,9 @@ class _BookingPageState extends State<BookingPage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
+                    // Show "Done Booking" dialog
+                    _showDoneBookingDialog();
+
                     // Save data to Firestore
                     _saveDataToFirestore();
                   },
