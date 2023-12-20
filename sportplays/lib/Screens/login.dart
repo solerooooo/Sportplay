@@ -1,10 +1,11 @@
 //login.dart
 import 'package:flutter/material.dart';
 import 'package:sportplays/Screens/home.dart';
+import 'package:sportplays/Screens/home_admin.dart';
 import 'package:sportplays/Screens/register.dart';
 import 'package:sportplays/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Login extends StatefulWidget {
   Login({Key? key});
@@ -14,19 +15,9 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final _formKey = GlobalKey<FormState>();
-
   final nameController = TextEditingController();
-  final emailController = TextEditingController(); // Added this line for email
   final passwordController = TextEditingController();
 
-  @override
-  void dispose() {
-    nameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
 
   final TextStyle labelTextStyle = TextStyle(
     fontSize: 15,
@@ -44,7 +35,8 @@ class _LoginState extends State<Login> {
         height: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("images/background.jpg"),
+            image:
+                AssetImage("images/background.jpg"), //set image file name here
             fit: BoxFit.cover,
           ),
         ),
@@ -52,97 +44,213 @@ class _LoginState extends State<Login> {
           child: Padding(
             padding: EdgeInsets.all(40),
             child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    SizedBox(height: 20),
-                    Text(
-                      'SOLEROOOOO',
-                      style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                      ),
-                      textAlign: TextAlign.center,
+              child: Column(
+                children: [
+                  SizedBox(height: 20),
+                  Text(
+                    'SPORTPLAY',
+                    style: GoogleFonts.bungee(
+                        color: Color(0xFFD6F454),
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20),
+                  Image.asset(
+                    'images/logo.png',
+                    height: 300,
+                  ),
+                  SizedBox(height: 20),
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.person),
+                      label: Text('Name', style: labelTextStyle),
+                      border: OutlineInputBorder(),
                     ),
-                    SizedBox(height: 20),
-                    Image.asset(
-                      'images/logo.png',
-                      height: 300,
+                  ),
+                  SizedBox(height: 20),
+                  TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.lock),
+                      label: Text('Password', style: labelTextStyle),
+                      border: OutlineInputBorder(),
                     ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: nameController,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.person),
-                        label: Text('Name', style: labelTextStyle),
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: emailController,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.email), // Change to email icon
-                        label: Text('Email', style: labelTextStyle),
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: passwordController,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.lock),
-                        label: Text('Password', style: labelTextStyle),
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    SizedBox(
-                      width: 300,
-                      height: 40,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            try {
-                              UserCredential userCredential =
-                                  await FirebaseAuth.instance
-                                      .signInWithEmailAndPassword(
-                                email: emailController.text,
-                                password: passwordController.text,
+                  ),
+                  SizedBox(height: 20),
+                  SizedBox(
+                    width: 300,
+                    height: 40,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        // Retrieve user data from Firestore
+                        try {
+                          DocumentSnapshot userSnapshot =
+                              await FirebaseFirestore.instance
+                                  .collection('UserData')
+                                  .doc(nameController.text)
+                                  .get();
+
+                          if (userSnapshot.exists) {
+                            // Check if the user is an admin
+                            if (userSnapshot['userId'] == 'ADMIN' &&
+                                userSnapshot['password'] ==
+                                    passwordController.text) {
+                              // Admin found, navigate to HomeAdmin
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomeAdmin(
+                                    passUser: User(
+                                      name: userSnapshot['name'],
+                                      email: userSnapshot['email'],
+                                      password: userSnapshot['password'],
+                                      phone: userSnapshot['phone'],
+                                      address: userSnapshot['address'],
+                                      gender: userSnapshot['gender'],
+                                      userId: userSnapshot['userId'],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else if (userSnapshot['password'] ==
+                                passwordController.text) {
+                              // Regular user found, navigate to Home
+                              User passUser = User(
+                                name: userSnapshot['name'],
+                                email: userSnapshot['email'],
+                                password: userSnapshot['password'],
+                                phone: userSnapshot['phone'],
+                                address: userSnapshot['address'],
+                                gender: userSnapshot['gender'],
+                                userId: userSnapshot['userId'],
                               );
 
-                              // Navigate to Home screen
-                              Navigator.pushNamed(context, 'home');
-                            } on FirebaseAuthException catch (e) {
-                              if (e.code == 'user-not-found') {
-                                print('No user found for that email.');
-                              } else if (e.code == 'wrong-password') {
-                                print('Wrong password provided for that user.');
-                              }
+                              // Navigate to Home screen with the User object
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      Home(passUser: passUser),
+                                ),
+                              );
+                            } else {
+                              // Password incorrect
+                              print('Incorrect password');
                             }
+                          } else {
+                            // User not found
+                            print('User not found');
                           }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Color(0xFF444444),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Log in',
-                              style: buttonTextStlye.copyWith(color: Colors.white),
-                            ),
-                            Icon(
-                              Icons.arrow_forward,
-                              color: Color(0xFFC9DB7E),
-                            ),
-                          ],
-                        ),
+                        } catch (error) {
+                          // Handle errors
+                          print(
+                              'Error fetching user data from Firestore: $error');
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Color(0xFF444444),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Log in',
+                            style:
+                                buttonTextStlye.copyWith(color: Colors.white),
+                          ),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: Color(0xFFC9DB7E),
+                          ),
+                        ],
                       ),
                     ),
-                    // ... (remaining widgets)
-                  ],
-                ),
+                  ),
+                  SizedBox(height: 20),
+                  RichText(
+                    text: TextSpan(
+                      text: "Forgot password? ",
+                      style: labelTextStyle.copyWith(color: Colors.black),
+                      children: [
+                        TextSpan(
+                          text: "Reset password",
+                          style: labelTextStyle.copyWith(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 300,
+                    height: 40,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Divider(
+                            color: Colors.black,
+                            height: 40,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            'OR',
+                            style: labelTextStyle.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Divider(
+                            color: Colors.black,
+                            height: 40,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  SizedBox(
+                    width: 300,
+                    height: 40,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Register(
+                              firestore: FirebaseFirestore.instance,
+                            ),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Color(0xFF444444),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Register here',
+                            style:
+                                buttonTextStlye.copyWith(color: Colors.white),
+                          ),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: Color(0xFFC9DB7E),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

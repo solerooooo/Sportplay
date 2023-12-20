@@ -522,14 +522,14 @@ class _HomeAdminState extends State<HomeAdmin> {
                                   },
                                 ),
                                 _buildCircularButton(
-                                  icon: Icons.contact_phone,
-                                  label: 'Contacts',
+                                  icon: Icons.auto_awesome_outlined,
+                                  label: 'View Booking Details',
                                   onPressed: () {
                                     // Navigate to ContactAdmin
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ContactAdmin(),
+                                        builder: (context) => ViewBookingDetailsAdmin(),
                                       ),
                                     );
                                   },
