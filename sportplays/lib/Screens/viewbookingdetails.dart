@@ -7,6 +7,15 @@ import 'qna.dart';
 import 'profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+class Booking {
+  final String selectedActivity;
+  final String selectedTime;
+  final DateTime startTime;
+  final DateTime endTime;
+
+  Booking(this.selectedActivity, this.selectedTime, this.startTime, this.endTime);
+}
+
 class ViewBookingPage extends StatefulWidget {
   final User passUser;
 
@@ -19,7 +28,7 @@ class ViewBookingPage extends StatefulWidget {
 class _ViewBookingPageState extends State<ViewBookingPage> {
   int _selectedIndex = 0;
 
-  List<Booking> bookings = []; // Initialize an empty list
+  List<Booking> bookings = [];
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -64,101 +73,69 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('View Booking Details'),
-          backgroundColor: Colors.lightGreenAccent,
-          bottom: TabBar(
-            tabs: [
-              Tab(text: 'Past'),
-              Tab(text: 'Upcoming'),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            _buildTabContent(_getUpcomingBookings()),
-            _buildTabContent(_getPastBookings()),
-          ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: _selectedIndex,
-          onTap: _onTabSelected,
-          selectedItemColor: Colors.black,
-          unselectedItemColor: Colors.black.withOpacity(0.5),
-          showUnselectedLabels: true,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add),
-              label: 'Booking',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.question_answer),
-              label: 'Q&A',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('View Booking Details'),
+        backgroundColor: Colors.lightGreenAccent,
+      ),
+      body: Container(
+        color: const Color(0xFFb364f3),
+        child: ListView.builder(
+          itemCount: bookings.length,
+          itemBuilder: (context, index) {
+            return Container(
+              margin: EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: Colors.white, // You can set your desired background color
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: ListTile(
+                title: Text('Activity ${bookings[index].selectedActivity}'),
+                subtitle: Text(
+                  'Time: ${bookings[index].startTime} - ${bookings[index].endTime}',
+                ),
+                trailing: IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    _redirectToEditPage(bookings[index]);
+                  },
+                ),
+                onTap: () {
+                  _showBookingDetails(bookings[index]);
+                },
+              ),
+            );
+          },
         ),
       ),
-    );
-  }
-
-  Widget _buildTabContent(List<Booking> filteredBookings) {
-    return Container(
-      color: const Color(0xFFb364f3), // Set the desired background color
-      child: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: filteredBookings.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text('Activity ${filteredBookings[index].userName}'),
-                  subtitle: Text(
-                    'Time: ${filteredBookings[index].startTime} - ${filteredBookings[index].endTime}',
-                  ),
-                  trailing: IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () {
-                      _redirectToEditPage(filteredBookings[index]);
-                    },
-                  ),
-                  onTap: () {
-                    _showBookingDetails(filteredBookings[index]);
-                  },
-                );
-              },
-            ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _selectedIndex,
+        onTap: _onTabSelected,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black.withOpacity(0.5),
+        showUnselectedLabels: true,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Booking',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.question_answer),
+            label: 'Q&A',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
       ),
     );
-  }
-
-  List<Booking> _getUpcomingBookings() {
-    final now = DateTime.now();
-    return bookings
-        .where((booking) =>
-            booking.startTime.isAfter(now) || booking.endTime.isAfter(now))
-        .toList();
-  }
-
-  List<Booking> _getPastBookings() {
-    final now = DateTime.now();
-    return bookings
-        .where((booking) =>
-            booking.endTime.isBefore(now) && booking.startTime.isBefore(now))
-        .toList();
   }
 
   void _showBookingDetails(Booking booking) {
@@ -167,14 +144,16 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Booking Details'),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Activity: ${booking.userName}'),
-              Text('Time Slot: ${booking.startTime}'),
-              Text('End Time: ${booking.endTime}'),
-            ],
+          content: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildBookingDetail('Activity:', booking.selectedActivity),
+                _buildBookingDetail('Time Slot:', booking.startTime.toString()),
+                _buildBookingDetail('End Time:', booking.endTime.toString()),
+              ],
+            ),
           ),
           actions: [
             ElevatedButton(
@@ -189,12 +168,31 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
     );
   }
 
+  Widget _buildBookingDetail(String label, String value) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('$label'),
+          SizedBox(width: 8.0),
+          Expanded(
+            child: Text('$value'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _redirectToEditPage(Booking booking) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            EditBookingDetailsPage(passUser: widget.passUser, selectedTime: '', bookingId: '',),
+        builder: (context) => EditBookingDetailsPage(
+          passUser: widget.passUser,
+          selectedTime: '',
+          bookingId: '',
+        ),
       ),
     );
   }
@@ -215,8 +213,8 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
           Booking(
             doc['selectedActivity'],
             doc['selectedTime'],
-            (doc['startTime'] as Timestamp).toDate(),
-            (doc['endTime'] as Timestamp).toDate(),
+            (doc['timestamp'] as Timestamp).toDate(),
+            (doc['timestamp'] as Timestamp).toDate(),
           ),
         );
       });
