@@ -5,6 +5,7 @@ import 'package:sportplays/Screens/availability_admin.dart';
 import 'package:sportplays/Screens/contact_admin.dart';
 import 'package:sportplays/Screens/notification.dart';
 import 'package:sportplays/Screens/qna_admin.dart';
+import 'package:sportplays/Screens/viewbookingdetails_admin.dart';
 import 'login.dart';
 import 'profile.dart';
 import 'register.dart';
@@ -112,6 +113,17 @@ class _HomeAdminState extends State<HomeAdmin> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => Profile(passUser: widget.passUser),
+                  ),
+                );
+              },
+            ),
+              ListTile(
+              title: Text('User Booking Details'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewBookingDetailsAdmin(),
                   ),
                 );
               },
