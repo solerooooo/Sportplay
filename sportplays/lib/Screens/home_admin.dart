@@ -11,7 +11,6 @@ import 'profile.dart';
 import 'register.dart';
 import '../models/user.dart';
 import 'booking.dart';
-import 'qna.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeAdmin extends StatefulWidget {
@@ -168,7 +167,8 @@ class _HomeAdminState extends State<HomeAdmin> {
             ],
           ),
         ),
-        body: Container(
+           body: SingleChildScrollView(
+        child: Container(
           child: Center(
             child: Column(
               children: [
@@ -434,7 +434,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                       SizedBox(height: 20),
                       Container(
                         width: 400,
-                        height: 200, // Adjust the height as needed
+                        height: 250, // Adjust the height as needed
                         decoration: BoxDecoration(
                           color: Colors.transparent,
                           borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -544,7 +544,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                 ),
               ],
             ),
-          ),
+          ),)
         ));
   }
 
