@@ -1,5 +1,4 @@
 //register.dart
-// ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'login.dart';
@@ -10,6 +9,7 @@ class Register extends StatefulWidget {
   final FirebaseFirestore firestore;
 
   Register({Key? key, required this.firestore}) : super(key: key);
+
   @override
   State createState() => _RegisterState();
 }
@@ -61,7 +61,7 @@ class _RegisterState extends State<Register> {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 10),
-                  TextField(
+                  TextFormField(
                     controller: nameController,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.person),
@@ -70,7 +70,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  TextField(
+                  TextFormField(
                     controller: idController,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.badge),
@@ -79,7 +79,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  TextField(
+                  TextFormField(
                     controller: emailController,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.email),
@@ -88,7 +88,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  TextField(
+                  TextFormField(
                     controller: passwordController,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.lock),
@@ -98,7 +98,7 @@ class _RegisterState extends State<Register> {
                     obscureText: true,
                   ),
                   SizedBox(height: 20),
-                  TextField(
+                  TextFormField(
                     controller: phoneController,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.phone),
@@ -107,7 +107,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  TextField(
+                  TextFormField(
                     controller: addressController,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.home),
@@ -123,7 +123,7 @@ class _RegisterState extends State<Register> {
                         selectedGender = newValue!;
                       });
                     },
-                    decoration: const InputDecoration(
+                    decoration:  InputDecoration(
                       prefixIcon: Icon(Icons.people),
                       labelText: 'Gender',
                       border: OutlineInputBorder(),
@@ -137,7 +137,7 @@ class _RegisterState extends State<Register> {
                         )
                         .toList(),
                   ),
-                  const SizedBox(height: 20),
+                   SizedBox(height: 20),
                   SizedBox(
                     width: 300,
                     height: 40,
@@ -180,8 +180,7 @@ class _RegisterState extends State<Register> {
                             'Register',
                             style: TextStyle(
                               fontSize: 20,
-                              color:
-                                  Colors.white, // Set the text color to white
+                              color: Colors.white,
                             ),
                           ),
                           Icon(
