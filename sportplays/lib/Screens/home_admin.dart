@@ -116,17 +116,6 @@ class _HomeAdminState extends State<HomeAdmin> {
                 },
               ),
               ListTile(
-              title: Text('User Booking Details'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ViewBookingDetailsAdmin(),
-                  ),
-                );
-              },
-            ),
-              ListTile(
                 title: Text('Contact'),
                 onTap: () {
                   Navigator.push(
@@ -529,7 +518,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ViewBookingDetailsAdmin(),
+                                        builder: (context) => ContactAdmin(),
                                       ),
                                     );
                                   },

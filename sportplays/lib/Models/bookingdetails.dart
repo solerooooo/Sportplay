@@ -1,17 +1,20 @@
 //bookingdetails.dart
+import 'package:uuid/uuid.dart';
+
 class Booking {
-  final String userName;
-  final String facility;
-  final DateTime startTime;
-  final DateTime endTime;
+  String bookingId;
+  String selectedActivity = 'Ping Pong';
+  int playerQuantity = 1;
+  String selectedPaymentMethod = 'Cash';
 
-  Booking(this.userName, this.facility, this.startTime, this.endTime);
-
-  static String selectedTime = ''; // Make it global
   static Map<String, int> selectedCourts = {};
 
-  static void updateAvailability(String time, int pingPongCourts, int badmintonCourts, int squashCourts) {
-    selectedTime = time;
+  Booking({required String selectedActivity, required int playerQuantity, required String selectedPaymentMethod})
+      : bookingId = Uuid().v4(), // Generate a unique identifier using the uuid package
+        super();
+
+  static void updateAvailability(
+      String time, int pingPongCourts, int badmintonCourts, int squashCourts) {
     selectedCourts['pingPong_$time'] = pingPongCourts;
     selectedCourts['badminton_$time'] = badmintonCourts;
     selectedCourts['squash_$time'] = squashCourts;
