@@ -155,8 +155,8 @@ class _HomeAdminState extends State<HomeAdmin> {
             ],
           ),
         ),
-           body: SingleChildScrollView(
-        child: Container(
+        body: SingleChildScrollView(
+            child: Container(
           child: Center(
             child: Column(
               children: [
@@ -517,7 +517,8 @@ class _HomeAdminState extends State<HomeAdmin> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ViewBookingDetailsAdminPage(),
+                                        builder: (context) =>
+                                            ViewBookingDetailsAdminPage(),
                                       ),
                                     );
                                   },
@@ -532,8 +533,8 @@ class _HomeAdminState extends State<HomeAdmin> {
                 ),
               ],
             ),
-          ),)
-        ));
+          ),
+        )));
   }
 
   void _deleteNews(String documentId) async {
