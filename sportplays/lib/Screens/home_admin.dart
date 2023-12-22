@@ -41,7 +41,7 @@ class _HomeAdminState extends State<HomeAdmin> {
     _contentsController.clear();
 
     // Show notification
-    Notifications.showNewsAddedNotification(_titleController.text);
+    //Notifications.showNewsAddedNotification(_titleController.text);
   }
 
   @override
@@ -116,16 +116,16 @@ class _HomeAdminState extends State<HomeAdmin> {
                 },
               ),
               ListTile(
-              title: Text('User Booking Details'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ViewBookingDetailsAdmin(),
-                  ),
-                );
-              },
-            ),
+                title: Text('User Booking Details'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ViewBookingDetailsAdmin(),
+                    ),
+                  );
+                },
+              ),
               ListTile(
                 title: Text('Contact'),
                 onTap: () {
@@ -167,8 +167,8 @@ class _HomeAdminState extends State<HomeAdmin> {
             ],
           ),
         ),
-           body: SingleChildScrollView(
-        child: Container(
+        body: SingleChildScrollView(
+            child: Container(
           child: Center(
             child: Column(
               children: [
@@ -529,7 +529,8 @@ class _HomeAdminState extends State<HomeAdmin> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ViewBookingDetailsAdmin(),
+                                        builder: (context) =>
+                                            ViewBookingDetailsAdmin(),
                                       ),
                                     );
                                   },
@@ -544,8 +545,8 @@ class _HomeAdminState extends State<HomeAdmin> {
                 ),
               ],
             ),
-          ),)
-        ));
+          ),
+        )));
   }
 
   void _deleteNews(String documentId) async {

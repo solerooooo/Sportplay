@@ -1,11 +1,12 @@
-//booking.dart
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:sportplays/Models/bookingdetails.dart';
+import 'package:sportplays/models/user.dart';
 import 'package:sportplays/Screens/availability.dart';
-import 'home.dart';
-import '../models/user.dart';
-import 'qna.dart';
-import 'profile.dart';
+import 'package:sportplays/Screens/home.dart';
+import 'package:sportplays/Screens/profile.dart';
+import 'package:sportplays/Screens/qna.dart';
 
 class BookingPage extends StatefulWidget {
   final User passUser;
@@ -22,12 +23,45 @@ class BookingPage extends StatefulWidget {
 }
 
 class _BookingPageState extends State<BookingPage> {
-  String selectedActivity = 'Ping Pong';
-  int playerQuantity = 1;
-  String selectedPaymentMethod = 'Cash';
+  late Booking booking;
   int _selectedIndex = 0;
+  late Razorpay _razorpay;
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  @override
+  void initState() {
+    super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+
+    // Initialize the booking object with default values
+    booking = Booking(
+      selectedActivity: 'Ping Pong',
+      playerQuantity: 1,
+      selectedPaymentMethod: 'Cash',
+      selectedTime: 'Choose your time slot',
+      bookingId: 0,
+    );
+
+    // Fetch the next available bookingId from Firestore
+    _fetchNextBookingId();
+  }
+
+  void _fetchNextBookingId() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+        .instance
+        .collection('Booking')
+        .orderBy('bookingId', descending: true)
+        .limit(1)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      booking.bookingId = querySnapshot.docs.first['bookingId'] + 1;
+    } else {
+      booking.bookingId = 1;
+    }
+  }
 
   void _onTabSelected(int index) {
     setState(() {
@@ -62,63 +96,30 @@ class _BookingPageState extends State<BookingPage> {
     }
   }
 
-  Future<void> _saveDataToFirestore() async {
-    try {
-      CollectionReference bookings = _firestore.collection('bookings');
-
-      // Use the user's name as the document ID
-      String userName = widget.passUser.getName();
-
-      // Get the number of existing bookings for the user
-      QuerySnapshot userBookingsSnapshot =
-          await bookings.doc(userName).collection('userBookings').get();
-      int numberOfBookings = userBookingsSnapshot.docs.length + 1;
-
-      // Use the sequential number as the document ID
-      DocumentReference bookingRef = bookings
-          .doc(userName)
-          .collection('userBookings')
-          .doc(numberOfBookings.toString());
-
-      await bookingRef.set({
-        'userName': userName,
-        'selectedActivity': selectedActivity,
-        'playerQuantity': playerQuantity,
-        'selectedPaymentMethod': selectedPaymentMethod,
-        'selectedTime': widget.selectedTime,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-
-      print('Data saved to Firestore successfully!');
-    } catch (e) {
-      print('Error saving data to Firestore: $e');
-    }
+  @override
+  void dispose() {
+    super.dispose();
+    _razorpay.clear();
   }
 
-  Future<void> _showDoneBookingDialog() async {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Done Booking'),
-          content: Text('Your booking has been successfully completed!'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Home(passUser: widget.passUser),
-                  ),
-                ); // Close the dialog
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  var options = {
+    'key': 'rzp_test_aXqejP2OjuSDNm,tqeJosvhKQbTc4ifq3PR5oRv',
+    'amount': 50,
+    'name': 'Sport Play.',
+    'order_id': 'order_EMBFqjDHEEn80l',
+    'description': 'Court Booking',
+    'timeout': 120,
+    'prefill': {
+      'contact': '011-29389095',
+      'email': 'nur.syuhaida@graduate.utm.my',
+    },
+  };
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {}
+
+  void _handlePaymentError(PaymentFailureResponse response) {}
+
+  void _handleExternalWallet(ExternalWalletResponse response) {}
 
   @override
   Widget build(BuildContext context) {
@@ -174,13 +175,13 @@ class _BookingPageState extends State<BookingPage> {
                       MaterialPageRoute(
                         builder: (context) => AvailabilityPage(
                           passUser: widget.passUser,
-                          sport: selectedActivity,
+                          sport: booking.selectedActivity,
                           selectedTime: widget.selectedTime,
                         ),
                       ),
                     );
                   },
-                  style: selectedActivity == 'Choose your time slot'
+                  style: booking.selectedActivity == 'Choose your time slot'
                       ? ElevatedButton.styleFrom(
                           backgroundColor: Colors.lightGreenAccent)
                       : null,
@@ -212,22 +213,22 @@ class _BookingPageState extends State<BookingPage> {
                           IconButton(
                             onPressed: () {
                               setState(() {
-                                if (playerQuantity > 1) {
-                                  playerQuantity--;
+                                if (booking.playerQuantity > 1) {
+                                  booking.playerQuantity--;
                                 }
                               });
                             },
                             icon: const Icon(Icons.remove),
                           ),
                           Text(
-                            '$playerQuantity',
+                            '${booking.playerQuantity}',
                             style: const TextStyle(fontSize: 18),
                           ),
                           IconButton(
                             onPressed: () {
                               setState(() {
-                                if (playerQuantity < 6) {
-                                  playerQuantity++;
+                                if (booking.playerQuantity < 6) {
+                                  booking.playerQuantity++;
                                 }
                               });
                             },
@@ -260,10 +261,10 @@ class _BookingPageState extends State<BookingPage> {
                             title: const Text('Cash'),
                             leading: Radio(
                               value: 'Cash',
-                              groupValue: selectedPaymentMethod,
+                              groupValue: booking.selectedPaymentMethod,
                               onChanged: (String? value) {
                                 setState(() {
-                                  selectedPaymentMethod = value!;
+                                  booking.selectedPaymentMethod = value!;
                                 });
                               },
                             ),
@@ -272,10 +273,10 @@ class _BookingPageState extends State<BookingPage> {
                             title: const Text('Free'),
                             leading: Radio(
                               value: 'Free',
-                              groupValue: selectedPaymentMethod,
+                              groupValue: booking.selectedPaymentMethod,
                               onChanged: (String? value) {
                                 setState(() {
-                                  selectedPaymentMethod = value!;
+                                  booking.selectedPaymentMethod = value!;
                                 });
                               },
                             ),
@@ -284,10 +285,10 @@ class _BookingPageState extends State<BookingPage> {
                             title: const Text('Online'),
                             leading: Radio(
                               value: 'Online',
-                              groupValue: selectedPaymentMethod,
+                              groupValue: booking.selectedPaymentMethod,
                               onChanged: (String? value) {
                                 setState(() {
-                                  selectedPaymentMethod = value!;
+                                  booking.selectedPaymentMethod = value!;
                                 });
                               },
                             ),
@@ -300,17 +301,16 @@ class _BookingPageState extends State<BookingPage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    // Implement payment logic here
-                    print('Selected Payment Method: $selectedPaymentMethod');
+                    print(
+                        'Selected Payment Method: ${booking.selectedPaymentMethod}');
+                    _razorpay.open(options);
                   },
                   child: const Text('Make Payment'),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    // Show "Done Booking" dialog
-                    _showDoneBookingDialog();
-                    // Save data to Firestore
+                    _showDoneBookingDialog(context);
                     _saveDataToFirestore();
                   },
                   child: const Text('Done'),
@@ -359,10 +359,10 @@ class _BookingPageState extends State<BookingPage> {
         ElevatedButton(
           onPressed: () {
             setState(() {
-              selectedActivity = activityName;
+              booking.selectedActivity = activityName;
             });
           },
-          style: selectedActivity == activityName
+          style: booking.selectedActivity == activityName
               ? ElevatedButton.styleFrom(
                   backgroundColor: Colors.lightGreenAccent,
                 )
@@ -382,5 +382,51 @@ class _BookingPageState extends State<BookingPage> {
         ),
       ],
     );
+  }
+
+  Future<void> _showDoneBookingDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Done Booking'),
+          content: Text('Your booking has been successfully completed!'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Home(passUser: widget.passUser),
+                  ),
+                ); // Close the dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _saveDataToFirestore() async {
+    String userName = widget.passUser.name;
+
+    await FirebaseFirestore.instance
+        .collection('Booking')
+        .doc('${booking.bookingId}')
+        .set({
+      'bookingId': booking.bookingId,
+      'userName': userName,
+      'selectedActivity': booking.selectedActivity,
+      'playerQuantity': booking.playerQuantity,
+      'selectedPaymentMethod': booking.selectedPaymentMethod,
+      'timestamp': FieldValue.serverTimestamp(),
+      'selectedTime': widget.selectedTime,
+    });
+
+    setState(() {
+      booking.bookingId = ++booking.bookingId;
+    });
   }
 }

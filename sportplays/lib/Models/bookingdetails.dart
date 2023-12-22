@@ -1,19 +1,15 @@
-//bookingdetails.dart
 class Booking {
-  final String userName;
-  final String facility;
-  final DateTime startTime;
-  final DateTime endTime;
+  int bookingId;
+  String selectedActivity;
+  int playerQuantity;
+  String selectedPaymentMethod;
+  String selectedTime;
 
-  Booking(this.userName, this.facility, this.startTime, this.endTime);
-
-  static String selectedTime = ''; // Make it global
-  static Map<String, int> selectedCourts = {};
-
-  static void updateAvailability(String time, int pingPongCourts, int badmintonCourts, int squashCourts) {
-    selectedTime = time;
-    selectedCourts['pingPong_$time'] = pingPongCourts;
-    selectedCourts['badminton_$time'] = badmintonCourts;
-    selectedCourts['squash_$time'] = squashCourts;
-  }
+  Booking({
+    required this.bookingId,
+    required this.selectedActivity,
+    required this.playerQuantity,
+    required this.selectedPaymentMethod,
+    required this.selectedTime,
+  });
 }
