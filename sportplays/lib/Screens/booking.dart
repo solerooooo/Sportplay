@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sportplays/Models/bookingdetails.dart';
-import 'package:sportplays/Models/constants.dart';
+import 'package:sportplays/Screens/stripepaymenthandle.dart';
 import 'package:sportplays/models/user.dart';
 import 'package:sportplays/Screens/availability.dart';
 import 'package:sportplays/Screens/home.dart';
 import 'package:sportplays/Screens/profile.dart';
 import 'package:sportplays/Screens/qna.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
+
 
 class BookingPage extends StatefulWidget {
   final User passUser;
@@ -26,15 +26,10 @@ class BookingPage extends StatefulWidget {
 class _BookingPageState extends State<BookingPage> {
   late Booking booking;
   int _selectedIndex = 0;
-  Razorpay _razorpay = Razorpay();
 
   @override
   void initState() {
     super.initState();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-_razorpay.clear(); // Removes all listeners
     // Initialize the booking object with default values
     booking = Booking(
       selectedActivity: 'Ping Pong',
@@ -48,46 +43,18 @@ _razorpay.clear(); // Removes all listeners
     _fetchNextBookingId();
   }
 
-  void _openRazorpay() {
-    var options = {
-      'key': Constants.razorpayKey,
-      'amount': Constants.defaultAmount,
-      'name': 'Your App Name',
-      'description': 'Payment for booking',
-      'prefill': {
-        'contact': Constants.contactNumber,
-        'email': Constants.userEmail,
-      },
-      'external': {
-        'wallets': ['paytm'],
-      },
-    };
-
+   StripePaymentHandle stripePaymentHandle = StripePaymentHandle();
+   
+void _openStripePayment() async {
     try {
-      _razorpay.open(options);
+      // Use the stripePaymentHandle instance to make payments
+      await stripePaymentHandle.stripeMakePayment();
     } catch (e) {
-      print("Error: $e");
-      // Handle error, show a snackbar or alert dialog
+      print("Error during payment: $e");
+      // Handle payment error
     }
   }
-
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    print("Payment success: ${response.paymentId}");
-    // Implement your logic here after successful payment
-  }
-
-  void _handlePaymentError(PaymentFailureResponse response) {
-    print("Payment error: ${response.message}");
-    // Implement your logic here for payment failure
-  }
-
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    print("External wallet: ${response.walletName}");
-    // Implement your logic here for external wallet selection
-  }
-
-  
-
+ 
   void _fetchNextBookingId() async {
     // Fetch the maximum bookingId from Firestore and increment it
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
@@ -313,7 +280,7 @@ _razorpay.clear(); // Removes all listeners
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    _openRazorpay();
+                _openStripePayment();
                     print(
                         'Selected Payment Method: $booking.selectedPaymentMethod');
                   },
