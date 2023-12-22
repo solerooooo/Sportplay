@@ -1,7 +1,7 @@
 // editbookingdetails.dart
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sportplays/Screens/availability.dart';
+import 'package:sportplays/screens/availability.dart';
 import '../models/user.dart';
 
 class EditBookingDetailsPage extends StatefulWidget {

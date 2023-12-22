@@ -1,181 +1,102 @@
-/*import 'package:flutter/material.dart';
-import 'package:sportplays/Models/bookingdetails.dart';
-import 'package:sportplays/Screens/editbookingdetails.dart';
-import '../models/user.dart';
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sportplays/models/bookingdetails.dart';
 
-class ViewBookingDetailsAdmin extends StatefulWidget {
-  const ViewBookingDetailsAdmin({Key? key}) : super(key: key);
+class ViewBookingDetailsAdminPage extends StatefulWidget {
+  const ViewBookingDetailsAdminPage({Key? key});
 
   @override
-  _ViewBookingDetailsAdminState createState() => _ViewBookingDetailsAdminState();
+  _ViewBookingDetailsAdminPageState createState() =>
+      _ViewBookingDetailsAdminPageState();
 }
 
-class _ViewBookingDetailsAdminState extends State<ViewBookingDetailsAdmin> {
-  int _selectedIndex = 0;
-
-  List<Booking> bookings = [];
-
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchAllBookingsFromFirestore();
-  }
-
-  void _onTabSelected(int index) {
-    // Implement navigation logic if needed
-  }
+class _ViewBookingDetailsAdminPageState
+    extends State<ViewBookingDetailsAdminPage> {
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin View Booking Details'),
+        title: const Text('All Bookings'),
         backgroundColor: Colors.lightGreenAccent,
       ),
-      body: Container(
-        color: const Color(0xFFb364f3),
-        child: ListView.builder(
-          itemCount: bookings.length,
-          itemBuilder: (context, index) {
-            return Container(
-              margin: EdgeInsets.all(8.0),
-              padding: EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: ListTile(
-                title: Text('User: ${bookings[index].userName}'),
-                subtitle: Text(
-                  'Activity: ${bookings[index].selectedActivity}\n'
-                  'Time: ${bookings[index].startTime} - ${bookings[index].endTime}',
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    _redirectToEditPage(bookings[index]);
-                  },
-                ),
-                onTap: () {
-                  _showBookingDetails(bookings[index]);
-                },
-              ),
-            );
-          },
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        onTap: _onTabSelected,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black.withOpacity(0.5),
-        showUnselectedLabels: true,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.question_answer),
-            label: 'Q&A',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+      body: FutureBuilder(
+        future: _getAllBookings(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator(); // Loading indicator
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            List<Booking> bookings = snapshot.data as List<Booking>;
+            return _buildListView(bookings);
+          }
+        },
       ),
     );
   }
 
-  void _showBookingDetails(Booking booking) {
-    showDialog(
+  Future<List<Booking>> _getAllBookings() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance.collection('Booking').get();
+
+    List<Booking> bookings = querySnapshot.docs.map((doc) {
+      return Booking(
+        bookingId: doc['bookingId'],
+        selectedActivity: doc['selectedActivity'],
+        playerQuantity: doc['playerQuantity'],
+        selectedPaymentMethod: doc['selectedPaymentMethod'],
+        selectedTime: doc['selectedTime'],
+      );
+    }).toList();
+
+    return bookings;
+  }
+
+  Widget _buildListView(List<Booking> bookings) {
+    return ListView.builder(
+      itemCount: bookings.length,
+      itemBuilder: (context, index) {
+        Booking booking = bookings[index];
+        return Card(
+          child: ListTile(
+              title: Text('Activity: ${booking.selectedActivity}'),
+              subtitle: Text('Players: ${booking.selectedTime}'),
+              onTap: () {
+                _showBookingDetailsDialog(booking);
+              }),
+        );
+      },
+    );
+  }
+
+  Future<void> _showBookingDetailsDialog(Booking booking) async {
+    return showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Booking Details'),
-          content: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildBookingDetail('User:', booking.userName),
-                _buildBookingDetail('Activity:', booking.selectedActivity),
-                _buildBookingDetail('Time Slot:', booking.startTime.toString()),
-                _buildBookingDetail('End Time:', booking.endTime.toString()),
-              ],
-            ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Booking ID: ${booking.bookingId}'),
+              Text('Activity: ${booking.selectedActivity}'),
+              Text('Players: ${booking.playerQuantity}'),
+              Text('Payment Method: ${booking.selectedPaymentMethod}'),
+              Text('Selected Time: ${booking.selectedTime}'),
+              // Add other fields as needed
+            ],
           ),
-          actions: [
-            ElevatedButton(
+          actions: <Widget>[
+            TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pop(context); // Close the dialog
               },
-              child: Text('Close'),
+              child: Text('OK'),
             ),
           ],
         );
       },
     );
   }
-
-  Widget _buildBookingDetail(String label, String value) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('$label'),
-          SizedBox(width: 8.0),
-          Expanded(
-            child: Text('$value'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _redirectToEditPage(Booking booking) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EditBookingDetailsPage(
-          passUser: User(name: booking.userName),
-          selectedTime: booking.selectedTime,
-          bookingId: booking.bookingId,
-        ),
-      ),
-    );
-  }
-
-  void _fetchAllBookingsFromFirestore() async {
-    try {
-      QuerySnapshot bookingSnapshot = await _firestore.collection('bookings').get();
-
-      List<Booking> fetchedBookings = [];
-
-      bookingSnapshot.docs.forEach((doc) {
-        fetchedBookings.add(
-          Booking(
-            doc['selectedActivity'],
-            doc['selectedTime'],
-            (doc['timestamp'] as Timestamp).toDate(),
-            (doc['timestamp'] as Timestamp).toDate(),
-            userName: doc['userName'],
-          ),
-        );
-      });
-
-      setState(() {
-        bookings = fetchedBookings;
-      });
-    } catch (e) {
-      print('Error fetching bookings: $e');
-    }
-  }
 }
-*/
