@@ -518,7 +518,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            ViewBookingDetailsAdmin(),
+                                            ViewBookingDetailsAdminPage(),
                                       ),
                                     );
                                   },
