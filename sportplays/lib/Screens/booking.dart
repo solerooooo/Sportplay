@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sportplays/Models/bookingdetails.dart';
-import 'package:sportplays/Screens/stripepaymenthandle.dart';
 import 'package:sportplays/models/user.dart';
 import 'package:sportplays/Screens/availability.dart';
 import 'package:sportplays/Screens/home.dart';
 import 'package:sportplays/Screens/profile.dart';
 import 'package:sportplays/Screens/qna.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class BookingPage extends StatefulWidget {
   final User passUser;
@@ -25,11 +26,15 @@ class BookingPage extends StatefulWidget {
 class _BookingPageState extends State<BookingPage> {
   late Booking booking;
   int _selectedIndex = 0;
+  late Razorpay _razorpay;
 
   @override
   void initState() {
     super.initState();
-
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     booking = Booking(
       selectedActivity: 'Ping Pong',
       playerQuantity: 1,
@@ -37,27 +42,75 @@ class _BookingPageState extends State<BookingPage> {
       selectedTime: 'Choose your time slot',
       bookingId: 0,
     );
-
     _fetchNextBookingId();
   }
 
-  StripePaymentHandle stripePaymentHandle = StripePaymentHandle();
+  @override
+  void dispose() {
+    super.dispose();
+    _razorpay.clear();
+  }
 
-  void _openStripePayment() async {
+  void launchPayment() async {
+    var options = {
+      'key': 'your_razorpay_api_key_here', // Replace with your actual API key
+      'amount': 1 * 10,
+      'name': 'flutterdemorazorpay',
+      'description': 'Test payment from Flutter app',
+      'prefill': {'contact': '', 'email': ''},
+      'external': {'wallets': []}
+    };
+
     try {
-      await stripePaymentHandle.stripeMakePayment();
+      _razorpay.open(options);
     } catch (e) {
-      print("Error during payment: $e");
+      debugPrint(e.toString());
     }
   }
 
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(
+      msg: 'Error ${response.code} ${response.message}',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Fluttertoast.showToast(
+      msg: 'Payment Success ${response.paymentId}',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.green,
+      textColor: Colors.black,
+      fontSize: 16.0,
+    );
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Fluttertoast.showToast(
+      msg: 'Wallet Name ${response.walletName}',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.green,
+      textColor: Colors.black,
+      fontSize: 16.0,
+    );
+  }
+
   void _fetchNextBookingId() async {
-    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
-        .instance
-        .collection('Booking')
-        .orderBy('bookingId', descending: true)
-        .limit(1)
-        .get();
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance
+            .collection('Booking')
+            .orderBy('bookingId', descending: true)
+            .limit(1)
+            .get();
 
     if (querySnapshot.docs.isNotEmpty) {
       booking.bookingId = querySnapshot.docs.first['bookingId'] + 1;
@@ -273,9 +326,9 @@ class _BookingPageState extends State<BookingPage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    _openStripePayment();
+                    launchPayment();
                     print(
-                        'Selected Payment Method: $booking.selectedPaymentMethod');
+                        'Selected Payment Method: ${booking.selectedPaymentMethod}');
                   },
                   child: const Text('Make Payment'),
                 ),
@@ -283,7 +336,6 @@ class _BookingPageState extends State<BookingPage> {
                 ElevatedButton(
                   onPressed: () {
                     _showDoneBookingDialog();
-
                     _saveDataToFirestore();
                   },
                   child: const Text('Done'),

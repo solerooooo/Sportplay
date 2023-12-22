@@ -5,7 +5,6 @@ import 'home.dart';
 import '../models/user.dart';
 import 'viewbookingdetails.dart';
 import 'profile.dart';
-import 'qna.dart';
 
 class QnAAdmin extends StatefulWidget {
   final User passUser;

@@ -1,4 +1,4 @@
-import 'dart:convert';
+/*import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -84,4 +84,4 @@ class StripePaymentHandle {
     final calculatedAmount = (int.parse(amount)) * 100;
     return calculatedAmount.toString();
   }
-}
+}*/

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sportplays/Models/bookingdetails.dart';
-import 'package:sportplays/Screens/login.dart';
+import 'package:sportplays/screens/login.dart';
 import 'profile.dart';
 import '../models/user.dart';
 import 'booking.dart';
