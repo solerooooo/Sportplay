@@ -1,4 +1,3 @@
-// booking_page.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sportplays/Models/bookingdetails.dart';
@@ -16,6 +15,7 @@ class BookingPage extends StatefulWidget {
     Key? key,
     required this.passUser,
     required this.selectedTime,
+    
   }) : super(key: key);
 
   @override
@@ -34,7 +34,30 @@ class _BookingPageState extends State<BookingPage> {
       selectedActivity: 'Ping Pong',
       playerQuantity: 1,
       selectedPaymentMethod: 'Cash',
+      selectedTime: 'Choose your time slot', 
+      bookingId: 0, // Set initial value to 0 or null
     );
+    
+    // Fetch the next available bookingId from Firestore
+    _fetchNextBookingId();
+  }
+
+  void _fetchNextBookingId() async {
+    // Fetch the maximum bookingId from Firestore and increment it
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance
+            .collection('Booking')
+            .orderBy('bookingId', descending: true)
+            .limit(1)
+            .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      // If there are existing bookings, get the highest bookingId and increment it
+      booking.bookingId = querySnapshot.docs.first['bookingId'] + 1;
+    } else {
+      // If no existing bookings, start with bookingId = 1
+      booking.bookingId = 1;
+    }
   }
 
   void _onTabSelected(int index) {
@@ -151,35 +174,34 @@ class _BookingPageState extends State<BookingPage> {
                       ),
                       const SizedBox(height: 10),
                       Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  if (booking.playerQuantity > 1) {
-                                    booking.playerQuantity--;
-                                  }
-                                });
-                              },
-                              icon: const Icon(Icons.remove),
-                            ),
-                            Text(
-                              '${booking.playerQuantity}',
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  if (booking.playerQuantity < 6) {
-                                    booking.playerQuantity++;
-                                  }
-                                });
-                              },
-                              icon: const Icon(Icons.add),
-                            ),
-                          ],
-                        ),
-                      
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                if (booking.playerQuantity > 1) {
+                                  booking.playerQuantity--;
+                                }
+                              });
+                            },
+                            icon: const Icon(Icons.remove),
+                          ),
+                          Text(
+                            '${booking.playerQuantity}',
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                if (booking.playerQuantity < 6) {
+                                  booking.playerQuantity++;
+                                }
+                              });
+                            },
+                            icon: const Icon(Icons.add),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -329,25 +351,29 @@ class _BookingPageState extends State<BookingPage> {
       ],
     );
   }
-// ...
 
-// Add the method to save data to Firestore with the bookingId
   void _saveDataToFirestore() async {
-    // Access userName from the User object
-    String userName = widget.passUser.name;
+  // Access userName from the User object
+  String userName = widget.passUser.name;
 
-    // Add your Firestore logic here to save data without specifying the document ID
-    await FirebaseFirestore.instance.collection('Booking').add({
-      'selectedActivity': booking.selectedActivity,
-      'playerQuantity': booking.playerQuantity,
-      'selectedPaymentMethod': booking.selectedPaymentMethod,
-      'userName': userName, // Include the userName in the Firestore document
-      'timestamp': FieldValue.serverTimestamp(), // Add timestamp field
-      // Add other fields as needed
-    });
-  }
+  // Add your Firestore logic here to save data with the bookingId as the document ID
+  await FirebaseFirestore.instance.collection('Booking').doc('${booking.bookingId}').set({
+    'bookingId': booking.bookingId, // Add bookingId field
+    'userName': userName,
+    'selectedActivity': booking.selectedActivity,
+    'playerQuantity': booking.playerQuantity,
+    'selectedPaymentMethod': booking.selectedPaymentMethod,
+    'timestamp': FieldValue.serverTimestamp(), // Add timestamp field
+    'selectedTime': widget.selectedTime, // Add selectedTime field
+    // Add other fields as needed
+  });
 
-// ...
+  setState(() {
+    // Use pre-increment or alternative way to increment bookingId
+    booking.bookingId = ++booking.bookingId;
+  });
+}
+
 
   Future<void> _showDoneBookingDialog() async {
     return showDialog(

@@ -89,6 +89,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
         builder: (context) => BookingPage(
           passUser: widget.passUser,
           selectedTime: selectedTime,
+         
         ),
       ),
     );
