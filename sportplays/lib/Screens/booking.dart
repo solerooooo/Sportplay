@@ -1,12 +1,18 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sportplays/Models/bookingdetails.dart';
-import 'package:sportplays/Screens/stripepaymenthandle.dart';
 import 'package:sportplays/models/user.dart';
 import 'package:sportplays/Screens/availability.dart';
 import 'package:sportplays/Screens/home.dart';
 import 'package:sportplays/Screens/profile.dart';
 import 'package:sportplays/Screens/qna.dart';
+import 'package:http/http.dart' as http;
+
 
 class BookingPage extends StatefulWidget {
   final User passUser;
@@ -25,6 +31,8 @@ class BookingPage extends StatefulWidget {
 class _BookingPageState extends State<BookingPage> {
   late Booking booking;
   int _selectedIndex = 0;
+  Map<String, dynamic>? paymentIntentData;
+  String money = 2.toString();
 
   @override
   void initState() {
@@ -41,15 +49,6 @@ class _BookingPageState extends State<BookingPage> {
     _fetchNextBookingId();
   }
 
-  StripePaymentHandle stripePaymentHandle = StripePaymentHandle();
-
-  void _openStripePayment() async {
-    try {
-      await stripePaymentHandle.stripeMakePayment();
-    } catch (e) {
-      print("Error during payment: $e");
-    }
-  }
 
   void _fetchNextBookingId() async {
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
@@ -273,17 +272,15 @@ class _BookingPageState extends State<BookingPage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    _openStripePayment();
-                    print(
-                        'Selected Payment Method: $booking.selectedPaymentMethod');
-                  },
+                   makePayment();
+                   print('Selected Payment Method: ${booking.selectedPaymentMethod}');
+ },
                   child: const Text('Make Payment'),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     _showDoneBookingDialog();
-
                     _saveDataToFirestore();
                   },
                   child: const Text('Done'),
@@ -402,4 +399,253 @@ class _BookingPageState extends State<BookingPage> {
       },
     );
   }
+
+   payFee() {
+    try {
+      //if you want to upload data to any database do it here
+    } catch (e) {
+      // exception while uploading data
+    }
+  }
+
+
+  Future<void> makePayment() async {
+    try {
+      paymentIntentData =
+      await createPaymentIntent(money, 'USD'); //json.decode(response.body);
+      await Stripe.instance
+          .initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+              paymentIntentClientSecret:
+              paymentIntentData!['client_secret'],
+              style: ThemeMode.dark,
+              merchantDisplayName: 'ANNIE'))
+          .then((value) {});
+      displayPaymentSheet();
+    } catch (e, s) {
+      if (kDebugMode) {
+        print(s);
+      }
+    }
+  }
+
+  displayPaymentSheet() async {
+    try {
+      await Stripe.instance.presentPaymentSheet().then((newValue) {
+        payFee();
+
+        paymentIntentData = null;
+      }).onError((error, stackTrace) {
+        if (kDebugMode) {
+          print('Exception/DISPLAYPAYMENTSHEET==> $error $stackTrace');
+        }
+      });
+    } on StripeException catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      showDialog(
+          context: context,
+          builder: (_) => const AlertDialog(
+            content: Text("Cancelled "),
+          ));
+    } catch (e) {
+      if (kDebugMode) {
+        print('$e');
+      }
+    }
+  }
+
+  createPaymentIntent(String amount, String currency) async {
+    try {
+      Map<String, dynamic> body = {
+        'amount': calculateAmount(amount),
+        'currency': currency,
+        'payment_method_types[]': 'card'
+      };
+      var response = await http.post(
+          Uri.parse('https://api.stripe.com/v1/payment_intents'),
+          body: body,
+          headers: {
+            'Authorization':
+            'Bearer sk_test_51L8PzGKEp9uhBKrrWhzpS6OoCZSlUfjEakjHRoLwBOrcSLeUDUZZw1QbX7BgWXjV6w9SMcDLAUlRzorynyrC1OrV00c4HIw4Ns',
+            'Content-Type': 'application/x-www-form-urlencoded'
+          });
+      return jsonDecode(response.body);
+    } catch (err) {
+      if (kDebugMode) {
+        print('err charging user: ${err.toString()}');
+      }
+    }
+  }
+
+  calculateAmount(String amount) {
+    final a = (int.parse(amount)) * 100;
+    return a.toString();
+  }
 }
+
+/*void payFee() {
+    try {
+      // Display a toast message when payFee is called
+      Fluttertoast.showToast(
+        msg: 'Payment fee processed!',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+
+      // You can add your payment fee logic here if needed
+    } catch (e) {
+      // Handle exceptions during payment fee processing
+      Fluttertoast.showToast(
+        msg: 'Error processing payment fee: $e',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
+  }
+
+
+   Future<void> makePayment() async {
+    try {
+      print("Making payment...");
+      paymentIntentData =
+          await createPaymentIntent(money, 'MYR'); //json.decode(response.body);
+      print("Payment Intent Data: $paymentIntentData");
+      await Stripe.instance
+          .initPaymentSheet(
+              paymentSheetParameters: SetupPaymentSheetParameters(
+                  paymentIntentClientSecret:
+                      paymentIntentData!['client_secret'],
+                  style: ThemeMode.dark,
+                  merchantDisplayName: 'SPORTPLAY'))
+          .then((value) {});
+      displayPaymentSheet();
+    } catch (e, s) {
+      print("Error during payment: $e");
+      if (kDebugMode) {
+        print(s);
+      }
+    }
+  }
+
+   Future<void> displayPaymentSheet() async {
+    try {
+      print("Displaying Payment Sheet...");
+
+      await showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Confirm Payment',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 16.0),
+                Text(
+                  'You are about to make a payment of RM $money.',
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: () async {
+                    
+                    Navigator.pop(context);
+
+                    // Proceed with the payment
+                    await Stripe.instance.presentPaymentSheet();
+                    
+                    // Call payFee after payment sheet is presented
+                    payFee();
+
+                    Fluttertoast.showToast(
+                      msg: 'Payment successfully completed',
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.green,
+                      textColor: Colors.white,
+                      fontSize: 16.0,
+                    );
+
+                    print("Payment Sheet Displayed Successfully!");
+                  },
+                  child: Text('Confirm Payment'),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+
+    } on StripeException catch (e) {
+      print("Stripe Exception: $e");
+      Fluttertoast.showToast(
+        msg: 'Error from Stripe: ${e.error.localizedMessage}',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    } catch (e) {
+      print("Error during payment: $e");
+      Fluttertoast.showToast(
+        msg: 'Unforeseen error: $e',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
+  }
+
+  createPaymentIntent(String amount, String currency) async {
+    try {
+      Map<String, dynamic> body = {
+        'amount': calculateAmount(amount),
+        'currency': 'MYR',
+        'payment_method_types[]': 'card'
+      };
+      var response = await http.post(
+          Uri.parse('https://api.stripe.com/v1/payment_intents'),
+          body: body,
+          headers: {
+            'Authorization':
+            'Bearer sk_test_51OQ77jL9jiXabeNWIWpB3NvVkYun6KGfOlV7JBtkjDd1VpKyU8QI4ZSb2GtXcexsNYHZVI5Ii2avBL1ZVj2slMkB00VQ0wRdaZ',
+            'Content-Type': 'application/x-www-form-urlencoded'
+          });
+      return jsonDecode(response.body);
+    } catch (err) {
+      if (kDebugMode) {
+        print('err charging user: ${err.toString()}');
+      }
+    }
+  }
+
+  calculateAmount(String amount) {
+    final a = (int.parse(amount)) * 100;
+    return a.toString();
+  }
+}*/
+ 
+
