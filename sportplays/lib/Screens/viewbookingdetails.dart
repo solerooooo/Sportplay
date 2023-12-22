@@ -1,20 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sportplays/Models/bookingdetails.dart';
-import 'package:sportplays/Screens/editbookingdetails.dart';
-import 'home.dart';
-import '../models/user.dart';
-import 'qna.dart';
-import 'profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-class Booking {
-  final String selectedActivity;
-  final String selectedTime;
-  final DateTime startTime;
-  final DateTime endTime;
-
-  Booking(this.selectedActivity, this.selectedTime, this.startTime, this.endTime);
-}
+import 'package:sportplays/Models/bookingdetails.dart';
+import 'package:sportplays/Screens/home.dart';
+import 'package:sportplays/Screens/profile.dart';
+import 'package:sportplays/Screens/qna.dart';
+import 'package:sportplays/models/user.dart';
 
 class ViewBookingPage extends StatefulWidget {
   final User passUser;
@@ -27,16 +17,6 @@ class ViewBookingPage extends StatefulWidget {
 
 class _ViewBookingPageState extends State<ViewBookingPage> {
   int _selectedIndex = 0;
-
-  List<Booking> bookings = [];
-
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchBookingsFromFirestore();
-  }
 
   void _onTabSelected(int index) {
     setState(() {
@@ -71,43 +51,24 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
     }
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('View Booking Details'),
+        title: const Text('My Bookings'),
         backgroundColor: Colors.lightGreenAccent,
       ),
-      body: Container(
-        color: const Color(0xFFb364f3),
-        child: ListView.builder(
-          itemCount: bookings.length,
-          itemBuilder: (context, index) {
-            return Container(
-              margin: EdgeInsets.all(8.0),
-              padding: EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: Colors.white, // You can set your desired background color
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: ListTile(
-                title: Text('Activity ${bookings[index].selectedActivity}'),
-                subtitle: Text(
-                  'Time: ${bookings[index].startTime} - ${bookings[index].endTime}',
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    _redirectToEditPage(bookings[index]);
-                  },
-                ),
-                onTap: () {
-                  _showBookingDetails(bookings[index]);
-                },
-              ),
-            );
-          },
-        ),
+      body: FutureBuilder(
+        future: _getBookings(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator(); // Loading indicator
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            List<Booking> bookings = snapshot.data as List<Booking>;
+            return _buildListView(bookings);
+          }
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -138,92 +99,77 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
     );
   }
 
-  void _showBookingDetails(Booking booking) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Booking Details'),
-          content: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildBookingDetail('Activity:', booking.selectedActivity),
-                _buildBookingDetail('Time Slot:', booking.startTime.toString()),
-                _buildBookingDetail('End Time:', booking.endTime.toString()),
-              ],
+  Future<List<Booking>> _getBookings() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance
+            .collection('Booking')
+            .where('userName', isEqualTo: widget.passUser.name)
+            .get();
+
+    List<Booking> bookings = querySnapshot.docs.map((doc) {
+      return Booking(
+        bookingId: doc['bookingId'],
+        selectedActivity: doc['selectedActivity'],
+        playerQuantity: doc['playerQuantity'],
+        selectedPaymentMethod: doc['selectedPaymentMethod'],
+        selectedTime: doc['selectedTime'],
+      );
+    }).toList();
+
+    return bookings;
+  }
+
+  Widget _buildListView(List<Booking> bookings) {
+    return ListView.builder(
+      itemCount: bookings.length,
+      itemBuilder: (context, index) {
+        Booking booking = bookings[index];
+        return Card(
+          child: ListTile(
+            title: Text('Activity: ${booking.selectedActivity}'),
+            subtitle: Text('Players: ${booking.selectedTime}'),
+            onTap: () {
+              _showBookingDetailsDialog(booking);
+            },
+            trailing: IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () {
+                // Handle edit action if needed
+              },
             ),
           ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Close'),
-            ),
-          ],
         );
       },
     );
   }
 
-  Widget _buildBookingDetail(String label, String value) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('$label'),
-          SizedBox(width: 8.0),
-          Expanded(
-            child: Text('$value'),
+  Future<void> _showBookingDetailsDialog(Booking booking) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Booking Details'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Booking ID: ${booking.bookingId}'),
+              Text('Activity: ${booking.selectedActivity}'),
+              Text('Players: ${booking.playerQuantity}'),
+              Text('Payment Method: ${booking.selectedPaymentMethod}'),
+              Text('Selected Time: ${booking.selectedTime}'),
+              // Add other fields as needed
+            ],
           ),
-        ],
-      ),
-    );
-  }
-
-  void _redirectToEditPage(Booking booking) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EditBookingDetailsPage(
-          passUser: widget.passUser,
-          selectedTime: '',
-          bookingId: '',
-        ),
-      ),
-    );
-  }
-
-  void _fetchBookingsFromFirestore() async {
-    try {
-      String userName = widget.passUser.getName();
-      QuerySnapshot bookingSnapshot = await _firestore
-          .collection('bookings')
-          .doc(userName)
-          .collection('userBookings')
-          .get();
-
-      List<Booking> fetchedBookings = [];
-
-      bookingSnapshot.docs.forEach((doc) {
-        fetchedBookings.add(
-          Booking(
-            doc['selectedActivity'],
-            doc['selectedTime'],
-            (doc['timestamp'] as Timestamp).toDate(),
-            (doc['timestamp'] as Timestamp).toDate(),
-          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
         );
-      });
-
-      setState(() {
-        bookings = fetchedBookings;
-      });
-    } catch (e) {
-      print('Error fetching bookings: $e');
-    }
+      },
+    );
   }
 }

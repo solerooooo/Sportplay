@@ -7,6 +7,9 @@ import 'package:sportplays/Screens/availability.dart';
 import 'package:sportplays/Screens/home.dart';
 import 'package:sportplays/Screens/profile.dart';
 import 'package:sportplays/Screens/qna.dart';
+import 'package:sportplays/Screens/home.dart';
+import 'package:sportplays/Screens/profile.dart';
+import 'package:sportplays/Screens/qna.dart';
 
 class BookingPage extends StatefulWidget {
   final User passUser;
@@ -16,6 +19,7 @@ class BookingPage extends StatefulWidget {
     Key? key,
     required this.passUser,
     required this.selectedTime,
+    
   }) : super(key: key);
 
   @override
@@ -24,44 +28,10 @@ class BookingPage extends StatefulWidget {
 
 class _BookingPageState extends State<BookingPage> {
   late Booking booking;
+  late Booking booking;
   int _selectedIndex = 0;
-  late Razorpay _razorpay;
 
-  @override
-  void initState() {
-    super.initState();
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-
-    // Initialize the booking object with default values
-    booking = Booking(
-      selectedActivity: 'Ping Pong',
-      playerQuantity: 1,
-      selectedPaymentMethod: 'Cash',
-      selectedTime: 'Choose your time slot',
-      bookingId: 0,
-    );
-
-    // Fetch the next available bookingId from Firestore
-    _fetchNextBookingId();
-  }
-
-  void _fetchNextBookingId() async {
-    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
-        .instance
-        .collection('Booking')
-        .orderBy('bookingId', descending: true)
-        .limit(1)
-        .get();
-
-    if (querySnapshot.docs.isNotEmpty) {
-      booking.bookingId = querySnapshot.docs.first['bookingId'] + 1;
-    } else {
-      booking.bookingId = 1;
-    }
-  }
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   void _onTabSelected(int index) {
     setState(() {
@@ -127,12 +97,6 @@ class _BookingPageState extends State<BookingPage> {
       appBar: AppBar(
         title: const Text('Booking'),
         backgroundColor: const Color(0xFFD6F454),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.account_circle),
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -182,6 +146,7 @@ class _BookingPageState extends State<BookingPage> {
                     );
                   },
                   style: booking.selectedActivity == 'Choose your time slot'
+                  style: booking.selectedActivity == 'Choose your time slot'
                       ? ElevatedButton.styleFrom(
                           backgroundColor: Colors.lightGreenAccent)
                       : null,
@@ -215,6 +180,8 @@ class _BookingPageState extends State<BookingPage> {
                               setState(() {
                                 if (booking.playerQuantity > 1) {
                                   booking.playerQuantity--;
+                                if (booking.playerQuantity > 1) {
+                                  booking.playerQuantity--;
                                 }
                               });
                             },
@@ -222,11 +189,14 @@ class _BookingPageState extends State<BookingPage> {
                           ),
                           Text(
                             '${booking.playerQuantity}',
+                            '${booking.playerQuantity}',
                             style: const TextStyle(fontSize: 18),
                           ),
                           IconButton(
                             onPressed: () {
                               setState(() {
+                                if (booking.playerQuantity < 6) {
+                                  booking.playerQuantity++;
                                 if (booking.playerQuantity < 6) {
                                   booking.playerQuantity++;
                                 }
@@ -262,8 +232,10 @@ class _BookingPageState extends State<BookingPage> {
                             leading: Radio(
                               value: 'Cash',
                               groupValue: booking.selectedPaymentMethod,
+                              groupValue: booking.selectedPaymentMethod,
                               onChanged: (String? value) {
                                 setState(() {
+                                  booking.selectedPaymentMethod = value!;
                                   booking.selectedPaymentMethod = value!;
                                 });
                               },
@@ -274,8 +246,10 @@ class _BookingPageState extends State<BookingPage> {
                             leading: Radio(
                               value: 'Free',
                               groupValue: booking.selectedPaymentMethod,
+                              groupValue: booking.selectedPaymentMethod,
                               onChanged: (String? value) {
                                 setState(() {
+                                  booking.selectedPaymentMethod = value!;
                                   booking.selectedPaymentMethod = value!;
                                 });
                               },
@@ -286,8 +260,10 @@ class _BookingPageState extends State<BookingPage> {
                             leading: Radio(
                               value: 'Online',
                               groupValue: booking.selectedPaymentMethod,
+                              groupValue: booking.selectedPaymentMethod,
                               onChanged: (String? value) {
                                 setState(() {
+                                  booking.selectedPaymentMethod = value!;
                                   booking.selectedPaymentMethod = value!;
                                 });
                               },
@@ -360,8 +336,10 @@ class _BookingPageState extends State<BookingPage> {
           onPressed: () {
             setState(() {
               booking.selectedActivity = activityName;
+              booking.selectedActivity = activityName;
             });
           },
+          style: booking.selectedActivity == activityName
           style: booking.selectedActivity == activityName
               ? ElevatedButton.styleFrom(
                   backgroundColor: Colors.lightGreenAccent,

@@ -85,6 +85,7 @@ class _ProfileState extends State<Profile> {
                 const CircleAvatar(
                   radius: 50,
                   backgroundColor: Colors.amber,
+                  backgroundImage: AssetImage('images/badminton.png'),
                 ),
                 const SizedBox(height: 10),
                 Text(

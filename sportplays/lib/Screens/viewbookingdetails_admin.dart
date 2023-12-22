@@ -1,135 +1,102 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sportplays/Screens/assigncourt.dart';
+import 'package:sportplays/models/bookingdetails.dart';
 
-class ViewBookingDetailsAdmin extends StatefulWidget {
+class ViewBookingDetailsAdminPage extends StatefulWidget {
+  const ViewBookingDetailsAdminPage({Key? key});
+
   @override
-  _ViewBookingDetailsAdminState createState() =>
-      _ViewBookingDetailsAdminState();
+  _ViewBookingDetailsAdminPageState createState() =>
+      _ViewBookingDetailsAdminPageState();
 }
 
-class _ViewBookingDetailsAdminState extends State<ViewBookingDetailsAdmin> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  Future<void> _fetchBookingDetails(String userName, String bookingId) async {
-    try {
-      DocumentSnapshot bookingSnapshot = await _firestore
-          .collection('bookings')
-          .doc(userName) // Assuming 'userName' is the document ID
-          .collection('userBookings')
-          .doc(bookingId) // Assuming 'bookingId' is the document ID
-          .get();
-
-      if (bookingSnapshot.exists) {
-        print('Booking details: ${bookingSnapshot.data()}');
-      } else {
-        print('Booking not found.');
-      }
-    } catch (e) {
-      print('Error fetching booking details: $e');
-    }
-  }
+class _ViewBookingDetailsAdminPageState
+    extends State<ViewBookingDetailsAdminPage> {
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('View Booking Details (Admin)'),
-        backgroundColor: const Color(0xFFD6F454),
+        title: const Text('All Bookings'),
+        backgroundColor: Colors.lightGreenAccent,
       ),
-      body: StreamBuilder(
-        stream: _firestore.collection('bookings').snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+      body: FutureBuilder(
+        future: _getAllBookings(),
+        builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return CircularProgressIndicator(); // Loading indicator
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            List<Booking> bookings = snapshot.data as List<Booking>;
+            return _buildListView(bookings);
           }
-
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(
-              child: Text('No bookings available.'),
-            );
-          }
-
-          List<DocumentSnapshot> bookings = snapshot.data!.docs;
-
-          return ListView.builder(
-            itemCount: bookings.length,
-            itemBuilder: (context, index) {
-              String userName = bookings[index]['userName']; 
-
-              return ListTile(
-                title: Text('Name: $userName'),
-                subtitle: FutureBuilder(
-                  future: _firestore
-                      .collection('bookings')
-                      .doc(bookings[index].id)
-                      .get(),
-                  builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Text('Loading...');
-                    }
-
-                    if (!snapshot.hasData || !snapshot.data!.exists) {
-                      return Text('Error loading data');
-                    }
-
-                    return Text('Booking ID: ${snapshot.data!.id}');
-                  },
-                ),
-                onTap: () {
-                  _showBookingDetails(bookings[index]);
-                  _fetchBookingDetails(userName, bookings[index].id);
-                },
-              );
-            },
-          );
         },
       ),
     );
   }
 
-  void _showBookingDetails(DocumentSnapshot booking) {
-    showDialog(
+  Future<List<Booking>> _getAllBookings() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance.collection('Booking').get();
+
+    List<Booking> bookings = querySnapshot.docs.map((doc) {
+      return Booking(
+        bookingId: doc['bookingId'],
+        selectedActivity: doc['selectedActivity'],
+        playerQuantity: doc['playerQuantity'],
+        selectedPaymentMethod: doc['selectedPaymentMethod'],
+        selectedTime: doc['selectedTime'],
+      );
+    }).toList();
+
+    return bookings;
+  }
+
+  Widget _buildListView(List<Booking> bookings) {
+    return ListView.builder(
+      itemCount: bookings.length,
+      itemBuilder: (context, index) {
+        Booking booking = bookings[index];
+        return Card(
+          child: ListTile(
+              title: Text('Activity: ${booking.selectedActivity}'),
+              subtitle: Text('Players: ${booking.selectedTime}'),
+              onTap: () {
+                _showBookingDetailsDialog(booking);
+              }),
+        );
+      },
+    );
+  }
+
+  Future<void> _showBookingDetailsDialog(Booking booking) async {
+    return showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Booking Details'),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Name: ${booking['userName']}'),
-              Text('Activity: ${booking['selectedActivity']}'),
-              Text('Player Quantity: ${booking['playerQuantity']}'),
-              Text('Payment Method: ${booking['selectedPaymentMethod']}'),
-              Text('Time: ${booking['selectedTime']}'),
+              Text('Booking ID: ${booking.bookingId}'),
+              Text('Activity: ${booking.selectedActivity}'),
+              Text('Players: ${booking.playerQuantity}'),
+              Text('Payment Method: ${booking.selectedPaymentMethod}'),
+              Text('Selected Time: ${booking.selectedTime}'),
+              // Add other fields as needed
             ],
           ),
-          actions: [
-            ElevatedButton(
+          actions: <Widget>[
+            TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pop(context); // Close the dialog
               },
-              child: Text('Close'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _redirectToAssignCourtPage(booking);
-              },
-              child: Text('Assign Court'),
+              child: Text('OK'),
             ),
           ],
         );
       },
-    );
-  }
-
-  void _redirectToAssignCourtPage(DocumentSnapshot booking) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AssignCourtPage(),
-      ),
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:sportplays/Screens/availability_admin.dart';
 import 'package:sportplays/Screens/contact_admin.dart';
@@ -111,17 +110,6 @@ class _HomeAdminState extends State<HomeAdmin> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => Profile(passUser: widget.passUser),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                title: Text('User Booking Details'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ViewBookingDetailsAdmin(),
                     ),
                   );
                 },
