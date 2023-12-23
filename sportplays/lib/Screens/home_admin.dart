@@ -217,7 +217,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                                           Navigator.of(context).pop();
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          primary: Color(0xFF444444),
+                                          backgroundColor: Color(0xFF444444),
                                         ),
                                         child: Text(
                                           'Add',
@@ -232,7 +232,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Color(0xFF444444),
+                              backgroundColor: Color(0xFF444444),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -401,7 +401,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: Color(0xFFD6F454),
+                                    backgroundColor: Color(0xFFD6F454),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),

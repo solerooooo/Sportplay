@@ -18,7 +18,6 @@ class _LoginState extends State<Login> {
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
 
-
   final TextStyle labelTextStyle = TextStyle(
     fontSize: 15,
   );
@@ -35,8 +34,8 @@ class _LoginState extends State<Login> {
         height: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image:
-                AssetImage("images/background.jpg"), //set image file name here
+            image: AssetImage(
+                "images/backgroundColor.jpg"), //set image file name here
             fit: BoxFit.cover,
           ),
         ),
@@ -152,7 +151,7 @@ class _LoginState extends State<Login> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Color(0xFF444444),
+                        backgroundColor: Color(0xFF444444),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -232,7 +231,7 @@ class _LoginState extends State<Login> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Color(0xFF444444),
+                        backgroundColor: Color(0xFF444444),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

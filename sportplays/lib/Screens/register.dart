@@ -171,7 +171,7 @@ class _RegisterState extends State<Register> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Color(0xFF444444),
+                        backgroundColor: Color(0xFF444444),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

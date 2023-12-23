@@ -314,7 +314,7 @@ class _HomeState extends State<Home> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Color(0xFFD6F454),
+                          backgroundColor: Color(0xFFD6F454),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
