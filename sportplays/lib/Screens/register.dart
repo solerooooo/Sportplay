@@ -209,10 +209,20 @@ class _RegisterState extends State<Register> {
                                   .doc(nameController.text)
                                   .set(userData);
 
+                              // Show Snackbar on successful registration
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Successfully Registered'),
+                                  duration: Duration(seconds: 3),
+                                ),
+                              );
+
+                              // Navigate to the login page
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Login()),
+                                  builder: (context) => Login(),
+                                ),
                               );
                             } catch (error) {
                               // Handle any errors that might occur during data insertion

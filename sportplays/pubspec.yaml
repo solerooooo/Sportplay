@@ -29,6 +29,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   uuid: ^3.0.4
+  awesome_snackbar_content: ^0.1.1
 
   flutter:
     sdk: flutter
@@ -49,9 +50,6 @@ dependencies:
   firebase_auth: ^4.15.3
   font_awesome_flutter: ^10.6.0
  
- 
-  
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
