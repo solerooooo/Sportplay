@@ -8,6 +8,7 @@ import 'package:sportplays/Screens/home.dart';
 import 'package:sportplays/Screens/profile.dart';
 import 'package:sportplays/Screens/qna.dart';
 
+
 class BookingPage extends StatefulWidget {
   final User passUser;
   final String selectedTime;
@@ -29,29 +30,33 @@ class _BookingPageState extends State<BookingPage> {
   @override
   void initState() {
     super.initState();
-
+    // Initialize the booking object with default values
     booking = Booking(
       selectedActivity: 'Ping Pong',
       playerQuantity: 1,
       selectedPaymentMethod: 'Cash',
       selectedTime: 'Choose your time slot',
-      bookingId: 0,
+      bookingId: 0, // Set initial value to 0 or null
     );
 
+    // Fetch the next available bookingId from Firestore
     _fetchNextBookingId();
   }
 
-  StripePaymentHandle stripePaymentHandle = StripePaymentHandle();
-
-  void _openStripePayment() async {
+   StripePaymentHandle stripePaymentHandle = StripePaymentHandle();
+   
+void _openStripePayment() async {
     try {
+      // Use the stripePaymentHandle instance to make payments
       await stripePaymentHandle.stripeMakePayment();
     } catch (e) {
       print("Error during payment: $e");
+      // Handle payment error
     }
   }
-
+ 
   void _fetchNextBookingId() async {
+    // Fetch the maximum bookingId from Firestore and increment it
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
         .instance
         .collection('Booking')
@@ -60,8 +65,10 @@ class _BookingPageState extends State<BookingPage> {
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
+      // If there are existing bookings, get the highest bookingId and increment it
       booking.bookingId = querySnapshot.docs.first['bookingId'] + 1;
     } else {
+      // If no existing bookings, start with bookingId = 1
       booking.bookingId = 1;
     }
   }
@@ -273,7 +280,7 @@ class _BookingPageState extends State<BookingPage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    _openStripePayment();
+                _openStripePayment();
                     print(
                         'Selected Payment Method: $booking.selectedPaymentMethod');
                   },
@@ -282,8 +289,9 @@ class _BookingPageState extends State<BookingPage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
+                    // Show "Done Booking" dialog
                     _showDoneBookingDialog();
-
+                    // Save data to Firestore
                     _saveDataToFirestore();
                   },
                   child: const Text('Done'),
@@ -358,22 +366,26 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   void _saveDataToFirestore() async {
+    // Access userName from the User object
     String userName = widget.passUser.name;
 
+    // Add your Firestore logic here to save data with the bookingId as the document ID
     await FirebaseFirestore.instance
         .collection('Booking')
         .doc('${booking.bookingId}')
         .set({
-      'bookingId': booking.bookingId,
+      'bookingId': booking.bookingId, // Add bookingId field
       'userName': userName,
       'selectedActivity': booking.selectedActivity,
       'playerQuantity': booking.playerQuantity,
       'selectedPaymentMethod': booking.selectedPaymentMethod,
-      'timestamp': FieldValue.serverTimestamp(),
-      'selectedTime': widget.selectedTime,
+      'timestamp': FieldValue.serverTimestamp(), // Add timestamp field
+      'selectedTime': widget.selectedTime, // Add selectedTime field
+      // Add other fields as needed
     });
 
     setState(() {
+      // Use pre-increment or alternative way to increment bookingId
       booking.bookingId = ++booking.bookingId;
     });
   }
@@ -393,7 +405,7 @@ class _BookingPageState extends State<BookingPage> {
                   MaterialPageRoute(
                     builder: (context) => Home(passUser: widget.passUser),
                   ),
-                );
+                ); // Close the dialog
               },
               child: Text('OK'),
             ),
