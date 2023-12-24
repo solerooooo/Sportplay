@@ -49,35 +49,30 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Future<void> stripeMakePayment() async {
-    try {
-      paymentIntent = await createPaymentIntent('100', 'MYR');
-      await Stripe.instance
-          .initPaymentSheet(
-              paymentSheetParameters: SetupPaymentSheetParameters(
-                  billingDetails: BillingDetails(
-                      name: 'YOUR NAME',
-                      email: 'YOUREMAIL@gmail.com',
-                      phone: 'YOUR NUMBER',
-                      address: Address(
-                          city: 'YOUR CITY',
-                          country: 'YOUR COUNTRY',
-                          line1: 'YOUR ADDRESS 1',
-                          line2: 'YOUR ADDRESS 2',
-                          postalCode: 'YOUR PASSCODE',
-                          state: 'YOUR STATE')),
-                  paymentIntentClientSecret: paymentIntent![
-                      'client_secret'], //Gotten from payment intent
-                  style: ThemeMode.dark,
-                  merchantDisplayName: 'SPORTPLAYS',))
-          .then((value) {});
+  try {
+    // Make a payment intent
+    paymentIntent = await createPaymentIntent('10', 'MYR');
 
-      //STEP 3: Display Payment sheet
-      displayPaymentSheet();
-    } catch (e) {
-      print(e.toString());
-      Fluttertoast.showToast(msg: e.toString());
+    if (paymentIntent != null) {
+      // Initialize payment sheet
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: paymentIntent!['client_secret'],
+          style: ThemeMode.dark,
+          merchantDisplayName: 'SPORTPLAYS',
+        ),
+      );
+
+      // Display payment sheet
+      await displayPaymentSheet();
+    } else {
+      Fluttertoast.showToast(msg: 'Failed to create payment intent');
     }
+  } catch (e) {
+    print(e.toString());
+    Fluttertoast.showToast(msg: e.toString());
   }
+}
 
   void _fetchNextBookingId() async {
     // Fetch the maximum bookingId from Firestore and increment it
@@ -441,7 +436,6 @@ class _BookingPageState extends State<BookingPage> {
 
 
 
-
 displayPaymentSheet() async {
     try {
       // 3. display the payment sheet.
@@ -460,28 +454,35 @@ displayPaymentSheet() async {
 
 
 //create Payment
-  createPaymentIntent(String amount, String currency) async {
-    try {
-      //Request body
-      Map<String, dynamic> body = {
-        'amount': calculateAmount(amount),
-        'currency': currency,
-      };
+  Future<Map<String, dynamic>?> createPaymentIntent(String amount, String currency) async {
+  try {
+    // Request body
+    Map<String, dynamic> body = {
+      'amount': calculateAmount(amount),
+      'currency': currency,
+    };
 
-      //Make post request to Stripe
-      var response = await http.post(
-        Uri.parse('https://api.stripe.com/v1/payment_intents'),
-        headers: {
-          'Authorization': 'Bearer ${dotenv.env['STRIPE_SECRET']}',
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: body,
-      );
+    // Make post request to Stripe
+    var response = await http.post(
+      Uri.parse('https://api.stripe.com/v1/payment_intents'),
+      headers: {
+        'Authorization': 'Bearer ${dotenv.env['STRIPE_SECRET']}',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: body,
+    );
+
+    if (response.statusCode == 200) {
       return json.decode(response.body);
-    } catch (err) {
-      throw Exception(err.toString());
+    } else {
+      print('Failed to create payment intent. Status code: ${response.statusCode}');
+      return null;
     }
+  } catch (err) {
+    print('Error creating payment intent: ${err.toString()}');
+    return null;
   }
+}
 
 //calculate Amount
   calculateAmount(String amount) {
