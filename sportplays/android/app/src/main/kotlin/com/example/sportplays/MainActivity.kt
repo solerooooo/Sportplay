@@ -1,7 +1,6 @@
-package com.example.sportplays;
+package com.example.sportplays
 
-import io.flutter.embedding.android.FlutterFragmentActivity
+import io.flutter.embedding.android.FlutterActivity
 
-class MainActivity: FlutterFragmentActivity() {
+class MainActivity: FlutterActivity() {
 }
-
