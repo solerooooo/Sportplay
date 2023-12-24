@@ -78,6 +78,7 @@ class _ViewBookingDetailsAdminPageState
           title: Text('Booking Details'),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text('Booking ID: ${booking.bookingId}'),
               Text('Activity: ${booking.selectedActivity}'),
