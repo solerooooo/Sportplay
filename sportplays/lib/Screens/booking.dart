@@ -1,7 +1,10 @@
 import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sportplays/Models/bookingdetails.dart';
 import 'package:sportplays/models/user.dart';
 import 'package:sportplays/Screens/availability.dart';
@@ -408,44 +411,81 @@ class _BookingPageState extends State<BookingPage> {
 
   Future<void> makePayment() async {
     try {
-       Map<String, dynamic> body = {
-        'amount': (double.parse(money) * 100).toInt().toString(),
-        'currency': "MYR",
-      };
-
-      var response = await http.post(
-          Uri.parse('https://api.stripe.com/v1/payment_intents'),
-          body: body,
-          headers: {
-            'Authorization': 
-            'Bearer sk_test_51L8PzGKEp9uhBKrrWhzpS6OoCZSlUfjEakjHRoLwBOrcSLeUDUZZw1QbX7BgWXjV6w9SMcDLAUlRzorynyrC1OrV00c4HIw4Ns',
-            'Content-Type': 'application/x-www-form-urlencoded'
-          });
-
-      paymentIntentData = json.decode(response.body);
-    } catch (error) {
-      throw Exception(error);
+      paymentIntentData =
+      await createPaymentIntent(money, 'USD'); //json.decode(response.body);
+      await Stripe.instance
+          .initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+              paymentIntentClientSecret:
+              paymentIntentData!['client_secret'],
+              style: ThemeMode.dark,
+              merchantDisplayName: 'ANNIE'))
+          .then((value) {});
+      displayPaymentSheet();
+    } catch (e, s) {
+      if (kDebugMode) {
+        print(s);
+      }
     }
   }
 
   displayPaymentSheet() async {
     try {
-      await Stripe.instance.initPaymentSheet(
+      await Stripe.instance.presentPaymentSheet().then((newValue) {
+        payFee();
 
-          paymentSheetParameters: SetupPaymentSheetParameters(
-              paymentIntentClientSecret: paymentIntentData!['client_secret'],
-              style: ThemeMode.light,
-              merchantDisplayName: 'SPORTPLAY')).then((value) {});
-
-      await Stripe.instance.presentPaymentSheet().then((value) => {
-       print("Payment Sheet Displayed Successfully!"),
-      } 
-      );
-      }catch (e) {
-        throw Exception(e);
+        paymentIntentData = null;
+      }).onError((error, stackTrace) {
+        if (kDebugMode) {
+          print('Exception/DISPLAYPAYMENTSHEET==> $error $stackTrace');
+        }
+      });
+    } on StripeException catch (e) {
+      if (kDebugMode) {
+        print(e);
       }
-  }}
-  /*void payFee() {
+      showDialog(
+          context: context,
+          builder: (_) => const AlertDialog(
+            content: Text("Cancelled "),
+          ));
+    } catch (e) {
+      if (kDebugMode) {
+        print('$e');
+      }
+    }
+  }
+
+  createPaymentIntent(String amount, String currency) async {
+    try {
+      Map<String, dynamic> body = {
+        'amount': calculateAmount(amount),
+        'currency': currency,
+        'payment_method_types[]': 'card'
+      };
+      var response = await http.post(
+          Uri.parse('https://api.stripe.com/v1/payment_intents'),
+          body: body,
+          headers: {
+            'Authorization':
+            'Bearer sk_test_51L8PzGKEp9uhBKrrWhzpS6OoCZSlUfjEakjHRoLwBOrcSLeUDUZZw1QbX7BgWXjV6w9SMcDLAUlRzorynyrC1OrV00c4HIw4Ns',
+            'Content-Type': 'application/x-www-form-urlencoded'
+          });
+      return jsonDecode(response.body);
+    } catch (err) {
+      if (kDebugMode) {
+        print('err charging user: ${err.toString()}');
+      }
+    }
+  }
+
+  calculateAmount(String amount) {
+    final a = (int.parse(amount)) * 100;
+    return a.toString();
+  }
+}
+
+/*void payFee() {
     try {
       // Display a toast message when payFee is called
       Fluttertoast.showToast(
