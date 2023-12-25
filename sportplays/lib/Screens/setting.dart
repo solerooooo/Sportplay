@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../models/user.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:sportplays/models/user.dart';
+
 
 class Setting extends StatefulWidget {
   final User passUser;
@@ -29,6 +31,7 @@ class _SettingState extends State<Setting> {
   String selectedGender = '';
   late String originalGender;
   File? _pickedImage;
+  String get imageUrl => _pickedImage != null ? _pickedImage!.path : user.getProfilePictureUrl();
 
   @override
   void initState() {
@@ -51,22 +54,44 @@ class _SettingState extends State<Setting> {
     }
   }
 
-  Future<String?> _uploadProfilePicture(File imageFile) async {
-    try {
-      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      firebase_storage.Reference reference =
-          firebase_storage.FirebaseStorage.instance.ref().child('images/$fileName');
+  Future<void> _pickImageFromGallery() async {
+    await _pickImage(ImageSource.gallery);
+  }
 
-      await reference.putFile(imageFile);
+  Future<void> _pickImageFromCamera() async {
+    await _pickImage(ImageSource.camera);
+  }
 
-      // Get the download URL
-      String imageUrl = await reference.getDownloadURL();
+  Future<void> _pickFile() async {
+    final result = await FilePicker.platform.pickFiles();
 
-      return imageUrl;
-    } catch (error) {
-      print('Error uploading image to Firebase Storage: $error');
-      return null;
+    if (result != null) {
+      setState(() {
+        _pickedImage = File(result.files.single.path!);
+      });
     }
+  }
+
+  Future<String?> _uploadProfilePicture(File imageFile) async {
+     try {
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    firebase_storage.Reference reference = firebase_storage
+        .FirebaseStorage.instance
+        .ref()
+        .child('images/$fileName');
+
+    await reference.putFile(imageFile);
+
+    // Get the download URL
+    String imageUrl = await reference.getDownloadURL();
+    
+    return imageUrl;
+  } catch (error) {
+  print('Error uploading image to Firebase Storage: $error');
+  // Handle the error (e.g., show a message to the user)
+  return null; // Return null to indicate an error
+}
+
   }
 
   void saveChanges() async {
@@ -108,7 +133,7 @@ class _SettingState extends State<Setting> {
         'address': user.getAddress(),
         'gender': user.getGender(),
         'userId': user.getId(),
-        'profilePictureUrl': user.getProfilePictureUrl(),
+        'profilePictureUrl': imageUrl,
       });
     } catch (e) {
       print('Error updating user data: $e');
@@ -141,21 +166,49 @@ class _SettingState extends State<Setting> {
                   const SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: () async {
-                      await _pickImage(ImageSource.gallery);
+                      await _pickImageFromGallery();
                     },
-                    child: const Text('Pick Image from Gallery'),
+                    child: const Text('Pick Image from Gallery '),
+                  ),
+                  const SizedBox(height: 5),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await _pickImageFromCamera();
+                    },
+                    child: const Text('Pick Image from Camera'),
+                  ),
+                  const SizedBox(height: 5),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await _pickFile();
+                    },
+                    child: const Text('Pick File'),
                   ),
                   const SizedBox(height: 10),
                   Text(
                     '${user.getName()}',
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 21.5,
-                    ),
+                        fontWeight: FontWeight.bold, fontSize: 21.5),
                   ),
                   Text(
                     '${user.getId()}',
                     style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    width: 300,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      color: Colors.lightGreenAccent,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Active Student',
+                        style:
+                            TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Container(
@@ -177,14 +230,11 @@ class _SettingState extends State<Setting> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        buildTextField(
-                            Icons.email, 'Email', emailController),
+                        buildTextField(Icons.email, 'Email', emailController),
                         const SizedBox(height: 10),
-                        buildTextField(
-                            Icons.phone, 'Phone Number', phoneController),
+                        buildTextField(Icons.phone, 'Phone Number', phoneController),
                         const SizedBox(height: 10),
-                        buildTextField(
-                            Icons.home, 'Address', addressController),
+                        buildTextField(Icons.home, 'Address', addressController),
                         const SizedBox(height: 10),
                         buildGenderDropdown(),
                       ],
@@ -204,8 +254,7 @@ class _SettingState extends State<Setting> {
     );
   }
 
-  Widget buildTextField(
-      IconData icon, String label, TextEditingController controller) {
+  Widget buildTextField(IconData icon, String label, TextEditingController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -260,19 +309,26 @@ class _SettingState extends State<Setting> {
     );
   }
 
-  Widget buildProfilePicture() {
-    if (_pickedImage != null) {
-      return Image.file(
-        _pickedImage!,
-        width: 100,
-        height: 100,
-        fit: BoxFit.cover,
-      );
-    } else {
-      return CircleAvatar(
-        radius: 50,
-        backgroundColor: Colors.amber,
-      );
-    }
+Widget buildProfilePicture() {
+  if (_pickedImage != null) {
+    return Image.file(
+      _pickedImage!,
+      width: 100,
+      height: 100,
+      fit: BoxFit.cover,
+    );
+  } else if (user.getProfilePictureUrl().isNotEmpty) {
+    return Image.network(
+      user.getProfilePictureUrl(),
+      width: 100,
+      height: 100,
+      fit: BoxFit.cover,
+    );
+  } else {
+    return CircleAvatar(
+      radius: 50,
+      backgroundColor: Colors.amber,
+    );
   }
+}
 }
