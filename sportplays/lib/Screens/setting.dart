@@ -6,7 +6,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-
 class Setting extends StatefulWidget {
   final User passUser;
   final Function(User) onUpdateUser;
@@ -73,25 +72,29 @@ class _SettingState extends State<Setting> {
   }
 
   Future<String?> _uploadProfilePicture(File imageFile) async {
-     try {
-    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    firebase_storage.Reference reference = firebase_storage
-        .FirebaseStorage.instance
-        .ref()
-        .child('images/$fileName');
+    try {
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      firebase_storage.Reference reference = firebase_storage
+          .FirebaseStorage.instance
+          .ref()
+          .child('images/$fileName');
 
-    await reference.putFile(imageFile);
+      await reference.putFile(imageFile);
 
-    // Get the download URL
-    String imageUrl = await reference.getDownloadURL();
-    
-    return imageUrl;
-  } catch (error) {
-  print('Error uploading image to Firebase Storage: $error');
-  // Handle the error (e.g., show a message to the user)
-  return null; // Return null to indicate an error
-}
+      // Get the download URL
+      String imageUrl = await reference.getDownloadURL();
 
+      setState(() {
+        // Update the user's profile picture URL
+        user = user.copyWith(profilePictureUrl: imageUrl);
+      });
+
+      return imageUrl;
+    } catch (error) {
+      print('Error uploading image to Firebase Storage: $error');
+      // Handle the error (e.g., show a message to the user)
+      return null; // Return null to indicate an error
+    }
   }
 
   void saveChanges() async {
@@ -309,26 +312,26 @@ class _SettingState extends State<Setting> {
     );
   }
 
-Widget buildProfilePicture() {
-  if (_pickedImage != null) {
-    return Image.file(
-      _pickedImage!,
-      width: 100,
-      height: 100,
-      fit: BoxFit.cover,
-    );
-  } else if (user.getProfilePictureUrl().isNotEmpty) {
-    return Image.network(
-      user.getProfilePictureUrl(),
-      width: 100,
-      height: 100,
-      fit: BoxFit.cover,
-    );
-  } else {
-    return CircleAvatar(
-      radius: 50,
-      backgroundColor: Colors.amber,
-    );
+  Widget buildProfilePicture() {
+    if (_pickedImage != null) {
+      return Image.file(
+        _pickedImage!,
+        width: 100,
+        height: 100,
+        fit: BoxFit.cover,
+      );
+    } else if (user.getProfilePictureUrl().isNotEmpty) {
+      return Image.network(
+        user.getProfilePictureUrl(),
+        width: 100,
+        height: 100,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return CircleAvatar(
+        radius: 50,
+        backgroundColor: Colors.amber,
+      );
+    }
   }
-}
 }

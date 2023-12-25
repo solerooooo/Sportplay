@@ -1,4 +1,4 @@
-//user.dart
+// user.dart
 class User {
   String name;
   String email;
@@ -28,7 +28,7 @@ class User {
   String getAddress() => address;
   String getGender() => gender;
   String getId() => userId;
-    String getProfilePictureUrl() => profilePictureUrl;
+  String getProfilePictureUrl() => profilePictureUrl;
 
   // Setters
   set setName(String name) => this.name = name;
@@ -39,7 +39,28 @@ class User {
   set setGender(String gender) => this.gender = gender;
   set setId(String userId) => this.userId = userId;
 
-  
+  // CopyWith method
+  User copyWith({
+    String? name,
+    String? email,
+    String? password,
+    String? phone,
+    String? address,
+    String? gender,
+    String? userId,
+    String? profilePictureUrl,
+  }) {
+    return User(
+      name: name ?? this.name,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      phone: phone ?? this.phone,
+      address: address ?? this.address,
+      gender: gender ?? this.gender,
+      userId: userId ?? this.userId,
+      profilePictureUrl: profilePictureUrl ?? this.profilePictureUrl,
+    );
+  }
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
