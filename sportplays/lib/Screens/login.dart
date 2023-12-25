@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sportplays/Screens/home.dart';
-import 'package:sportplays/Screens/home_admin.dart';
-import 'package:sportplays/Screens/register.dart';
+import 'package:sportplays/screens/home.dart';
+import 'package:sportplays/screens/register.dart';
 import 'package:sportplays/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sportplays/screens/home_admin.dart';
 
 class Login extends StatefulWidget {
   Login({Key? key});
