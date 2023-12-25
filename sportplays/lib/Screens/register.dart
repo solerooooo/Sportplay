@@ -313,7 +313,7 @@ class _RegisterState extends State<Register> {
     // Add your password complexity requirements here
     // For example: at least one special character, one number, one uppercase letter, and at least 6 characters long
     bool hasSpecialChar =
-        RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password);
+        RegExp(r'[!@#$%^&*(),.?":{}|<>_]').hasMatch(password);
     bool hasNumber = RegExp(r'\d').hasMatch(password);
     bool hasUppercase = RegExp(r'[A-Z]').hasMatch(password);
 
