@@ -130,13 +130,15 @@ class _RegisterState extends State<Register> {
                           return 'Please enter your password';
                         } else if (value.length < 6) {
                           return 'Password must be at least 6 characters';
-                        } else
-                          (!_isPasswordComplex(value));
-                        return 'Password must contain:\n'
-                            '- at least one special character\n'
-                            '- one number\n'
-                            '- one uppercase letter\n'
-                            '- at least 6 characters long';
+                        } else if (!_isPasswordComplex(value)) {
+                          return 'Password must contain:\n'
+                              '- at least one special character\n'
+                              '- one number\n'
+                              '- one uppercase letter\n'
+                              '- at least 6 characters long';
+                        }
+                        // No issues found, return null to indicate valid password
+                        return null;
                       },
                     ),
                     SizedBox(height: 20),
