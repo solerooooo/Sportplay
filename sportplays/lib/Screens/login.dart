@@ -6,6 +6,8 @@ import 'package:sportplays/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'forgot_password.dart';
+
 class Login extends StatefulWidget {
   Login({Key? key});
 
@@ -41,7 +43,7 @@ class _LoginState extends State<Login> {
         ),
         child: Center(
           child: Padding(
-            padding: EdgeInsets.all(40),
+            padding: EdgeInsets.all(30),
             child: SingleChildScrollView(
               child: Form(
                 key: _formKey,
@@ -69,7 +71,8 @@ class _LoginState extends State<Login> {
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.person),
                         label: Text('Name', style: labelTextStyle),
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0)),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -85,7 +88,8 @@ class _LoginState extends State<Login> {
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.lock),
                         label: Text('Password', style: labelTextStyle),
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0)),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -186,20 +190,34 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
-                    RichText(
-                      text: TextSpan(
-                        text: "Forgot password? ",
-                        style: labelTextStyle.copyWith(color: Colors.black),
-                        children: [
-                          TextSpan(
-                            text: "Reset password",
-                            style: labelTextStyle.copyWith(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
+                    SizedBox(height: 10),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ForgotPasswordPage(),
                           ),
-                        ],
+                        );
+                      },
+                      child: RichText(
+                        text: TextSpan(
+                          text: "Forgot password? ",
+                          style: labelTextStyle.copyWith(color: Colors.black),
+                          children: [
+                            TextSpan(
+                              text: "Reset password",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                decoration:
+                                    TextDecoration.underline, // Add underline
+                                decorationColor:
+                                    Colors.black, // Underline color
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(
