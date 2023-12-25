@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sportplays/models/bookingdetails.dart';
 import 'package:sportplays/models/user.dart';
 import 'package:sportplays/screens/availability.dart';
 import 'package:sportplays/screens/home.dart';
 import 'package:sportplays/screens/profile.dart';
 import 'package:sportplays/screens/qna.dart';
+import 'package:http/http.dart' as http;
 
 class BookingPage extends StatefulWidget {
   final User passUser;
@@ -24,6 +29,7 @@ class BookingPage extends StatefulWidget {
 class _BookingPageState extends State<BookingPage> {
   late Booking booking;
   int _selectedIndex = 0;
+  Map<String, dynamic>? paymentIntent;
 
   @override
   void initState() {
@@ -41,6 +47,32 @@ class _BookingPageState extends State<BookingPage> {
     // Fetch the next available bookingId from Firestore
     _fetchNextBookingId();
   }
+
+  Future<void> stripeMakePayment() async {
+  try {
+    // Make a payment intent
+    paymentIntent = await createPaymentIntent('10', 'MYR');
+
+    if (paymentIntent != null) {
+      // Initialize payment sheet
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: paymentIntent!['client_secret'],
+          style: ThemeMode.dark,
+          merchantDisplayName: 'SPORTPLAYS',
+        ),
+      );
+
+      // Display payment sheet
+      await displayPaymentSheet();
+    } else {
+      Fluttertoast.showToast(msg: 'Failed to create payment intent');
+    }
+  } catch (e) {
+    print(e.toString());
+    Fluttertoast.showToast(msg: e.toString());
+  }
+}
 
   void _fetchNextBookingId() async {
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
@@ -270,6 +302,7 @@ class _BookingPageState extends State<BookingPage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
+                    // Implement payment logic here
                     print(
                         'Selected Payment Method: ${booking.selectedPaymentMethod}');
                   },
@@ -375,26 +408,5 @@ class _BookingPageState extends State<BookingPage> {
         );
       },
     );
-  }
-
-  void _saveDataToFirestore() async {
-    String userName = widget.passUser.name;
-
-    await FirebaseFirestore.instance
-        .collection('Booking')
-        .doc('${booking.bookingId}')
-        .set({
-      'bookingId': booking.bookingId,
-      'userName': userName,
-      'selectedActivity': booking.selectedActivity,
-      'playerQuantity': booking.playerQuantity,
-      'selectedPaymentMethod': booking.selectedPaymentMethod,
-      'timestamp': FieldValue.serverTimestamp(),
-      'selectedTime': widget.selectedTime,
-    });
-
-    setState(() {
-      booking.bookingId = ++booking.bookingId;
-    });
   }
 }
