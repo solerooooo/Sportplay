@@ -1,6 +1,6 @@
+//setting.dart
 import 'package:flutter/material.dart';
 import 'login.dart';
-import '../models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Register extends StatefulWidget {
@@ -128,6 +128,28 @@ class _RegisterState extends State<Register> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your password';
+                        } else if (value.length < 6) {
+                          return 'Password must be at least 6 characters';
+                        } else
+                          (!_isPasswordComplex(value));
+                        return 'Password must contain:\n'
+                            '- at least one special character\n'
+                            '- one number\n'
+                            '- one uppercase letter\n'
+                            '- at least 6 characters long';
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.lock),
+                        labelText: 'Confirm Password',
+                        border: OutlineInputBorder(),
+                      ),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value != passwordController.text) {
+                          return 'Passwords do not match';
                         }
                         return null;
                       },
@@ -191,7 +213,6 @@ class _RegisterState extends State<Register> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // Create a map with user data
                             Map<String, dynamic> userData = {
                               'name': nameController.text,
                               'email': emailController.text,
@@ -200,17 +221,15 @@ class _RegisterState extends State<Register> {
                               'address': addressController.text,
                               'gender': selectedGender,
                               'userId': idController.text,
-                               'profilePictureUrl':  '',
+                              'profilePictureUrl': '',
                             };
 
                             try {
-                              // Add user data to Firestore
                               widget.firestore
                                   .collection('UserData')
                                   .doc(nameController.text)
                                   .set(userData);
 
-                              // Show Snackbar on successful registration
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text('Successfully Registered'),
@@ -218,7 +237,6 @@ class _RegisterState extends State<Register> {
                                 ),
                               );
 
-                              // Navigate to the login page
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -226,7 +244,6 @@ class _RegisterState extends State<Register> {
                                 ),
                               );
                             } catch (error) {
-                              // Handle any errors that might occur during data insertion
                               print(
                                   'Error adding user data to Firestore: $error');
                             }
@@ -261,5 +278,44 @@ class _RegisterState extends State<Register> {
         ),
       ),
     );
+  }
+
+  bool _isPasswordComplex(String password) {
+    // Add your password complexity requirements here
+    // For example: at least one special character, one number, one uppercase letter, and at least 6 characters long
+    bool hasSpecialChar = RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password);
+    bool hasNumber = RegExp(r'\d').hasMatch(password);
+    bool hasUppercase = RegExp(r'[A-Z]').hasMatch(password);
+
+    if (password.length < 6 || !hasSpecialChar || !hasNumber || !hasUppercase) {
+      // Password complexity requirements message
+      String complexityMessage = 'Password must be ';
+
+      if (password.length < 6) {
+        complexityMessage += 'at least 6 characters long, ';
+      }
+
+      if (!hasSpecialChar) {
+        complexityMessage += 'contain at least one special character, ';
+      }
+
+      if (!hasNumber) {
+        complexityMessage += 'contain at least one number, ';
+      }
+
+      if (!hasUppercase) {
+        complexityMessage += 'contain at least one uppercase letter, ';
+      }
+
+      // Remove the trailing space
+      complexityMessage = complexityMessage.trimRight();
+
+      // Display the complexity message
+      print(complexityMessage);
+
+      return false;
+    }
+
+    return true;
   }
 }
