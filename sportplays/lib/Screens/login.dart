@@ -30,6 +30,8 @@ class _LoginState extends State<Login> {
   String? _passwordError;
   String? _nameError;
 
+  bool _isPasswordVisible = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,12 +82,25 @@ class _LoginState extends State<Login> {
                     SizedBox(height: 20),
                     TextFormField(
                       controller: passwordController,
-                      obscureText: true,
+                      obscureText: !_isPasswordVisible, // Toggle visibility
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.lock),
                         label: Text('Password', style: labelTextStyle),
                         border: OutlineInputBorder(),
                         errorText: _passwordError,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Theme.of(context).primaryColorDark,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            });
+                          },
+                        ),
                       ),
                       validator: _validatePassword,
                     ),
