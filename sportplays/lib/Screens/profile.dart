@@ -1,11 +1,10 @@
-// profile.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../models/user.dart';
 import 'setting.dart';
 
 class Profile extends StatefulWidget {
-   final User passUser;
+  final User passUser;
 
   const Profile({Key? key, required this.passUser}) : super(key: key);
 
@@ -31,7 +30,7 @@ class _ProfileState extends State<Profile> {
         Flexible(
           child: Text(
             text,
-            style: const TextStyle(fontSize: 16),  // Change font size to 16
+            style: const TextStyle(fontSize: 16),
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -49,18 +48,27 @@ class _ProfileState extends State<Profile> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              MaterialPageRoute route = MaterialPageRoute(
-                builder: (context) => Setting(
-                  passUser: passUser,
-                  onUpdateUser: (User updatedUser) {
-                    setState(() {
-                      passUser = updatedUser;
-                    });
-                  }, firestore: FirebaseFirestore.instance,
+            onPressed: () async {
+              // Navigate to the Setting page and wait for the result
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Setting(
+                    passUser: passUser,
+                    onUpdateUser: (User updatedUser) {
+                      setState(() {
+                        passUser = updatedUser;
+                      });
+                    },
+                    firestore: FirebaseFirestore.instance,
+                  ),
                 ),
               );
-              Navigator.push(context, route);
+
+              // Handle the result if needed
+              if (result != null) {
+                // Do something with the result if needed
+              }
             },
             icon: const Icon(Icons.settings),
           ),
@@ -75,104 +83,118 @@ class _ProfileState extends State<Profile> {
             fit: BoxFit.cover,
           ),
         ),
-
         child: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.amber,
-                  backgroundImage: AssetImage('images/badminton.png'),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  '${passUser.getName()}',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 21.5),
-                ),
-                Text(
-                  '${passUser.getId()}',
-                  style: const TextStyle(fontSize: 16),
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  width: 300,
-                  height: 40,
-                  decoration: const BoxDecoration(
-                    color: Colors.lightGreenAccent,
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Active Student',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  buildProfilePicture(),
+                  const SizedBox(height: 10),
+                  Text(
+                    '${passUser.getName()}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 21.5,
                     ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  width: 300,
-                  height: 300,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  Text(
+                    '${passUser.getId()}',
+                    style: const TextStyle(fontSize: 16),
                   ),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      const Text(
-                        'About',
-                        textAlign: TextAlign.center,
+                  const SizedBox(height: 10),
+                  Container(
+                    width: 300,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      color: Colors.lightGreenAccent,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Active Student',
                         style: TextStyle(
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      buildInfoRow(Icons.person, passUser.getEmail()),
-                      const SizedBox(height: 20),
-                      buildInfoRow(Icons.phone, passUser.getPhone()),
-                      const SizedBox(height: 20),
-                      buildInfoRow(Icons.home, passUser.getAddress()),
-                      const SizedBox(height: 20),
-                      buildInfoRow(Icons.work, passUser.getGender()),
-                      const SizedBox(height: 20),
-                    ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  width: 300,
-                  height: 60,
-                  decoration: const BoxDecoration(
-                    color: Colors.lightGreenAccent,
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  const SizedBox(height: 10),
+                  Container(
+                    width: 300,
+                    height: 300,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 20),
+                        const Text(
+                          'About',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        buildInfoRow(Icons.person, passUser.getEmail()),
+                        const SizedBox(height: 20),
+                        buildInfoRow(Icons.phone, passUser.getPhone()),
+                        const SizedBox(height: 20),
+                        buildInfoRow(Icons.home, passUser.getAddress()),
+                        const SizedBox(height: 20),
+                        buildInfoRow(Icons.work, passUser.getGender()),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                        'Booking Notification',
-                        style: TextStyle(fontSize: 17),
-                      ),
-                      SizedBox(width: 10),
-                      NotiSwitch(),
-                    ],
+                  const SizedBox(height: 20),
+                  Container(
+                    width: 300,
+                    height: 60,
+                    decoration: const BoxDecoration(
+                      color: Colors.lightGreenAccent,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          'Booking Notification',
+                          style: TextStyle(fontSize: 17),
+                        ),
+                        SizedBox(width: 10),
+                        NotiSwitch(),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
     );
   }
-  
+
+  Widget buildProfilePicture() {
+    if (passUser.getProfilePictureUrl().isNotEmpty) {
+      return Image.network(
+        passUser.getProfilePictureUrl(),
+        width: 100,
+        height: 100,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return CircleAvatar(
+        radius: 50,
+        backgroundColor: Colors.amber,
+      );
+    }
+  }
 }
 
 class NotiSwitch extends StatefulWidget {

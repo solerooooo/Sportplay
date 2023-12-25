@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sportplays/Models/bookingdetails.dart';
-import 'package:sportplays/Screens/home.dart';
-import 'package:sportplays/Screens/profile.dart';
-import 'package:sportplays/Screens/qna.dart';
+import 'package:sportplays/models/bookingdetails.dart';
+import 'package:sportplays/screens/editbookingdetails.dart';
+import 'package:sportplays/screens/home.dart';
+import 'package:sportplays/screens/profile.dart';
+import 'package:sportplays/screens/qna.dart';
 import 'package:sportplays/models/user.dart';
 
 class ViewBookingPage extends StatefulWidget {
@@ -100,11 +101,11 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
   }
 
   Future<List<Booking>> _getBookings() async {
-    QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await FirebaseFirestore.instance
-            .collection('Booking')
-            .where('userName', isEqualTo: widget.passUser.name)
-            .get();
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+        .instance
+        .collection('Booking')
+        .where('userName', isEqualTo: widget.passUser.name)
+        .get();
 
     List<Booking> bookings = querySnapshot.docs.map((doc) {
       return Booking(
@@ -112,7 +113,7 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
         selectedActivity: doc['selectedActivity'],
         playerQuantity: doc['playerQuantity'],
         selectedPaymentMethod: doc['selectedPaymentMethod'],
-        selectedTime: doc['selectedTime'],
+        selectedTime: doc['selectedTime'], isCourtAssigned: false,
       );
     }).toList();
 
@@ -126,18 +127,92 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
         Booking booking = bookings[index];
         return Card(
           child: ListTile(
-            title: Text('Activity: ${booking.selectedActivity}'),
-            subtitle: Text('Players: ${booking.selectedTime}'),
-            onTap: () {
-              _showBookingDetailsDialog(booking);
-            },
-            trailing: IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                // Handle edit action if needed
+              title: Text('Activity: ${booking.selectedActivity}'),
+              subtitle: Text('Players: ${booking.selectedTime}'),
+              onTap: () {
+                _showBookingDetailsDialog(booking);
               },
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditBookingDetailsPage(
+                            passUser: widget.passUser,
+                            bookingId: booking.bookingId,
+                            selectedTime: booking.selectedTime,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      _showDeleteConfirmationDialog(booking);
+                    },
+                  ),
+                ],
+              )),
+        );
+      },
+    );
+  }
+
+  void _deleteBooking(Booking booking) async {
+    await FirebaseFirestore.instance
+        .collection('Booking')
+        .doc('${booking.bookingId}')
+        .delete();
+    _showDeletedConfirmationDialog();
+  }
+
+  Future<void> _showDeleteConfirmationDialog(Booking booking) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Confirmation'),
+          content: Text('Are you sure you want to delete this booking?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the delete confirmation dialog
+                _deleteBooking(booking);
+              },
+              child: Text('Yes'),
             ),
-          ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the delete confirmation dialog
+              },
+              child: Text('No'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showDeletedConfirmationDialog() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Booking Deleted'),
+          content: Text('Your booking has been successfully deleted!'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
         );
       },
     );
@@ -151,6 +226,7 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
           title: Text('Booking Details'),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text('Booking ID: ${booking.bookingId}'),
               Text('Activity: ${booking.selectedActivity}'),

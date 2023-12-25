@@ -1,12 +1,17 @@
-import 'package:flutter/material.dart';
+//booking.dart
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sportplays/Models/bookingdetails.dart';
 import 'package:sportplays/models/user.dart';
 import 'package:sportplays/Screens/availability.dart';
 import 'package:sportplays/Screens/home.dart';
 import 'package:sportplays/Screens/profile.dart';
 import 'package:sportplays/Screens/qna.dart';
+import 'package:http/http.dart' as http;
 
 class BookingPage extends StatefulWidget {
   final User passUser;
@@ -16,6 +21,7 @@ class BookingPage extends StatefulWidget {
     Key? key,
     required this.passUser,
     required this.selectedTime,
+    
   }) : super(key: key);
 
   @override
@@ -25,40 +31,65 @@ class BookingPage extends StatefulWidget {
 class _BookingPageState extends State<BookingPage> {
   late Booking booking;
   int _selectedIndex = 0;
-  late Razorpay _razorpay;
+  Map<String, dynamic>? paymentIntent;
 
   @override
   void initState() {
     super.initState();
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-
     // Initialize the booking object with default values
     booking = Booking(
       selectedActivity: 'Ping Pong',
       playerQuantity: 1,
       selectedPaymentMethod: 'Cash',
-      selectedTime: 'Choose your time slot',
-      bookingId: 0,
+      selectedTime: 'Choose your time slot', 
+      bookingId: 0, 
+      isCourtAssigned: null, // Set initial value to 0 or null
     );
-
+    
     // Fetch the next available bookingId from Firestore
     _fetchNextBookingId();
   }
 
+  Future<void> stripeMakePayment() async {
+  try {
+    // Make a payment intent
+    paymentIntent = await createPaymentIntent('10', 'MYR');
+
+    if (paymentIntent != null) {
+      // Initialize payment sheet
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: paymentIntent!['client_secret'],
+          style: ThemeMode.dark,
+          merchantDisplayName: 'SPORTPLAYS',
+        ),
+      );
+
+      // Display payment sheet
+      await displayPaymentSheet();
+    } else {
+      Fluttertoast.showToast(msg: 'Failed to create payment intent');
+    }
+  } catch (e) {
+    print(e.toString());
+    Fluttertoast.showToast(msg: e.toString());
+  }
+}
+
   void _fetchNextBookingId() async {
-    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
-        .instance
-        .collection('Booking')
-        .orderBy('bookingId', descending: true)
-        .limit(1)
-        .get();
+    // Fetch the maximum bookingId from Firestore and increment it
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance
+            .collection('Booking')
+            .orderBy('bookingId', descending: true)
+            .limit(1)
+            .get();
 
     if (querySnapshot.docs.isNotEmpty) {
+      // If there are existing bookings, get the highest bookingId and increment it
       booking.bookingId = querySnapshot.docs.first['bookingId'] + 1;
     } else {
+      // If no existing bookings, start with bookingId = 1
       booking.bookingId = 1;
     }
   }
@@ -97,42 +128,11 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    _razorpay.clear();
-  }
-
-  var options = {
-    'key': 'rzp_test_aXqejP2OjuSDNm,tqeJosvhKQbTc4ifq3PR5oRv',
-    'amount': 50,
-    'name': 'Sport Play.',
-    'order_id': 'order_EMBFqjDHEEn80l',
-    'description': 'Court Booking',
-    'timeout': 120,
-    'prefill': {
-      'contact': '011-29389095',
-      'email': 'nur.syuhaida@graduate.utm.my',
-    },
-  };
-
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {}
-
-  void _handlePaymentError(PaymentFailureResponse response) {}
-
-  void _handleExternalWallet(ExternalWalletResponse response) {}
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Booking'),
         backgroundColor: const Color(0xFFD6F454),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.account_circle),
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -301,16 +301,18 @@ class _BookingPageState extends State<BookingPage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
+                    stripeMakePayment();
                     print(
-                        'Selected Payment Method: ${booking.selectedPaymentMethod}');
-                    _razorpay.open(options);
+                        'Selected Payment Method: $booking.selectedPaymentMethod');
                   },
                   child: const Text('Make Payment'),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    _showDoneBookingDialog(context);
+                    // Show "Done Booking" dialog
+                    _showDoneBookingDialog();
+                    // Save data to Firestore
                     _saveDataToFirestore();
                   },
                   child: const Text('Done'),
@@ -384,7 +386,30 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
-  Future<void> _showDoneBookingDialog(BuildContext context) async {
+  void _saveDataToFirestore() async {
+  // Access userName from the User object
+  String userName = widget.passUser.name;
+
+  // Add your Firestore logic here to save data with the bookingId as the document ID
+  await FirebaseFirestore.instance.collection('Booking').doc('${booking.bookingId}').set({
+    'bookingId': booking.bookingId, // Add bookingId field
+    'userName': userName,
+    'selectedActivity': booking.selectedActivity,
+    'playerQuantity': booking.playerQuantity,
+    'selectedPaymentMethod': booking.selectedPaymentMethod,
+    'timestamp': FieldValue.serverTimestamp(), // Add timestamp field
+    'selectedTime': widget.selectedTime, // Add selectedTime field
+    // Add other fields as needed
+  });
+
+  setState(() {
+    // Use pre-increment or alternative way to increment bookingId
+    booking.bookingId = ++booking.bookingId;
+  });
+}
+
+
+  Future<void> _showDoneBookingDialog() async {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -408,25 +433,61 @@ class _BookingPageState extends State<BookingPage> {
       },
     );
   }
+}
 
-  void _saveDataToFirestore() async {
-    String userName = widget.passUser.name;
 
-    await FirebaseFirestore.instance
-        .collection('Booking')
-        .doc('${booking.bookingId}')
-        .set({
-      'bookingId': booking.bookingId,
-      'userName': userName,
-      'selectedActivity': booking.selectedActivity,
-      'playerQuantity': booking.playerQuantity,
-      'selectedPaymentMethod': booking.selectedPaymentMethod,
-      'timestamp': FieldValue.serverTimestamp(),
-      'selectedTime': widget.selectedTime,
-    });
 
-    setState(() {
-      booking.bookingId = ++booking.bookingId;
-    });
+
+displayPaymentSheet() async {
+    try {
+      // 3. display the payment sheet.
+      await Stripe.instance.presentPaymentSheet();
+
+      Fluttertoast.showToast(msg: 'Payment succesfully completed');
+    } on Exception catch (e) {
+      if (e is StripeException) {
+        Fluttertoast.showToast(
+            msg: 'Error from Stripe: ${e.error.localizedMessage}');
+      } else {
+        Fluttertoast.showToast(msg: 'Unforeseen error: ${e}');
+      }
+    }
+  }
+
+
+//create Payment
+  Future<Map<String, dynamic>?> createPaymentIntent(String amount, String currency) async {
+  try {
+    // Request body
+    Map<String, dynamic> body = {
+      'amount': calculateAmount(amount),
+      'currency': currency,
+    };
+
+    // Make post request to Stripe
+    var response = await http.post(
+      Uri.parse('https://api.stripe.com/v1/payment_intents'),
+      headers: {
+        'Authorization': 'Bearer ${dotenv.env['STRIPE_SECRET']}',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: body,
+    );
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      print('Failed to create payment intent. Status code: ${response.statusCode}');
+      return null;
+    }
+  } catch (err) {
+    print('Error creating payment intent: ${err.toString()}');
+    return null;
   }
 }
+
+//calculate Amount
+  calculateAmount(String amount) {
+    final calculatedAmount = (int.parse(amount)) * 100;
+    return calculatedAmount.toString();
+  }

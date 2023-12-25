@@ -1,6 +1,10 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../models/user.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class Setting extends StatefulWidget {
   final User passUser;
@@ -25,6 +29,8 @@ class _SettingState extends State<Setting> {
   TextEditingController addressController = TextEditingController();
   String selectedGender = '';
   late String originalGender;
+  File? _pickedImage;
+  String get imageUrl => _pickedImage != null ? _pickedImage!.path : user.getProfilePictureUrl();
 
   @override
   void initState() {
@@ -37,7 +43,68 @@ class _SettingState extends State<Setting> {
     selectedGender = originalGender;
   }
 
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedImage = await ImagePicker().pickImage(source: source);
+
+    if (pickedImage != null) {
+      setState(() {
+        _pickedImage = File(pickedImage.path);
+      });
+    }
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    await _pickImage(ImageSource.gallery);
+  }
+
+  Future<void> _pickImageFromCamera() async {
+    await _pickImage(ImageSource.camera);
+  }
+
+  Future<void> _pickFile() async {
+    final result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      setState(() {
+        _pickedImage = File(result.files.single.path!);
+      });
+    }
+  }
+
+  Future<String?> _uploadProfilePicture(File imageFile) async {
+    try {
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      firebase_storage.Reference reference = firebase_storage
+          .FirebaseStorage.instance
+          .ref()
+          .child('images/$fileName');
+
+      await reference.putFile(imageFile);
+
+      // Get the download URL
+      String imageUrl = await reference.getDownloadURL();
+
+      setState(() {
+        // Update the user's profile picture URL
+        user = user.copyWith(profilePictureUrl: imageUrl);
+      });
+
+      return imageUrl;
+    } catch (error) {
+      print('Error uploading image to Firebase Storage: $error');
+      // Handle the error (e.g., show a message to the user)
+      return null; // Return null to indicate an error
+    }
+  }
+
   void saveChanges() async {
+    String? imageUrl;
+
+    if (_pickedImage != null) {
+      // Upload profile picture and get the download URL
+      imageUrl = await _uploadProfilePicture(_pickedImage!);
+    }
+
     final updatedUser = User(
       name: user.getName(),
       email: emailController.text,
@@ -46,6 +113,7 @@ class _SettingState extends State<Setting> {
       address: addressController.text,
       gender: selectedGender,
       userId: user.getId(),
+      profilePictureUrl: imageUrl ?? '', // Use the uploaded image URL if available
     );
 
     // Update user data in Firestore
@@ -68,6 +136,7 @@ class _SettingState extends State<Setting> {
         'address': user.getAddress(),
         'gender': user.getGender(),
         'userId': user.getId(),
+        'profilePictureUrl': imageUrl,
       });
     } catch (e) {
       print('Error updating user data: $e');
@@ -96,9 +165,27 @@ class _SettingState extends State<Setting> {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  const CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.amber,
+                  buildProfilePicture(), // Display the profile picture
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await _pickImageFromGallery();
+                    },
+                    child: const Text('Pick Image from Gallery '),
+                  ),
+                  const SizedBox(height: 5),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await _pickImageFromCamera();
+                    },
+                    child: const Text('Pick Image from Camera'),
+                  ),
+                  const SizedBox(height: 5),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await _pickFile();
+                    },
+                    child: const Text('Pick File'),
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -223,5 +310,28 @@ class _SettingState extends State<Setting> {
         ),
       ],
     );
+  }
+
+  Widget buildProfilePicture() {
+    if (_pickedImage != null) {
+      return Image.file(
+        _pickedImage!,
+        width: 100,
+        height: 100,
+        fit: BoxFit.cover,
+      );
+    } else if (user.getProfilePictureUrl().isNotEmpty) {
+      return Image.network(
+        user.getProfilePictureUrl(),
+        width: 100,
+        height: 100,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return CircleAvatar(
+        radius: 50,
+        backgroundColor: Colors.amber,
+      );
+    }
   }
 }

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:sportplays/Screens/home.dart';
-import 'package:sportplays/Screens/home_admin.dart';
-import 'package:sportplays/Screens/register.dart';
+import 'package:sportplays/screens/home.dart';
+import 'package:sportplays/screens/register.dart';
 import 'package:sportplays/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'forgot_password.dart';
+import 'package:sportplays/screens/home_admin.dart';
 
 class Login extends StatefulWidget {
   Login({Key? key});
@@ -28,6 +27,11 @@ class _LoginState extends State<Login> {
   final TextStyle buttonTextStlye = TextStyle(
     fontSize: 20,
   );
+
+  String? _passwordError;
+  String? _nameError;
+
+  bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -73,30 +77,35 @@ class _LoginState extends State<Login> {
                         label: Text('Name', style: labelTextStyle),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12.0)),
+                        errorText: _nameError,
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your name';
-                        }
-                        return null;
-                      },
+                      validator: _validateName,
                     ),
                     SizedBox(height: 20),
                     TextFormField(
                       controller: passwordController,
-                      obscureText: true,
+                      obscureText: !_isPasswordVisible, // Toggle visibility
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.lock),
                         label: Text('Password', style: labelTextStyle),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12.0)),
+                        errorText: _passwordError,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Theme.of(context).primaryColorDark,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            });
+                          },
+                        ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null;
-                      },
+                      validator: _validatePassword,
                     ),
                     SizedBox(height: 20),
                     SizedBox(
@@ -105,69 +114,79 @@ class _LoginState extends State<Login> {
                       child: ElevatedButton(
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            // Retrieve user data from Firestore
-                            try {
-                              DocumentSnapshot userSnapshot =
-                                  await FirebaseFirestore.instance
-                                      .collection('UserData')
-                                      .doc(nameController.text)
-                                      .get();
+                            String? validationResult = await _validateUser();
+                            if (validationResult == null) {
+                              // User is valid, proceed with navigation
+                              // Retrieve user data from Firestore
+                              try {
+                                DocumentSnapshot userSnapshot =
+                                    await FirebaseFirestore.instance
+                                        .collection('UserData')
+                                        .doc(nameController.text)
+                                        .get();
 
-                              if (userSnapshot.exists) {
-                                // Check if the user is an admin
-                                if (userSnapshot['userId'] == 'ADMIN' &&
-                                    userSnapshot['password'] ==
-                                        passwordController.text) {
-                                  // Admin found, navigate to HomeAdmin
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => HomeAdmin(
-                                        passUser: User(
-                                          name: userSnapshot['name'],
-                                          email: userSnapshot['email'],
-                                          password: userSnapshot['password'],
-                                          phone: userSnapshot['phone'],
-                                          address: userSnapshot['address'],
-                                          gender: userSnapshot['gender'],
-                                          userId: userSnapshot['userId'],
+                                if (userSnapshot.exists) {
+                                  if (userSnapshot['userId'] == 'ADMIN' &&
+                                      userSnapshot['password'] ==
+                                          passwordController.text) {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => HomeAdmin(
+                                          passUser: User(
+                                            name: userSnapshot['name'],
+                                            email: userSnapshot['email'],
+                                            password: userSnapshot['password'],
+                                            phone: userSnapshot['phone'],
+                                            address: userSnapshot['address'],
+                                            gender: userSnapshot['gender'],
+                                            userId: userSnapshot['userId'],
+                                            profilePictureUrl: '',
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                } else if (userSnapshot['password'] ==
-                                    passwordController.text) {
-                                  // Regular user found, navigate to Home
-                                  User passUser = User(
-                                    name: userSnapshot['name'],
-                                    email: userSnapshot['email'],
-                                    password: userSnapshot['password'],
-                                    phone: userSnapshot['phone'],
-                                    address: userSnapshot['address'],
-                                    gender: userSnapshot['gender'],
-                                    userId: userSnapshot['userId'],
-                                  );
+                                    );
+                                  } else if (userSnapshot['password'] ==
+                                      passwordController.text) {
+                                    User passUser = User(
+                                      name: userSnapshot['name'],
+                                      email: userSnapshot['email'],
+                                      password: userSnapshot['password'],
+                                      phone: userSnapshot['phone'],
+                                      address: userSnapshot['address'],
+                                      gender: userSnapshot['gender'],
+                                      userId: userSnapshot['userId'],
+                                      profilePictureUrl: '',
+                                    );
 
-                                  // Navigate to Home screen with the User object
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          Home(passUser: passUser),
-                                    ),
-                                  );
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            Home(passUser: passUser),
+                                      ),
+                                    );
+                                  } else {
+                                    setState(() {
+                                      _passwordError = 'Incorrect password';
+                                      _nameError = null;
+                                    });
+                                  }
                                 } else {
-                                  // Password incorrect
-                                  print('Incorrect password');
+                                  setState(() {
+                                    _nameError = 'User not found';
+                                    _passwordError = null;
+                                  });
                                 }
-                              } else {
-                                // User not found
-                                print('User not found');
+                              } catch (error) {
+                                print('Error fetching user data: $error');
                               }
-                            } catch (error) {
-                              // Handle errors
-                              print(
-                                  'Error fetching user data from Firestore: $error');
+                            } else {
+                              // Display validation error message
+                              setState(() {
+                                _passwordError = validationResult;
+                                _nameError = null;
+                              });
                             }
                           }
                         },
@@ -293,5 +312,40 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your name';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your password';
+    }
+    return null;
+  }
+
+  Future<String?> _validateUser() async {
+    try {
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('UserData')
+          .doc(nameController.text)
+          .get();
+
+      if (userSnapshot.exists) {
+        if (userSnapshot['password'] == passwordController.text) {
+          return null; // User is valid
+        } else {
+          return 'Incorrect password';
+        }
+      } else {
+        return 'User not found';
+      }
+    } catch (error) {
+      return 'Error fetching user data: $error';
+    }
   }
 }
