@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:sportplays/models/bookingdetails.dart';
 import 'package:sportplays/models/user.dart';
 import 'package:sportplays/screens/availability.dart';
@@ -25,15 +24,10 @@ class BookingPage extends StatefulWidget {
 class _BookingPageState extends State<BookingPage> {
   late Booking booking;
   int _selectedIndex = 0;
-  late Razorpay _razorpay;
 
   @override
   void initState() {
     super.initState();
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
 
     // Initialize the booking object with default values
     booking = Booking(
@@ -95,31 +89,6 @@ class _BookingPageState extends State<BookingPage> {
       );
     }
   }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _razorpay.clear();
-  }
-
-  var options = {
-    'key': 'rzp_test_aXqejP2OjuSDNm,tqeJosvhKQbTc4ifq3PR5oRv',
-    'amount': 50,
-    'name': 'Sport Play.',
-    'order_id': 'order_EMBFqjDHEEn80l',
-    'description': 'Court Booking',
-    'timeout': 120,
-    'prefill': {
-      'contact': '011-29389095',
-      'email': 'nur.syuhaida@graduate.utm.my',
-    },
-  };
-
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {}
-
-  void _handlePaymentError(PaymentFailureResponse response) {}
-
-  void _handleExternalWallet(ExternalWalletResponse response) {}
 
   @override
   Widget build(BuildContext context) {
@@ -303,7 +272,6 @@ class _BookingPageState extends State<BookingPage> {
                   onPressed: () {
                     print(
                         'Selected Payment Method: ${booking.selectedPaymentMethod}');
-                    _razorpay.open(options);
                   },
                   child: const Text('Make Payment'),
                 ),
