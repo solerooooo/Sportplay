@@ -1,14 +1,14 @@
 // contact_admin.dart
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../Models/contact_info.dart'; // Adjust the import based on your project structure
+import '../Models/contact_info.dart'; 
 
-class ContactAdmin extends StatefulWidget {
+class ContactAdminPage extends StatefulWidget {
   @override
-  _ContactAdminState createState() => _ContactAdminState();
+  _ContactAdminPageState createState() => _ContactAdminPageState();
 }
 
-class _ContactAdminState extends State<ContactAdmin> {
+class _ContactAdminPageState extends State<ContactAdminPage> {
   final CollectionReference contactCollection =
       FirebaseFirestore.instance.collection('contacts');
 
@@ -46,9 +46,9 @@ class _ContactAdminState extends State<ContactAdmin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Color(0xFFE6DFF1),
+      backgroundColor: Color(0xFFE6DFF1),
       appBar: AppBar(
-        backgroundColor: Color(0xFFb364f3), 
+        backgroundColor: Color(0xFFb364f3),
         elevation: 0,
         title: Text('Admin Contacts'),
       ),
@@ -90,9 +90,16 @@ class _ContactAdminState extends State<ContactAdmin> {
                       Map<String, dynamic> data =
                           document.data() as Map<String, dynamic>;
 
+                      // Create a ContactInfo object using the data from Firestore
+                      ContactInfo contactInfo = ContactInfo(
+                        name: data['name'],
+                        position: data['position'],
+                        phoneNumber: data['phone'],
+                      );
+
                       return ListTile(
-                        title: Text(data['name']),
-                        subtitle: Text('${data['position']} ${data['phone']}'),
+                        title: Text(contactInfo.getName()),
+                        subtitle: Text('${contactInfo.getPosition()} ${contactInfo.getPhoneNumber()}'),
                         trailing: IconButton(
                           icon: Icon(Icons.delete),
                           onPressed: () => deleteContact(document.id),

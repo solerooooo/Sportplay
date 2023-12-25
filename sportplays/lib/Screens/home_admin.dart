@@ -120,7 +120,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ContactAdmin(),
+                      builder: (context) => ContactAdminPage(),
                     ),
                   );
                 },
@@ -504,7 +504,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ContactAdmin(),
+                                        builder: (context) => ContactAdminPage(),
                                       ),
                                     );
                                   },

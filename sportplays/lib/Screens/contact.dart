@@ -1,29 +1,29 @@
+// contact_info_app.dart
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../Models/contact_info.dart'; // Adjust the import based on your project structure
 
-class ContactInfoApp extends StatefulWidget {
-  ContactInfoApp({Key? key}) : super(key: key);
+class ContactPage extends StatefulWidget {
+  ContactPage({Key? key}) : super(key: key);
 
   @override
-  State<ContactInfoApp> createState() => _ContactInfoAppState();
+  State<ContactPage> createState() => _ContactPageState();
 }
 
-class _ContactInfoAppState extends State<ContactInfoApp> {
+class _ContactPageState extends State<ContactPage> {
   final CollectionReference contactsCollection =
       FirebaseFirestore.instance.collection('contacts');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       appBar: AppBar(
         backgroundColor: Color(0xFFb364f3),
         elevation: 0,
       ),
       backgroundColor: Color(0xFFE6DFF1),
       body: Container(
-        
         child: Center(
           child: Column(
             children: [
@@ -52,39 +52,45 @@ class _ContactInfoAppState extends State<ContactInfoApp> {
                     return CircularProgressIndicator();
                   }
 
-                  List<Widget> contactWidgets = snapshot.data!.docs
-                      .map((DocumentSnapshot document) {
-                        Map<String, dynamic> data =
-                            document.data() as Map<String, dynamic>;
+                  List<Widget> contactWidgets =
+                      snapshot.data!.docs.map((DocumentSnapshot document) {
+                    Map<String, dynamic> data =
+                        document.data() as Map<String, dynamic>;
 
-                        return Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                data['name'],
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Text(
-                                data['position'],
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              SizedBox(height: 10),
-                              Text(
-                                data['phone'],
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              SizedBox(height: 10),
-                            ],
+                    // Create a ContactInfo object using the data from Firestore
+                    ContactInfo contactInfo = ContactInfo(
+                      name: data['name'],
+                      position: data['position'],
+                      phoneNumber: data['phone'],
+                    );
+
+                    return Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            contactInfo.getName(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        );
-                      })
-                      .toList();
+                          SizedBox(height: 10),
+                          Text(
+                            contactInfo.getPosition(),
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            contactInfo.getPhoneNumber(),
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          SizedBox(height: 10),
+                        ],
+                      ),
+                    );
+                  }).toList();
 
                   return Column(children: contactWidgets);
                 },

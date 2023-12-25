@@ -200,6 +200,7 @@ class _RegisterState extends State<Register> {
                               'address': addressController.text,
                               'gender': selectedGender,
                               'userId': idController.text,
+                               'profilePictureUrl':  '',
                             };
 
                             try {

@@ -1,5 +1,3 @@
-// user.dart
-
 class User {
   String name;
   String email;
@@ -8,7 +6,7 @@ class User {
   String address;
   String gender;
   String userId;
-
+  final String profilePictureUrl;
 
   User({
     required this.name,
@@ -18,17 +16,8 @@ class User {
     required this.address,
     required this.userId,
     required this.gender,
-
+    required this.profilePictureUrl,
   });
-
-  /*toJson() {
-    return {
-      "Name": name,
-      "Email": email,
-      "Phone": phone,
-      "Password": password,
-    };
-  }*/
 
   // Getters
   String getName() => name;
@@ -38,6 +27,7 @@ class User {
   String getAddress() => address;
   String getGender() => gender;
   String getId() => userId;
+    String getProfilePictureUrl() => profilePictureUrl;
 
   // Setters
   set setName(String name) => this.name = name;
@@ -47,4 +37,32 @@ class User {
   set setAddress(String address) => this.address = address;
   set setGender(String gender) => this.gender = gender;
   set setId(String userId) => this.userId = userId;
+
+  
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      name: json['name'],
+      email: json['email'],
+      password: json['password'],
+      phone: json['phone'],
+      address: json['address'],
+      gender: json['gender'],
+      userId: json['userId'],
+      profilePictureUrl: json['profilePictureUrl'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'email': email,
+      'password': password,
+      'phone': phone,
+      'address': address,
+      'gender': gender,
+      'userId': userId,
+      'profilePictureUrl': profilePictureUrl,
+    };
+  }
 }

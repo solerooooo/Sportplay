@@ -17,6 +17,7 @@ class _LoginState extends State<Login> {
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
 
+ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextStyle labelTextStyle = TextStyle(
@@ -126,7 +127,8 @@ class _LoginState extends State<Login> {
                                           phone: userSnapshot['phone'],
                                           address: userSnapshot['address'],
                                           gender: userSnapshot['gender'],
-                                          userId: userSnapshot['userId'],
+                                          userId: userSnapshot['userId'], 
+                                          profilePictureUrl: '',
                                         ),
                                       ),
                                     ),
@@ -141,7 +143,8 @@ class _LoginState extends State<Login> {
                                     phone: userSnapshot['phone'],
                                     address: userSnapshot['address'],
                                     gender: userSnapshot['gender'],
-                                    userId: userSnapshot['userId'],
+                                    userId: userSnapshot['userId'], 
+                                    profilePictureUrl:  '',
                                   );
 
                                   // Navigate to Home screen with the User object
@@ -153,17 +156,15 @@ class _LoginState extends State<Login> {
                                     ),
                                   );
                                 } else {
-                                  // Password incorrect
-                                  print('Incorrect password');
+                                 _showSnackBar('Incorrect password');
                                 }
                               } else {
-                                // User not found
-                                print('User not found');
+                                 // User not found
+                                 _showSnackBar('User not found');
                               }
                             } catch (error) {
                               // Handle errors
-                              print(
-                                  'Error fetching user data from Firestore: $error');
+                              _showSnackBar('Error fetching user data: $error');
                             }
                           }
                         },
@@ -276,4 +277,14 @@ class _LoginState extends State<Login> {
       ),
     );
   }
+
+ void _showSnackBar(String message) {
+  final snackBar = SnackBar(
+    content: Text(message),
+    duration: Duration(seconds: 3),
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
+
+}
+

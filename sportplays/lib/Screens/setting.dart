@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../models/user.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:sportplays/models/user.dart';
 
 class Setting extends StatefulWidget {
   final User passUser;
@@ -25,6 +28,7 @@ class _SettingState extends State<Setting> {
   TextEditingController addressController = TextEditingController();
   String selectedGender = '';
   late String originalGender;
+  File? _pickedImage;
 
   @override
   void initState() {
@@ -37,7 +41,42 @@ class _SettingState extends State<Setting> {
     selectedGender = originalGender;
   }
 
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedImage = await ImagePicker().pickImage(source: source);
+
+    if (pickedImage != null) {
+      setState(() {
+        _pickedImage = File(pickedImage.path);
+      });
+    }
+  }
+
+  Future<String?> _uploadProfilePicture(File imageFile) async {
+    try {
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      firebase_storage.Reference reference =
+          firebase_storage.FirebaseStorage.instance.ref().child('images/$fileName');
+
+      await reference.putFile(imageFile);
+
+      // Get the download URL
+      String imageUrl = await reference.getDownloadURL();
+
+      return imageUrl;
+    } catch (error) {
+      print('Error uploading image to Firebase Storage: $error');
+      return null;
+    }
+  }
+
   void saveChanges() async {
+    String? imageUrl;
+
+    if (_pickedImage != null) {
+      // Upload profile picture and get the download URL
+      imageUrl = await _uploadProfilePicture(_pickedImage!);
+    }
+
     final updatedUser = User(
       name: user.getName(),
       email: emailController.text,
@@ -46,6 +85,7 @@ class _SettingState extends State<Setting> {
       address: addressController.text,
       gender: selectedGender,
       userId: user.getId(),
+      profilePictureUrl: imageUrl ?? '', // Use the uploaded image URL if available
     );
 
     // Update user data in Firestore
@@ -68,6 +108,7 @@ class _SettingState extends State<Setting> {
         'address': user.getAddress(),
         'gender': user.getGender(),
         'userId': user.getId(),
+        'profilePictureUrl': user.getProfilePictureUrl(),
       });
     } catch (e) {
       print('Error updating user data: $e');
@@ -96,35 +137,25 @@ class _SettingState extends State<Setting> {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  const CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.amber,
+                  buildProfilePicture(), // Display the profile picture
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await _pickImage(ImageSource.gallery);
+                    },
+                    child: const Text('Pick Image from Gallery'),
                   ),
                   const SizedBox(height: 10),
                   Text(
                     '${user.getName()}',
                     style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 21.5),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 21.5,
+                    ),
                   ),
                   Text(
                     '${user.getId()}',
                     style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    width: 300,
-                    height: 40,
-                    decoration: const BoxDecoration(
-                      color: Colors.lightGreenAccent,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Active Student',
-                        style:
-                            TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
                   ),
                   const SizedBox(height: 10),
                   Container(
@@ -146,11 +177,14 @@ class _SettingState extends State<Setting> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        buildTextField(Icons.email, 'Email', emailController),
+                        buildTextField(
+                            Icons.email, 'Email', emailController),
                         const SizedBox(height: 10),
-                        buildTextField(Icons.phone, 'Phone Number', phoneController),
+                        buildTextField(
+                            Icons.phone, 'Phone Number', phoneController),
                         const SizedBox(height: 10),
-                        buildTextField(Icons.home, 'Address', addressController),
+                        buildTextField(
+                            Icons.home, 'Address', addressController),
                         const SizedBox(height: 10),
                         buildGenderDropdown(),
                       ],
@@ -170,7 +204,8 @@ class _SettingState extends State<Setting> {
     );
   }
 
-  Widget buildTextField(IconData icon, String label, TextEditingController controller) {
+  Widget buildTextField(
+      IconData icon, String label, TextEditingController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -223,5 +258,21 @@ class _SettingState extends State<Setting> {
         ),
       ],
     );
+  }
+
+  Widget buildProfilePicture() {
+    if (_pickedImage != null) {
+      return Image.file(
+        _pickedImage!,
+        width: 100,
+        height: 100,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return CircleAvatar(
+        radius: 50,
+        backgroundColor: Colors.amber,
+      );
+    }
   }
 }

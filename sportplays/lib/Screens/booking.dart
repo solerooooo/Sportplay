@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
-import 'package:sportplays/Models/bookingdetails.dart';
+import 'package:sportplays/models/bookingdetails.dart';
 import 'package:sportplays/models/user.dart';
-import 'package:sportplays/Screens/availability.dart';
-import 'package:sportplays/Screens/home.dart';
-import 'package:sportplays/Screens/profile.dart';
-import 'package:sportplays/Screens/qna.dart';
+import 'package:sportplays/screens/availability.dart';
+import 'package:sportplays/screens/home.dart';
+import 'package:sportplays/screens/profile.dart';
+import 'package:sportplays/screens/qna.dart';
 
 class BookingPage extends StatefulWidget {
   final User passUser;
