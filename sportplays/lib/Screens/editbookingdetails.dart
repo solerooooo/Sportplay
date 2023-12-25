@@ -50,7 +50,8 @@ class _EditBookingDetailsPageState extends State<EditBookingDetailsPage> {
           selectedActivity: documentSnapshot['selectedActivity'],
           playerQuantity: documentSnapshot['playerQuantity'],
           selectedPaymentMethod: documentSnapshot['selectedPaymentMethod'],
-          selectedTime: documentSnapshot['selectedTime'],
+          selectedTime: documentSnapshot['selectedTime'], 
+          isCourtAssigned: documentSnapshot['isCourtAssigned'],
         );
       });
     }

@@ -1,3 +1,4 @@
+//booking.dart
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,8 @@ class _BookingPageState extends State<BookingPage> {
       playerQuantity: 1,
       selectedPaymentMethod: 'Cash',
       selectedTime: 'Choose your time slot', 
-      bookingId: 0, // Set initial value to 0 or null
+      bookingId: 0, 
+      isCourtAssigned: null, // Set initial value to 0 or null
     );
     
     // Fetch the next available bookingId from Firestore

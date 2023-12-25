@@ -113,7 +113,7 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
         selectedActivity: doc['selectedActivity'],
         playerQuantity: doc['playerQuantity'],
         selectedPaymentMethod: doc['selectedPaymentMethod'],
-        selectedTime: doc['selectedTime'],
+        selectedTime: doc['selectedTime'], isCourtAssigned: false,
       );
     }).toList();
 
