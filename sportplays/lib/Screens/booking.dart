@@ -225,7 +225,7 @@ class _BookingPageState extends State<BookingPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Booking'),
-        backgroundColor: const Color(0xFFD6F454),
+        backgroundColor: Colors.lightGreenAccent,
       ),
       body: SingleChildScrollView(
         child: Container(
