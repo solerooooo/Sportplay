@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sportplays/models/bookingdetails.dart';
+import 'package:sportplays/screens/booking.dart';
 import 'package:sportplays/screens/editbookingdetails.dart';
 import 'package:sportplays/screens/home.dart';
 import 'package:sportplays/screens/profile.dart';
 import 'package:sportplays/screens/qna.dart';
 import 'package:sportplays/models/user.dart';
+
 
 class ViewBookingPage extends StatefulWidget {
   final User passUser;
@@ -29,7 +31,7 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ViewBookingPage(passUser: widget.passUser),
+            builder: (context) => BookingPage(passUser: widget.passUser, selectedTime: '',),
           ),
         );
         break;
