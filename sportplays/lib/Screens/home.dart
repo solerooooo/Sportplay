@@ -438,7 +438,7 @@ class _HomeState extends State<Home> {
                           },
                         ),
                         _buildCircularButton(
-                          icon: Icons.person,
+                          icon: Icons.book_rounded,
                           label: 'Booking details',
                           onPressed: () {
                             // Navigate to ViewBookingPage
