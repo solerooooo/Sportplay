@@ -1,5 +1,6 @@
 //qna.dart
 import 'package:flutter/material.dart';
+import 'package:sportplays/screens/booking.dart';
 import 'home.dart';
 import '../models/user.dart';
 import 'viewbookingdetails.dart';
@@ -46,7 +47,12 @@ class _QnAPageState extends State<QnAPage> {
 
     switch (index) {
       case 0:
-        // Current Booking page, no need to navigate
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BookingPage(passUser: widget.passUser, selectedTime: '',),
+          ),
+        );
         break;
       case 1:
         Navigator.push(
@@ -67,12 +73,7 @@ class _QnAPageState extends State<QnAPage> {
         );
         break;
       case 3:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => QnAPage(passUser: widget.passUser),
-          ),
-        );
+        // Current Q&A page, no need to navigate
         break;
       case 4:
         Navigator.push(

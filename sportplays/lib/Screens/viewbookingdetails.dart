@@ -26,17 +26,15 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
 
     switch (index) {
       case 0:
-        // Current Booking page, no need to navigate
-        break;
-      case 1:
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ViewBookingPage(
-              passUser: widget.passUser,
-            ),
+            builder: (context) => ViewBookingPage(passUser: widget.passUser),
           ),
         );
+        break;
+      case 1:
+        // Current ViewBooking page, no need to navigate
         break;
       case 2:
         Navigator.push(
@@ -59,9 +57,8 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
           context,
           MaterialPageRoute(
             builder: (context) => Profile(passUser: widget.passUser),
-          ),
-        );
-        break;
+        ),
+      );
     }
   }
 
