@@ -44,41 +44,44 @@ class _QnAPageState extends State<QnAPage> {
       _selectedIndex = index;
     });
 
-    if (index == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Home(passUser: widget.passUser),
-        ),
-      );
-    }
-
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ViewBookingPage(passUser: widget.passUser,
+    switch (index) {
+      case 0:
+        // Current Booking page, no need to navigate
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ViewBookingPage(
+              passUser: widget.passUser,
+            ),
           ),
-        ),
-      );
-    }
-
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => QnAPage(passUser: widget.passUser),
-        ),
-      );
-    }
-
-    if (index == 3) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Profile(passUser: widget.passUser),
-        ),
-      );
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Home(passUser: widget.passUser),
+          ),
+        );
+        break;
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => QnAPage(passUser: widget.passUser),
+          ),
+        );
+        break;
+      case 4:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Profile(passUser: widget.passUser),
+          ),
+        );
+        break;
     }
   }
 
@@ -128,12 +131,16 @@ class _QnAPageState extends State<QnAPage> {
         showUnselectedLabels: true,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: Icon(Icons.add),
+            label: 'Booking',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add),
+            icon: Icon(Icons.book_rounded),
             label: 'View Booking',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.question_answer),
