@@ -21,7 +21,6 @@ class BookingPage extends StatefulWidget {
     Key? key,
     required this.passUser,
     required this.selectedTime,
-    
   }) : super(key: key);
 
   @override
@@ -29,6 +28,7 @@ class BookingPage extends StatefulWidget {
 }
 
 class _BookingPageState extends State<BookingPage> {
+  List<TextEditingController> playerControllers = [];
   late Booking booking;
   int _selectedIndex = 0;
   Map<String, dynamic>? paymentIntent;
@@ -36,54 +36,62 @@ class _BookingPageState extends State<BookingPage> {
   @override
   void initState() {
     super.initState();
+
     // Initialize the booking object with default values
     booking = Booking(
       selectedActivity: 'Ping Pong',
       playerQuantity: 1,
       selectedPaymentMethod: 'Cash',
-      selectedTime: 'Choose your time slot', 
-      bookingId: 0, 
+      selectedTime: 'Choose your time slot',
+      bookingId: 0,
       isCourtAssigned: null, // Set initial value to 0 or null
     );
-    
+
     // Fetch the next available bookingId from Firestore
     _fetchNextBookingId();
+
+    // Initialize playerControllers based on initial playerQuantity
+    for (int i = 0; i < booking.playerQuantity; i++) {
+      playerControllers.add(TextEditingController());
+    }
+
+    _updatePlayerControllers();
   }
 
   Future<void> stripeMakePayment() async {
-  try {
-    // Make a payment intent
-    paymentIntent = await createPaymentIntent('10', 'MYR');
+    try {
+      // Make a payment intent
+      paymentIntent = await createPaymentIntent('5', 'MYR');
 
-    if (paymentIntent != null) {
-      // Initialize payment sheet
-      await Stripe.instance.initPaymentSheet(
-        paymentSheetParameters: SetupPaymentSheetParameters(
-          paymentIntentClientSecret: paymentIntent!['client_secret'],
-          style: ThemeMode.dark,
-          merchantDisplayName: 'SPORTPLAYS',
-        ),
-      );
+      if (paymentIntent != null) {
+        // Initialize payment sheet
+        await Stripe.instance.initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+            paymentIntentClientSecret: paymentIntent!['client_secret'],
+            style: ThemeMode.dark,
+            merchantDisplayName: 'SPORTPLAYS',
+          ),
+        );
 
-      // Display payment sheet
-      await displayPaymentSheet();
-    } else {
-      Fluttertoast.showToast(msg: 'Failed to create payment intent');
+        // Display payment sheet
+        await displayPaymentSheet();
+      } else {
+        Fluttertoast.showToast(msg: 'Failed to create payment intent');
+      }
+    } catch (e) {
+      print(e.toString());
+      Fluttertoast.showToast(msg: e.toString());
     }
-  } catch (e) {
-    print(e.toString());
-    Fluttertoast.showToast(msg: e.toString());
   }
-}
 
   void _fetchNextBookingId() async {
     // Fetch the maximum bookingId from Firestore and increment it
-    QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await FirebaseFirestore.instance
-            .collection('Booking')
-            .orderBy('bookingId', descending: true)
-            .limit(1)
-            .get();
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+        .instance
+        .collection('Booking')
+        .orderBy('bookingId', descending: true)
+        .limit(1)
+        .get();
 
     if (querySnapshot.docs.isNotEmpty) {
       // If there are existing bookings, get the highest bookingId and increment it
@@ -215,6 +223,7 @@ class _BookingPageState extends State<BookingPage> {
                               setState(() {
                                 if (booking.playerQuantity > 1) {
                                   booking.playerQuantity--;
+                                  _updatePlayerControllers(); // Update playerControllers here
                                 }
                               });
                             },
@@ -229,6 +238,7 @@ class _BookingPageState extends State<BookingPage> {
                               setState(() {
                                 if (booking.playerQuantity < 6) {
                                   booking.playerQuantity++;
+                                  _updatePlayerControllers(); // Update playerControllers here
                                 }
                               });
                             },
@@ -236,6 +246,34 @@ class _BookingPageState extends State<BookingPage> {
                           ),
                         ],
                       ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Fill up player names',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Generate text fields based on player quantity
+                      for (int i = 0; i < booking.playerQuantity; i++)
+                        TextField(
+                          controller: playerControllers[i],
+                          decoration: InputDecoration(
+                            labelText: 'Player ${i + 1}',
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -270,21 +308,9 @@ class _BookingPageState extends State<BookingPage> {
                             ),
                           ),
                           ListTile(
-                            title: const Text('Free'),
+                            title: const Text('Debit/Credit Card'),
                             leading: Radio(
-                              value: 'Free',
-                              groupValue: booking.selectedPaymentMethod,
-                              onChanged: (String? value) {
-                                setState(() {
-                                  booking.selectedPaymentMethod = value!;
-                                });
-                              },
-                            ),
-                          ),
-                          ListTile(
-                            title: const Text('Online'),
-                            leading: Radio(
-                              value: 'Online',
+                              value: 'Debit/Credit Card',
                               groupValue: booking.selectedPaymentMethod,
                               onChanged: (String? value) {
                                 setState(() {
@@ -386,9 +412,25 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
+  // Update playerControllers when playerQuantity changes
+  void _updatePlayerControllers() {
+    setState(() {
+      playerControllers.clear();
+      for (int i = 0; i < booking.playerQuantity; i++) {
+        playerControllers.add(TextEditingController());
+      }
+    });
+  }
+
   void _saveDataToFirestore() async {
   // Access userName from the User object
   String userName = widget.passUser.name;
+
+  // Get player names from the controllers
+  List<String> playerNames = [];
+  for (int i = 0; i < booking.playerQuantity; i++) {
+    playerNames.add(playerControllers[i].text);
+  }
 
   // Add your Firestore logic here to save data with the bookingId as the document ID
   await FirebaseFirestore.instance.collection('Booking').doc('${booking.bookingId}').set({
@@ -396,6 +438,7 @@ class _BookingPageState extends State<BookingPage> {
     'userName': userName,
     'selectedActivity': booking.selectedActivity,
     'playerQuantity': booking.playerQuantity,
+    'playerNames': playerNames, // Add player names
     'selectedPaymentMethod': booking.selectedPaymentMethod,
     'timestamp': FieldValue.serverTimestamp(), // Add timestamp field
     'selectedTime': widget.selectedTime, // Add selectedTime field
@@ -435,28 +478,25 @@ class _BookingPageState extends State<BookingPage> {
   }
 }
 
-
-
-
 displayPaymentSheet() async {
-    try {
-      // 3. display the payment sheet.
-      await Stripe.instance.presentPaymentSheet();
+  try {
+    // 3. display the payment sheet.
+    await Stripe.instance.presentPaymentSheet();
 
-      Fluttertoast.showToast(msg: 'Payment succesfully completed');
-    } on Exception catch (e) {
-      if (e is StripeException) {
-        Fluttertoast.showToast(
-            msg: 'Error from Stripe: ${e.error.localizedMessage}');
-      } else {
-        Fluttertoast.showToast(msg: 'Unforeseen error: ${e}');
-      }
+    Fluttertoast.showToast(msg: 'Payment succesfully completed');
+  } on Exception catch (e) {
+    if (e is StripeException) {
+      Fluttertoast.showToast(
+          msg: 'Error from Stripe: ${e.error.localizedMessage}');
+    } else {
+      Fluttertoast.showToast(msg: 'Unforeseen error: ${e}');
     }
   }
-
+}
 
 //create Payment
-  Future<Map<String, dynamic>?> createPaymentIntent(String amount, String currency) async {
+Future<Map<String, dynamic>?> createPaymentIntent(
+    String amount, String currency) async {
   try {
     // Request body
     Map<String, dynamic> body = {
@@ -477,7 +517,8 @@ displayPaymentSheet() async {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
-      print('Failed to create payment intent. Status code: ${response.statusCode}');
+      print(
+          'Failed to create payment intent. Status code: ${response.statusCode}');
       return null;
     }
   } catch (err) {
@@ -487,7 +528,7 @@ displayPaymentSheet() async {
 }
 
 //calculate Amount
-  calculateAmount(String amount) {
-    final calculatedAmount = (int.parse(amount)) * 100;
-    return calculatedAmount.toString();
-  }
+calculateAmount(String amount) {
+  final calculatedAmount = (int.parse(amount)) * 100;
+  return calculatedAmount.toString();
+}
