@@ -50,7 +50,7 @@ class _EditBookingDetailsPageState extends State<EditBookingDetailsPage> {
           selectedActivity: documentSnapshot['selectedActivity'],
           playerQuantity: documentSnapshot['playerQuantity'],
           selectedPaymentMethod: documentSnapshot['selectedPaymentMethod'],
-          selectedTime: documentSnapshot['selectedTime'], 
+          selectedTime: documentSnapshot['selectedTime'],
           isCourtAssigned: documentSnapshot['isCourtAssigned'],
         );
       });
@@ -114,9 +114,9 @@ class _EditBookingDetailsPageState extends State<EditBookingDetailsPage> {
                   'Selected Activity : ${booking.selectedActivity}',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-               
+
                 const SizedBox(height: 20),
-                  ElevatedButton(
+                ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
