@@ -151,6 +151,12 @@ class _HomeAdminState extends State<HomeAdmin> {
                   );
                 },
               ),
+              Spacer(), // Add Spacer to push the logout button to the bottom
+              ListTile(
+                title: Text('Logout'),
+                leading: Icon(Icons.logout), // Add the logout icon
+                onTap: _logout,
+              ),
             ],
           ),
         ),
@@ -534,6 +540,15 @@ class _HomeAdminState extends State<HomeAdmin> {
             ),
           ),
         )));
+  }
+
+   void _logout() {
+    // Navigate to the login page and clear all routes
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => Login()),
+      (route) => false,
+    );
   }
 
   void _deleteNews(String documentId) async {

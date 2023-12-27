@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sportplays/Models/bookingdetails.dart';
 import 'package:sportplays/Screens/login.dart';
 import 'profile.dart';
 import '../models/user.dart';
@@ -161,8 +160,10 @@ class _HomeState extends State<Home> {
                   );
                 },
               ),
+              Spacer(), // Add Spacer to push the logout button to the bottom
               ListTile(
-                title: Text('Logout'), // Add Logout button
+                title: Text('Logout'),
+                leading: Icon(Icons.logout), // Add the logout icon
                 onTap: _logout,
               ),
             ],
