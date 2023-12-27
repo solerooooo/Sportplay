@@ -5,7 +5,7 @@ import 'package:sportplays/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'forgot_password.dart';
-import 'package:sportplays/adminpage/home_admin.dart';
+import 'package:sportplays/admin/home_admin.dart';
 
 class Login extends StatefulWidget {
   Login({Key? key});
