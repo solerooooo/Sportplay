@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sportplays/adminpage/availability_admin.dart';
-import 'package:sportplays/adminpage/contact_admin.dart';
-import 'package:sportplays/adminpage/qna_admin.dart';
-import 'package:sportplays/adminpage/viewbookingdetails_admin.dart';
+import '../adminpage/availability_admin.dart';
+import '../adminpage/contact_admin.dart';
+import '../adminpage/qna_admin.dart';
+import '../adminpage/viewbookingdetails_admin.dart';
 import '../screens/login.dart';
 import '../screens/profile.dart';
 import '../screens/register.dart';
@@ -150,6 +150,12 @@ class _HomeAdminState extends State<HomeAdmin> {
                     ),
                   );
                 },
+              ),
+              Spacer(), // Add Spacer to push the logout button to the bottom
+              ListTile(
+                title: Text('Logout'),
+                leading: Icon(Icons.logout), // Add the logout icon
+                onTap: _logout,
               ),
             ],
           ),
@@ -503,7 +509,8 @@ class _HomeAdminState extends State<HomeAdmin> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ContactAdminPage(),
+                                        builder: (context) =>
+                                            ContactAdminPage(),
                                       ),
                                     );
                                   },
@@ -517,7 +524,8 @@ class _HomeAdminState extends State<HomeAdmin> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            ViewBookingDetailsAdminPage(passUser: widget.passUser),
+                                            ViewBookingDetailsAdminPage(
+                                                passUser: widget.passUser),
                                       ),
                                     );
                                   },
@@ -534,6 +542,15 @@ class _HomeAdminState extends State<HomeAdmin> {
             ),
           ),
         )));
+  }
+
+    void _logout() {
+    // Navigate to the login page and clear all routes
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => Login()),
+      (route) => false,
+    );
   }
 
   void _deleteNews(String documentId) async {
