@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sportplays/adminpage/availability_admin.dart';
-import 'package:sportplays/adminpage/contact_admin.dart';
-import 'package:sportplays/adminpage/qna_admin.dart';
-import 'package:sportplays/adminpage/viewbookingdetails_admin.dart';
+import 'package:sportplays/admin/availability_admin.dart';
+import 'package:sportplays/admin/contact_admin.dart';
+import 'package:sportplays/admin/qna_admin.dart';
+import 'package:sportplays/admin/viewbookingdetails_admin.dart';
 import '../screens/login.dart';
 import '../screens/profile.dart';
 import '../screens/register.dart';
