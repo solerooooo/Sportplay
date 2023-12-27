@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'booking.dart';
-import 'home.dart';
-import 'profile.dart';
-import 'qna.dart';
+import '../screens/booking.dart';
+import '../screens/home.dart';
+import '../screens/profile.dart';
+import '../screens/qna.dart';
 import '../models/user.dart';
 
 class AvailabilityAdminPage extends StatefulWidget {
