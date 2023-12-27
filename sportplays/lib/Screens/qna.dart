@@ -7,7 +7,6 @@ import 'viewbookingdetails.dart';
 import 'profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class QnAService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -33,7 +32,6 @@ class QnAPage extends StatefulWidget {
   _QnAPageState createState() => _QnAPageState();
 }
 
-
 class _QnAPageState extends State<QnAPage> {
   int _selectedIndex = 0;
   List<Map<String, dynamic>> qnaList = [];
@@ -50,7 +48,11 @@ class _QnAPageState extends State<QnAPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BookingPage(passUser: widget.passUser, selectedTime: '',),
+            builder: (context) => BookingPage(
+              passUser: widget.passUser,
+              selectedTime: '',
+              selectedActivity: '',
+            ),
           ),
         );
         break;
@@ -86,7 +88,7 @@ class _QnAPageState extends State<QnAPage> {
     }
   }
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

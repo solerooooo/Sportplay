@@ -146,6 +146,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                       builder: (context) => BookingPage(
                         passUser: widget.passUser,
                         selectedTime: 'Choose your time slot',
+                        selectedActivity: '',
                       ),
                     ),
                   );
@@ -456,6 +457,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                                       MaterialPageRoute(
                                         builder: (context) => BookingPage(
                                           passUser: widget.passUser,
+                                          selectedActivity: '',
                                           selectedTime: 'Choose your time slot',
                                         ),
                                       ),
@@ -503,7 +505,8 @@ class _HomeAdminState extends State<HomeAdmin> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ContactAdminPage(),
+                                        builder: (context) =>
+                                            ContactAdminPage(),
                                       ),
                                     );
                                   },
@@ -517,7 +520,8 @@ class _HomeAdminState extends State<HomeAdmin> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            ViewBookingDetailsAdminPage(passUser: widget.passUser),
+                                            ViewBookingDetailsAdminPage(
+                                                passUser: widget.passUser),
                                       ),
                                     );
                                   },

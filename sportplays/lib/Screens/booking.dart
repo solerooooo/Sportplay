@@ -17,10 +17,12 @@ import 'package:sportplays/screens/viewbookingdetails.dart';
 class BookingPage extends StatefulWidget {
   final User passUser;
   final String selectedTime;
+  final String selectedActivity;
 
   const BookingPage({
     Key? key,
     required this.passUser,
+    required this.selectedActivity,
     required this.selectedTime,
   }) : super(key: key);
 
@@ -46,7 +48,7 @@ class _BookingPageState extends State<BookingPage> {
 
     // Initialize the booking object with default values
     booking = Booking(
-      selectedActivity: 'Ping Pong',
+      selectedActivity: 'pingpong',
       playerQuantity: 1,
       selectedPaymentMethod: 'Cash',
       selectedTime: 'Choose your time slot',
@@ -68,7 +70,7 @@ class _BookingPageState extends State<BookingPage> {
 
   void _initializeBookingObject() {
     booking = Booking(
-      selectedActivity: 'Ping Pong',
+      selectedActivity: widget.selectedActivity,
       playerQuantity: 1,
       selectedPaymentMethod: 'Cash',
       selectedTime: 'Choose your time slot',
@@ -76,14 +78,15 @@ class _BookingPageState extends State<BookingPage> {
       isCourtAssigned: null,
     );
   }
-  Future<void> _handleCashPayment() async {
-  // Handle additional logic for Cash payment (update Firestore, etc.)
-  // For now, let's show a pop-up message indicating a successful payment.
-  await _showDonePaymentDialog();
 
-  // Show "Done Booking" dialog
-  _showDoneBookingDialog();
-}
+  Future<void> _handleCashPayment() async {
+    // Handle additional logic for Cash payment (update Firestore, etc.)
+    // For now, let's show a pop-up message indicating a successful payment.
+    await _showDonePaymentDialog();
+
+    // Show "Done Booking" dialog
+    _showDoneBookingDialog();
+  }
 
   void _fetchNextBookingId() async {
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
@@ -261,30 +264,29 @@ class _BookingPageState extends State<BookingPage> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                 ElevatedButton(
-    onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => AvailabilityPage(
-            passUser: widget.passUser,
-            sport: booking.selectedActivity,
-            selectedTime: widget.selectedTime,
-          ),
-        ),
-      );
-    },
-    style: booking.selectedActivity == chooseTimeSlotText
-        ? ElevatedButton.styleFrom(
-            backgroundColor: Colors.lightGreenAccent)
-        : null,
-    child: Text(
-      widget.selectedTime.isEmpty
-          ? chooseTimeSlotText
-          : '${widget.selectedTime}',
-    ),
-  ),
-
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AvailabilityPage(
+                          passUser: widget.passUser,
+                          sport: booking.selectedActivity,
+                          selectedTime: widget.selectedTime,
+                        ),
+                      ),
+                    );
+                  },
+                  style: booking.selectedActivity == chooseTimeSlotText
+                      ? ElevatedButton.styleFrom(
+                          backgroundColor: Colors.lightGreenAccent)
+                      : null,
+                  child: Text(
+                    widget.selectedTime.isEmpty
+                        ? chooseTimeSlotText
+                        : '${widget.selectedTime}',
+                  ),
+                ),
                 const SizedBox(height: 20),
                 Container(
                   decoration: BoxDecoration(
@@ -536,8 +538,6 @@ class _BookingPageState extends State<BookingPage> {
       booking.bookingId = ++booking.bookingId;
     });
   }
-
-
 
   Future<void> _showDoneDialog(String title, String content) async {
     return showDialog(

@@ -8,7 +8,6 @@ import 'package:sportplays/screens/profile.dart';
 import 'package:sportplays/screens/qna.dart';
 import 'package:sportplays/models/user.dart';
 
-
 class ViewBookingPage extends StatefulWidget {
   final User passUser;
 
@@ -31,7 +30,11 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BookingPage(passUser: widget.passUser, selectedTime: '',),
+            builder: (context) => BookingPage(
+              passUser: widget.passUser,
+              selectedTime: '',
+              selectedActivity: '',
+            ),
           ),
         );
         break;
@@ -59,8 +62,8 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
           context,
           MaterialPageRoute(
             builder: (context) => Profile(passUser: widget.passUser),
-        ),
-      );
+          ),
+        );
     }
   }
 
@@ -129,7 +132,8 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
         selectedActivity: doc['selectedActivity'],
         playerQuantity: doc['playerQuantity'],
         selectedPaymentMethod: doc['selectedPaymentMethod'],
-        selectedTime: doc['selectedTime'], isCourtAssigned: false,
+        selectedTime: doc['selectedTime'],
+        isCourtAssigned: false,
       );
     }).toList();
 

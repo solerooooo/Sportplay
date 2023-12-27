@@ -6,7 +6,6 @@ import 'profile.dart';
 import 'qna.dart';
 import '../models/user.dart';
 
-
 class AvailabilityAdminPage extends StatefulWidget {
   final User passUser;
 
@@ -17,7 +16,6 @@ class AvailabilityAdminPage extends StatefulWidget {
 }
 
 class _AvailabilityAdminPageState extends State<AvailabilityAdminPage> {
-
   int pingPongCourts = 0;
   int badmintonCourts = 0;
   int squashCourts = 0;
@@ -68,6 +66,7 @@ class _AvailabilityAdminPageState extends State<AvailabilityAdminPage> {
           builder: (context) => BookingPage(
             passUser: widget.passUser,
             selectedTime: 'Choose you time slot',
+            selectedActivity: '',
           ),
         ),
       );
@@ -322,46 +321,46 @@ class _AvailabilityAdminPageState extends State<AvailabilityAdminPage> {
     );
   }
 
-Widget _buildCourtDropdown(
-    String label, int value, void Function(int?) onChanged) {
-  return FormField<int>(
-    builder: (FormFieldState<int> state) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 8),
-          Text(
-            label,
-            style: TextStyle(fontSize: 16),
-          ),
-          Row(
-            children: [
-              Text(
-                'Current $label: ${getCourtsByLabel(label)}',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-            ],
-          ),
-          DropdownButtonFormField<int>(
-            value: value,
-            onChanged: (newValue) {
-              setState(() {
-                value = newValue!;
-              });
-              onChanged(newValue);
-            },
-            items: List.generate(4, (index) => index)
-                .map((int value) => DropdownMenuItem<int>(
-                      value: value,
-                      child: Text(value.toString()),
-                    ))
-                .toList(),
-          ),
-        ],
-      );
-    },
-  );
-}
+  Widget _buildCourtDropdown(
+      String label, int value, void Function(int?) onChanged) {
+    return FormField<int>(
+      builder: (FormFieldState<int> state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 8),
+            Text(
+              label,
+              style: TextStyle(fontSize: 16),
+            ),
+            Row(
+              children: [
+                Text(
+                  'Current $label: ${getCourtsByLabel(label)}',
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+              ],
+            ),
+            DropdownButtonFormField<int>(
+              value: value,
+              onChanged: (newValue) {
+                setState(() {
+                  value = newValue!;
+                });
+                onChanged(newValue);
+              },
+              items: List.generate(4, (index) => index)
+                  .map((int value) => DropdownMenuItem<int>(
+                        value: value,
+                        child: Text(value.toString()),
+                      ))
+                  .toList(),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   int getCourtsByLabel(String label) {
     switch (label) {
@@ -376,5 +375,3 @@ Widget _buildCourtDropdown(
     }
   }
 }
-
-

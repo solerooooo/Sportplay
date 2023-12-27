@@ -133,6 +133,7 @@ class _HomeState extends State<Home> {
                       builder: (context) => BookingPage(
                         passUser: widget.passUser,
                         selectedTime: 'Choose your time slot',
+                        selectedActivity: '',
                       ),
                     ),
                   );
@@ -316,6 +317,7 @@ class _HomeState extends State<Home> {
                                 MaterialPageRoute(
                                   builder: (context) => BookingPage(
                                     passUser: widget.passUser,
+                                    selectedActivity: '',
                                     selectedTime: 'Choose your time slot',
                                   ),
                                 ),
@@ -376,6 +378,7 @@ class _HomeState extends State<Home> {
                               MaterialPageRoute(
                                 builder: (context) => BookingPage(
                                   passUser: widget.passUser,
+                                  selectedActivity: '',
                                   selectedTime: 'Choose your time slot',
                                 ),
                               ),
