@@ -79,14 +79,14 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
-  Future<void> _handleCashPayment() async {
+  /*Future<void> _handleCashPayment() async {
     // Handle additional logic for Cash payment (update Firestore, etc.)
     // For now, let's show a pop-up message indicating a successful payment.
     await _showDonePaymentDialog();
 
     // Show "Done Booking" dialog
     _showDoneBookingDialog();
-  }
+  }*/
 
   void _fetchNextBookingId() async {
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
@@ -133,8 +133,8 @@ class _BookingPageState extends State<BookingPage> {
     try {
       // 3. display the payment sheet.
       await Stripe.instance.presentPaymentSheet();
-
-      Fluttertoast.showToast(msg: 'Payment successfully completed');
+      //Fluttertoast.showToast(msg: 'Payment successfully completed');
+      _showDonePaymentDialog();
     } on Exception catch (e) {
       if (e is StripeException) {
         Fluttertoast.showToast(
@@ -417,6 +417,7 @@ class _BookingPageState extends State<BookingPage> {
                       stripeMakePayment();
                       print(
                           'Selected Payment Method: $booking.selectedPaymentMethod');
+                      _saveDataToFirestore();
                     },
                     child: const Text('Make Payment'),
                   ),
@@ -424,7 +425,8 @@ class _BookingPageState extends State<BookingPage> {
                 ElevatedButton(
                   onPressed: () {
                     if (booking.selectedPaymentMethod == 'Cash') {
-                      _handleCashPayment();
+                      _showDoneBookingDialog();
+                      _saveDataToFirestore();
                     } else {
                       _saveDataToFirestore();
                     }
@@ -549,7 +551,12 @@ class _BookingPageState extends State<BookingPage> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Home(passUser: widget.passUser),
+                  ),
+                );
               },
               child: Text('OK'),
             ),
