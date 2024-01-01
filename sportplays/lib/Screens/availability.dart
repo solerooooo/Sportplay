@@ -84,8 +84,16 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
     }
   }
 
-  void _onTimeSelected(String selectedTime) {
-    Navigator.push(
+  void _onTimeSelected(String selectedTime) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    // Update the availability in Firestore
+    await firestore.collection('availability').doc(selectedTime).update({
+      // Adjust the field based on your Firestore document structure
+      '${widget.sport.toLowerCase()}Courts': FieldValue.increment(-1),
+    });
+
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => BookingPage(
