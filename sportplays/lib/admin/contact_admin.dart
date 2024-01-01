@@ -1,7 +1,7 @@
 // contact_admin.dart
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../Models/contact_info.dart'; 
+import '../model/contact_info.dart'; 
 
 class ContactAdminPage extends StatefulWidget {
   @override

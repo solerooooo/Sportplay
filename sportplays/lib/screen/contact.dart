@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../Models/contact_info.dart'; // Adjust the import based on your project structure
+import '../model/contact_info.dart'; // Adjust the import based on your project structure
 
 class ContactPage extends StatefulWidget {
   ContactPage({Key? key}) : super(key: key);
