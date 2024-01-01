@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:sportplays/Screens/splash_screen.dart';
+import 'package:sportplays/screen/splash_screen.dart';
 import 'package:sportplays/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
