@@ -447,7 +447,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                                     );
                                   },
                                 ),
-                                _buildCircularButton(
+                                /*_buildCircularButton(
                                   icon: Icons.add,
                                   label: 'Booking',
                                   onPressed: () {
@@ -463,7 +463,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                                       ),
                                     );
                                   },
-                                ),
+                                ),*/
                                 _buildCircularButton(
                                   icon: Icons.question_answer,
                                   label: 'Q&A',
