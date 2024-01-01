@@ -242,7 +242,7 @@ class _RegisterState extends State<Register> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            Map<String, dynamic> UserDataWithEmail = {
+                            Map<String, dynamic> UserData = {
                               'name': nameController.text,
                               'email': emailController.text,
                               'password': passwordController.text,
@@ -255,9 +255,9 @@ class _RegisterState extends State<Register> {
 
                             try {
                               widget.firestore
-                                  .collection('UserDataWithEmail')
+                                  .collection('UserData')
                                   .doc(emailController.text)
-                                  .set(UserDataWithEmail);
+                                  .set(UserData);
 
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(

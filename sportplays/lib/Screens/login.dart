@@ -15,7 +15,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final emailController = TextEditingController();
+  final nameController = TextEditingController();
   final passwordController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -29,7 +29,7 @@ class _LoginState extends State<Login> {
   );
 
   String? _passwordError;
-  String? _emailError;
+  String? _nameError;
 
   bool _isPasswordVisible = false;
 
@@ -71,15 +71,15 @@ class _LoginState extends State<Login> {
                     ),
                     SizedBox(height: 20),
                     TextFormField(
-                      controller: emailController,
+                      controller: nameController,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.person),
-                        label: Text('Email Address', style: labelTextStyle),
+                        label: Text('Name', style: labelTextStyle),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12.0)),
-                        errorText: _emailError,
+                        errorText: _nameError,
                       ),
-                      validator: _validateEmail,
+                      validator: _validateName,
                     ),
                     SizedBox(height: 20),
                     TextFormField(
@@ -121,8 +121,8 @@ class _LoginState extends State<Login> {
                               try {
                                 DocumentSnapshot userSnapshot =
                                     await FirebaseFirestore.instance
-                                        .collection('UserDataWithEmail')
-                                        .doc(emailController.text)
+                                        .collection('UserData')
+                                        .doc(nameController.text)
                                         .get();
 
                                 if (userSnapshot.exists) {
@@ -169,12 +169,12 @@ class _LoginState extends State<Login> {
                                   } else {
                                     setState(() {
                                       _passwordError = 'Incorrect password';
-                                      _emailError = null;
+                                      _nameError = null;
                                     });
                                   }
                                 } else {
                                   setState(() {
-                                    _emailError = 'User not found';
+                                    _nameError = 'User not found';
                                     _passwordError = null;
                                   });
                                 }
@@ -185,7 +185,7 @@ class _LoginState extends State<Login> {
                               // Display validation error message
                               setState(() {
                                 _passwordError = validationResult;
-                                _emailError = null;
+                                _nameError = null;
                               });
                             }
                           }
@@ -314,9 +314,9 @@ class _LoginState extends State<Login> {
     );
   }
 
-  String? _validateEmail(String? value) {
+  String? _validateName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter your email';
+      return 'Please enter your name';
     }
     return null;
   }
@@ -331,8 +331,8 @@ class _LoginState extends State<Login> {
   Future<String?> _validateUser() async {
     try {
       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-          .collection('UserDataWithEmail')
-          .doc(emailController.text)
+          .collection('UserData')
+          .doc(nameController.text)
           .get();
 
       if (userSnapshot.exists) {
