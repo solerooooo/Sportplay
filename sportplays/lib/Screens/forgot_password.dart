@@ -1,3 +1,4 @@
+//forgot_password.dart
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,7 @@ class ForgotPasswordPage extends StatefulWidget {
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final emailController = TextEditingController();
-  
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextStyle headerTextStyle = TextStyle(
@@ -126,7 +127,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 70),
+                    SizedBox(height: 60),
                     Center(
                       child: ElevatedButton(
                         onPressed: () {
@@ -140,7 +141,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: buttonColor,
                           padding: EdgeInsets.symmetric(
-                              horizontal: 80, vertical: 10),
+                              horizontal: 60, vertical: 10),
                         ),
                       ),
                     ),
