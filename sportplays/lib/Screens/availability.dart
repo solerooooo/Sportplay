@@ -10,7 +10,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AvailabilityPage extends StatefulWidget {
   final User passUser;
   final String sport;
-  final String selectedTime; // Add this line
+  final String selectedTime;
+
+  // Add this line
 
   const AvailabilityPage({
     Key? key,
@@ -53,14 +55,14 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
 
     if (index == 1) {
       Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BookingPage(
-            passUser: widget.passUser,
-            selectedTime: 'Choose your time slot',
-          ),
-        ),
-      );
+          context,
+          MaterialPageRoute(
+            builder: (context) => BookingPage(
+              passUser: widget.passUser,
+              selectedTime: 'Choose your time slot',
+              selectedActivity: widget.sport,
+            ),
+          ));
     }
 
     if (index == 2) {
@@ -89,7 +91,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
         builder: (context) => BookingPage(
           passUser: widget.passUser,
           selectedTime: selectedTime,
-         
+          selectedActivity: widget.sport, // Add this line
         ),
       ),
     );
@@ -98,117 +100,120 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFE6DFF1),
-      appBar: AppBar(
-        title: const Text('Court Availability'),
-        backgroundColor:const Color(0xFFD6F454),
-      ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const SizedBox(height: 30),
-            const Text(
-              'Court Availability',
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-                fontStyle: FontStyle.italic,
-                color: Colors.black,
+        backgroundColor: Color(0xFFE6DFF1),
+        appBar: AppBar(
+          title: const Text('Court Availability'),
+          backgroundColor: const Color(0xFFD6F454),
+        ),
+        body: SingleChildScrollView(
+          child: Center(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const SizedBox(height: 30),
+              const Text(
+                'Court Availability',
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.black,
+                ),
               ),
-            ),
-            const SizedBox(height: 30),
-            Container(
-              width: 250,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Color(0xFF444444),
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 10),
-                  Text(
-                    '${widget.sport}',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+              const SizedBox(height: 30),
+              Container(
+                width: 250,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Color(0xFF444444),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          
-          const SizedBox(height: 10),
-          Container(
-            decoration: const BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(Icons.access_time),
-                        SizedBox(width: 8),
-                        Text(
-                          'Time',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                  ],
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 10),
+                    Text(
+                      '${widget.sport}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  for (int i = 0; i < availableTimes.length; i += 2)
-                    Column(
-                      children: [
-                        SizedBox(
-                          height: 75,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              GestureDetector(
-                                onTap: () => _onTimeSelected(availableTimes[i]),
-                                child: _buildTimeContainer(availableTimes[i]),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                decoration: const BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(Icons.access_time),
+                            SizedBox(width: 8),
+                            Text(
+                              'Time',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
-                              if (i + 1 < availableTimes.length)
-                                GestureDetector(
-                                  onTap: () =>
-                                      _onTimeSelected(availableTimes[i + 1]),
-                                  child: _buildTimeContainer(
-                                      availableTimes[i + 1]),
-                                ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 10),
-                      ],
-                    ),
-                ],
+                      ),
+                      const SizedBox(height: 10),
+                      for (int i = 0; i < availableTimes.length; i += 2)
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: 75,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () =>
+                                        _onTimeSelected(availableTimes[i]),
+                                    child:
+                                        _buildTimeContainer(availableTimes[i]),
+                                  ),
+                                  if (i + 1 < availableTimes.length)
+                                    GestureDetector(
+                                      onTap: () => _onTimeSelected(
+                                          availableTimes[i + 1]),
+                                      child: _buildTimeContainer(
+                                          availableTimes[i + 1]),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        ),
+                    ],
+                  ),
+                ),
               ),
-            ),
+            ]),
           ),
-        ]),
-      ),)
-    );
+        ));
   }
 
   Widget _buildTimeContainer(String time) {

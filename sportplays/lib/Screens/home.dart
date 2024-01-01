@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sportplays/Models/bookingdetails.dart';
 import 'package:sportplays/Screens/login.dart';
 import 'profile.dart';
 import '../models/user.dart';
@@ -133,6 +132,7 @@ class _HomeState extends State<Home> {
                       builder: (context) => BookingPage(
                         passUser: widget.passUser,
                         selectedTime: 'Choose your time slot',
+                        selectedActivity: '',
                       ),
                     ),
                   );
@@ -162,7 +162,8 @@ class _HomeState extends State<Home> {
                 },
               ),
               ListTile(
-                title: Text('Logout'), // Add Logout button
+                title: Text('Logout'),
+                leading: Icon(Icons.logout),
                 onTap: _logout,
               ),
             ],
@@ -316,6 +317,7 @@ class _HomeState extends State<Home> {
                                 MaterialPageRoute(
                                   builder: (context) => BookingPage(
                                     passUser: widget.passUser,
+                                    selectedActivity: '',
                                     selectedTime: 'Choose your time slot',
                                   ),
                                 ),
@@ -376,6 +378,7 @@ class _HomeState extends State<Home> {
                               MaterialPageRoute(
                                 builder: (context) => BookingPage(
                                   passUser: widget.passUser,
+                                  selectedActivity: '',
                                   selectedTime: 'Choose your time slot',
                                 ),
                               ),
@@ -438,7 +441,7 @@ class _HomeState extends State<Home> {
                           },
                         ),
                         _buildCircularButton(
-                          icon: Icons.person,
+                          icon: Icons.book_rounded,
                           label: 'Booking details',
                           onPressed: () {
                             // Navigate to ViewBookingPage

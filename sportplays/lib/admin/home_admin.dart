@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sportplays/screens/availability_admin.dart';
-import 'package:sportplays/screens/contact_admin.dart';
-import 'package:sportplays/screens/qna_admin.dart';
-import 'package:sportplays/screens/viewbookingdetails_admin.dart';
-import 'login.dart';
-import 'profile.dart';
-import 'register.dart';
+import 'package:sportplays/admin/availability_admin.dart';
+import 'package:sportplays/admin/contact_admin.dart';
+import 'package:sportplays/admin/qna_admin.dart';
+import 'package:sportplays/admin/viewbookingdetails_admin.dart';
+import '../screens/login.dart';
+import '../screens/profile.dart';
+import '../screens/register.dart';
 import '../models/user.dart';
-import 'booking.dart';
+import '../screens/booking.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeAdmin extends StatefulWidget {
@@ -146,6 +146,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                       builder: (context) => BookingPage(
                         passUser: widget.passUser,
                         selectedTime: 'Choose your time slot',
+                        selectedActivity: '',
                       ),
                     ),
                   );
@@ -456,6 +457,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                                       MaterialPageRoute(
                                         builder: (context) => BookingPage(
                                           passUser: widget.passUser,
+                                          selectedActivity: '',
                                           selectedTime: 'Choose your time slot',
                                         ),
                                       ),
@@ -503,7 +505,8 @@ class _HomeAdminState extends State<HomeAdmin> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ContactAdminPage(),
+                                        builder: (context) =>
+                                            ContactAdminPage(),
                                       ),
                                     );
                                   },
@@ -517,7 +520,8 @@ class _HomeAdminState extends State<HomeAdmin> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            ViewBookingDetailsAdminPage(passUser: widget.passUser),
+                                            ViewBookingDetailsAdminPage(
+                                                passUser: widget.passUser),
                                       ),
                                     );
                                   },

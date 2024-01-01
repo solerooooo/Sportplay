@@ -42,51 +42,51 @@ class _ViewBookingDetailsAdminPageState
   }
 
   Future<List<Booking>> _getAllBookings() async {
-    try {
-      DateTime currentDate = DateTime.now();
-      DateTime startOfDay =
-          DateTime(currentDate.year, currentDate.month, currentDate.day);
-      DateTime endOfDay = startOfDay.add(Duration(days: 1));
+  try {
+    DateTime currentDate = DateTime.now();
+    DateTime startOfDay =
+        DateTime(currentDate.year, currentDate.month, currentDate.day);
+    DateTime endOfDay = startOfDay.add(Duration(days: 1));
 
-      QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await FirebaseFirestore.instance
-              .collection('Booking')
-              .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
-              .where('timestamp', isLessThan: endOfDay)
-              .get();
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance
+            .collection('Booking')
+            .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
+            .where('timestamp', isLessThan: endOfDay)
+            .get();
 
-      print('Number of documents for today: ${querySnapshot.docs.length}');
+    print('Number of documents for today: ${querySnapshot.docs.length}');
+      
+    List<Booking> bookings = querySnapshot.docs.map((doc) {
+      final data = doc.data() as Map<String, dynamic>;
 
-      List<Booking> bookings = querySnapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
+      return Booking(
+        bookingId: data['bookingId'],
+        selectedActivity: data['selectedActivity'],
+        playerQuantity: data['playerQuantity'],
+        selectedPaymentMethod: data['selectedPaymentMethod'],
+        selectedTime: data['selectedTime'],
+        timestamp: data['timestamp'],
+        userName: data['userName'],
+        isCourtAssigned: data.containsKey('isCourtAssigned')
+            ? data['isCourtAssigned']
+            : false,
+      );
+    }).toList();
 
-        return Booking(
-          bookingId: data['bookingId'],
-          selectedActivity: data['selectedActivity'],
-          playerQuantity: data['playerQuantity'],
-          selectedPaymentMethod: data['selectedPaymentMethod'],
-          selectedTime: data['selectedTime'],
-          timestamp: data['timestamp'],
-          userName: data['userName'],
-          isCourtAssigned: data.containsKey('isCourtAssigned')
-              ? data['isCourtAssigned']
-              : false, // Set a default value if the field is not present
-        );
-      }).toList();
+    // Sort the bookings based on timestamp in descending order
+    bookings.sort((a, b) => b.timestamp!.compareTo(a.timestamp!));
 
-      print('Number of bookings for today: ${bookings.length}');
-      print(
-          'First booking timestamp for today: ${bookings.isNotEmpty ? bookings.first.timestamp : 'No bookings for today'}');
+    print('Number of bookings for today: ${bookings.length}');
+    print('First booking timestamp for today: ${bookings.isNotEmpty ? bookings.first.timestamp : 'No bookings for today'}');
 
-      // Sort the bookings based on timestamp in descending order
-      bookings.sort((a, b) => b.timestamp!.compareTo(a.timestamp!));
-
-      return bookings;
-    } catch (e) {
-      print('Error fetching bookings: $e');
-      return []; // Return an empty list in case of an error
-    }
+    return bookings;
+  } catch (e) {
+    print('Error fetching bookings: $e');
+    return []; // Return an empty list in case of an error
   }
+}
+
 
   Widget _buildListView(List<Booking> bookings) {
   return ListView.builder(

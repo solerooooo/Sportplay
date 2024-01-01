@@ -1,4 +1,3 @@
-// user.dart
 class User {
   String name;
   String email;
@@ -7,7 +6,7 @@ class User {
   String address;
   String gender;
   String userId;
-  final String profilePictureUrl;
+  late String profilePictureUrl;  // Changed from 'final' to 'late'
 
   User({
     required this.name,
@@ -17,7 +16,7 @@ class User {
     required this.address,
     required this.userId,
     required this.gender,
-    required this.profilePictureUrl,
+    required this.profilePictureUrl,  // Removed 'late' or 'final'
   });
 
   // Getters
