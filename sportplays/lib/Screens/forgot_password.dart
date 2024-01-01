@@ -12,6 +12,50 @@ class ForgotPasswordPage extends StatefulWidget {
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final emailController = TextEditingController();
 
+  @override
+  void dispose() {
+    emailController.dispose();
+    super.dispose();
+  }
+
+ Future passwordReset() async {
+    try {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: emailController.text.trim());
+
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text('Password reset link sent! Check your email'),
+            );
+          },
+        );
+    } on FirebaseAuthException catch (e) {
+      print(e);
+
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text(e.message.toString()),
+            );
+          },
+        );
+    } catch (e) {
+    print('Error: $e');
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Text('An unexpected error occurred. Please try again later.'),
+        );
+      },
+    );
+  }
+}
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextStyle headerTextStyle = TextStyle(
@@ -39,28 +83,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     color: Colors.white,
   );
 
-  @override
-  void dispose() {
-    emailController.dispose();
-    super.dispose();
-  }
-
-  Future passwordReset() async {
-    try {
-      await FirebaseAuth.instance
-          .sendPasswordResetEmail(email: emailController.text.trim());
-    } on FirebaseAuthException catch (e) {
-      print(e);
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text(e.message.toString()),
-          );
-        },
-      );
-    }
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -127,21 +150,19 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 60),
+                   SizedBox(height: 60),
                     Center(
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // Do something when the form is valid
-                            print('Form is valid');
+                            // Call passwordReset function when the form is valid
+                            passwordReset();
                           }
                         },
-                        child: Text('Reset Password',
-                            style: resetPasswordTextStyle),
+                        child: Text('Reset Password', style: resetPasswordTextStyle),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: buttonColor,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 60, vertical: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 60, vertical: 10),
                         ),
                       ),
                     ),
