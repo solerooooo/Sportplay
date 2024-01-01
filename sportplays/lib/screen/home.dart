@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sportplays/Screens/login.dart';
+import 'package:sportplays/screen/login.dart';
 import 'profile.dart';
-import '../models/user.dart';
+import '../model/user.dart';
 import 'booking.dart';
 import 'viewbookingdetails.dart';
 import 'qna.dart';

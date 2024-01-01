@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sportplays/models/bookingdetails.dart';
-import 'package:sportplays/screens/booking.dart';
-import 'package:sportplays/screens/editbookingdetails.dart';
-import 'package:sportplays/screens/home.dart';
-import 'package:sportplays/screens/profile.dart';
-import 'package:sportplays/screens/qna.dart';
-import 'package:sportplays/models/user.dart';
+import 'package:sportplays/model/bookingdetails.dart';
+import 'package:sportplays/screen/booking.dart';
+import 'package:sportplays/screen/editbookingdetails.dart';
+import 'package:sportplays/screen/home.dart';
+import 'package:sportplays/screen/profile.dart';
+import 'package:sportplays/screen/qna.dart';
+import 'package:sportplays/model/user.dart';
 
 class ViewBookingPage extends StatefulWidget {
   final User passUser;

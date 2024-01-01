@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sportplays/models/bookingdetails.dart';
-import 'package:sportplays/models/user.dart';
+import 'package:sportplays/model/bookingdetails.dart';
+import 'package:sportplays/model/user.dart';
 
 class ViewBookingDetailsAdminPage extends StatefulWidget {
   final User passUser;

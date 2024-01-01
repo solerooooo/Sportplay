@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sportplays/screens/home.dart';
-import 'package:sportplays/screens/register.dart';
-import 'package:sportplays/models/user.dart';
+import 'package:sportplays/screen/home.dart';
+import 'package:sportplays/screen/register.dart';
+import 'package:sportplays/model/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'forgot_password.dart';

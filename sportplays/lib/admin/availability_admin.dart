@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../screens/booking.dart';
-import '../screens/home.dart';
-import '../screens/profile.dart';
-import '../screens/qna.dart';
-import '../models/user.dart';
+import '../screen/booking.dart';
+import '../screen/home.dart';
+import '../screen/profile.dart';
+import '../screen/qna.dart';
+import '../model/user.dart';
 
 class AvailabilityAdminPage extends StatefulWidget {
   final User passUser;

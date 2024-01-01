@@ -4,7 +4,7 @@ import 'booking.dart';
 import 'home.dart';
 import 'profile.dart';
 import 'qna.dart';
-import '../models/user.dart';
+import '../model/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AvailabilityPage extends StatefulWidget {

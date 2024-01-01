@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sportplays/models/user.dart';
+import 'package:sportplays/model/user.dart';
 
 class EditProfilePicture extends StatefulWidget {
   final User passUser;

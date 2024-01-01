@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:sportplays/Models/bookingdetails.dart';
-import 'package:sportplays/models/user.dart';
-import 'package:sportplays/Screens/availability.dart';
-import 'package:sportplays/Screens/home.dart';
-import 'package:sportplays/Screens/profile.dart';
-import 'package:sportplays/Screens/qna.dart';
+import 'package:sportplays/model/bookingdetails.dart';
+import 'package:sportplays/model/user.dart';
+import 'package:sportplays/screen/availability.dart';
+import 'package:sportplays/screen/home.dart';
+import 'package:sportplays/screen/profile.dart';
+import 'package:sportplays/screen/qna.dart';
 import 'package:http/http.dart' as http;
-import 'package:sportplays/screens/viewbookingdetails.dart';
+import 'package:sportplays/screen/viewbookingdetails.dart';
 
 class BookingPage extends StatefulWidget {
   final User passUser;

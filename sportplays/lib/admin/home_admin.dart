@@ -4,11 +4,11 @@ import 'package:sportplays/admin/availability_admin.dart';
 import 'package:sportplays/admin/contact_admin.dart';
 import 'package:sportplays/admin/qna_admin.dart';
 import 'package:sportplays/admin/viewbookingdetails_admin.dart';
-import '../screens/login.dart';
-import '../screens/profile.dart';
-import '../screens/register.dart';
-import '../models/user.dart';
-import '../screens/booking.dart';
+import '../screen/login.dart';
+import '../screen/profile.dart';
+import '../screen/register.dart';
+import '../model/user.dart';
+import '../screen/booking.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeAdmin extends StatefulWidget {
@@ -151,6 +151,11 @@ class _HomeAdminState extends State<HomeAdmin> {
                     ),
                   );
                 },
+              ),
+              ListTile(
+                title: Text('Logout'),
+                leading: Icon(Icons.logout),
+                onTap: _logout,
               ),
             ],
           ),
@@ -591,6 +596,16 @@ class _HomeAdminState extends State<HomeAdmin> {
           ),
         ],
       ),
+    );
+  }
+
+  
+  void _logout() {
+    // Navigate to the login page and clear all routes
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => Login()),
+      (route) => false,
     );
   }
 }
