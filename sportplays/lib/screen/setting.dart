@@ -115,6 +115,7 @@ Widget buildPasswordField(
 ) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
+    mainAxisSize: MainAxisSize.min,
     children: [
       SizedBox(width: 10),
       Expanded(
@@ -155,14 +156,20 @@ void _handlePasswordChangeButtonPress() {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      content: StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-          return buildPasswordFields(setState);
-        },
+      title: Text('Change Password'),
+      content: Container(
+        child: SingleChildScrollView(
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return buildPasswordFields(setState);
+            },
+          ),
+        ),
       ),
     ),
   );
 }
+
 
   bool _validatePasswordFields() {
     if (lastPasswordController.text != user.getPassword()) {
