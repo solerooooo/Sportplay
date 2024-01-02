@@ -7,8 +7,6 @@ import 'package:sportplays/screen/home.dart';
 import 'package:sportplays/screen/profile.dart';
 import 'package:sportplays/screen/qna.dart';
 import 'package:sportplays/model/user.dart';
-import 'package:intl/intl.dart';
-
 
 class ViewBookingPage extends StatefulWidget {
   final User passUser;
@@ -36,7 +34,6 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
               passUser: widget.passUser,
               selectedTime: '',
               selectedActivity: '',
-              timestamp: null,
             ),
           ),
         );
@@ -137,66 +134,54 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
         selectedPaymentMethod: doc['selectedPaymentMethod'],
         selectedTime: doc['selectedTime'],
         isCourtAssigned: false,
-        timestamp: doc['timestamp'],
       );
     }).toList();
 
     return bookings;
   }
 
- Widget _buildListView(List<Booking> bookings) {
-  return ListView.builder(
-    itemCount: bookings.length,
-    itemBuilder: (context, index) {
-      Booking booking = bookings[index];
-      DateTime? bookingDate = booking.timestamp?.toDate(); // Add null check with '?'
-
-      return Card(
-        child: ListTile(
-          title: Text('Activity: ${booking.selectedActivity}'),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Players: ${booking.selectedTime}'),
-              Text('Booking Date: ${bookingDate != null ? DateFormat.yMd().add_jm().format(bookingDate) : "N/A"}'),
-            ],
-          ),
-          onTap: () {
-            _showBookingDetailsDialog(booking);
-          },
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditBookingDetailsPage(
-                        passUser: widget.passUser,
-                        bookingId: booking.bookingId,
-                        selectedTime: booking.selectedTime,
-                      ),
-                    ),
-                  );
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () {
-                  _showDeleteConfirmationDialog(booking);
-                },
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
-
-
+  Widget _buildListView(List<Booking> bookings) {
+    return ListView.builder(
+      itemCount: bookings.length,
+      itemBuilder: (context, index) {
+        Booking booking = bookings[index];
+        return Card(
+          child: ListTile(
+              title: Text('Activity: ${booking.selectedActivity}'),
+              subtitle: Text('Players: ${booking.selectedTime}'),
+              onTap: () {
+                _showBookingDetailsDialog(booking);
+              },
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditBookingDetailsPage(
+                            passUser: widget.passUser,
+                            bookingId: booking.bookingId,
+                            selectedTime: booking.selectedTime,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      _showDeleteConfirmationDialog(booking);
+                    },
+                  ),
+                ],
+              )),
+        );
+      },
+    );
+  }
 
   void _deleteBooking(Booking booking) async {
     await FirebaseFirestore.instance

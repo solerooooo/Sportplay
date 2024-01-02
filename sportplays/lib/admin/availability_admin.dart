@@ -67,7 +67,6 @@ class _AvailabilityAdminPageState extends State<AvailabilityAdminPage> {
             passUser: widget.passUser,
             selectedTime: 'Choose you time slot',
             selectedActivity: '',
-            timestamp: null,
           ),
         ),
       );

@@ -133,7 +133,6 @@ class _HomeState extends State<Home> {
                         passUser: widget.passUser,
                         selectedTime: 'Choose your time slot',
                         selectedActivity: '',
-                        timestamp: null,
                       ),
                     ),
                   );
@@ -320,7 +319,6 @@ class _HomeState extends State<Home> {
                                     passUser: widget.passUser,
                                     selectedActivity: '',
                                     selectedTime: 'Choose your time slot',
-                                    timestamp: null,
                                   ),
                                 ),
                               );
@@ -382,7 +380,6 @@ class _HomeState extends State<Home> {
                                   passUser: widget.passUser,
                                   selectedActivity: '',
                                   selectedTime: 'Choose your time slot',
-                                  timestamp: null,
                                 ),
                               ),
                             );

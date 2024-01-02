@@ -18,14 +18,12 @@ class BookingPage extends StatefulWidget {
   final User passUser;
   final String selectedTime;
   final String selectedActivity;
-  final Timestamp? timestamp; 
 
   const BookingPage({
     Key? key,
     required this.passUser,
     required this.selectedActivity,
     required this.selectedTime,
-    required this.timestamp,
   }) : super(key: key);
 
   @override
