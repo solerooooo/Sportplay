@@ -147,6 +147,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                         passUser: widget.passUser,
                         selectedTime: 'Choose your time slot',
                         selectedActivity: '',
+                        timestamp: null,
                       ),
                     ),
                   );
