@@ -52,6 +52,7 @@ class _QnAPageState extends State<QnAPage> {
               passUser: widget.passUser,
               selectedTime: '',
               selectedActivity: '',
+              timestamp: null,
             ),
           ),
         );

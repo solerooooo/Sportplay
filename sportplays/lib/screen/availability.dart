@@ -61,6 +61,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
               passUser: widget.passUser,
               selectedTime: 'Choose your time slot',
               selectedActivity: widget.sport,
+              timestamp: null,
             ),
           ));
     }
@@ -100,6 +101,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
           passUser: widget.passUser,
           selectedTime: selectedTime,
           selectedActivity: widget.sport, // Add this line
+          timestamp: null,
         ),
       ),
     );
