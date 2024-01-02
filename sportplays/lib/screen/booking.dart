@@ -13,6 +13,9 @@ import 'package:sportplays/screen/profile.dart';
 import 'package:sportplays/screen/qna.dart';
 import 'package:http/http.dart' as http;
 import 'package:sportplays/screen/viewbookingdetails.dart';
+import 'package:flutter/cupertino.dart';
+
+
 
 class BookingPage extends StatefulWidget {
   final User passUser;
@@ -36,7 +39,6 @@ class _BookingPageState extends State<BookingPage> {
   static const String chooseTimeSlotText = 'Choose your time slot';
   List<TextEditingController> playerControllers = [];
   late Booking booking;
-  int _selectedIndex = 0;
   Map<String, dynamic>? paymentIntent;
 
   String calculateAmount(String amount) {
@@ -179,67 +181,50 @@ class _BookingPageState extends State<BookingPage> {
     }
   }
 
-  void _onTabSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    switch (index) {
-      case 0:
-        // Current Booking page, no need to navigate
-        break;
-      case 1:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ViewBookingPage(
-              passUser: widget.passUser,
+ 
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: CupertinoNavigationBar(
+      middle: Text('Booking'),
+      leading: GestureDetector(
+        onTap: () {
+          // Navigate to the home screen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Home(passUser: widget.passUser),
             ),
-          ),
-        );
-        break;
-      case 2:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Home(passUser: widget.passUser),
-          ),
-        );
-        break;
-      case 3:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => QnAPage(passUser: widget.passUser),
-          ),
-        );
-        break;
-      case 4:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Profile(passUser: widget.passUser),
-          ),
-        );
-        break;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Booking'),
+          );
+        },
+        child: Icon(CupertinoIcons.home, size: 26,),
+      ),
+      trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+        onTap: () {
+          // Navigate to the home screen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Profile(passUser: widget.passUser),
+            ),
+          );
+        },
+        child: Icon(CupertinoIcons.person, size: 26,),
+      ),],),
         backgroundColor: Colors.lightGreenAccent,
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          color: Color(0xFFE6DFF1),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+    
+    body: SingleChildScrollView(
+      child: Container(
+        color: Color(0xFFE6DFF1),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
                 Text(
                   'Select Activity',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -440,36 +425,7 @@ class _BookingPageState extends State<BookingPage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        onTap: _onTabSelected,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black.withOpacity(0.5),
-        showUnselectedLabels: true,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Booking',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book_rounded),
-            label: 'View Booking',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.question_answer),
-            label: 'Q&A',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
+     
     );
   }
 

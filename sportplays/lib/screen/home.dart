@@ -19,11 +19,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int _selectedIndex = 0;
+  
 
   void _onTabSelected(int index) {
     setState(() {
-      _selectedIndex = index;
+      
     });
 
     if (index == 1) {

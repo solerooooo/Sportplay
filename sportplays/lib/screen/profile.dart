@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../model/user.dart';
 import 'setting.dart';
+import 'package:flutter/cupertino.dart';
 
 class Profile extends StatefulWidget {
   final User passUser;
@@ -41,38 +42,52 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.lightGreenAccent,
-        title: const Text(
-          'User Profile',
-        ),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              // Navigate to the Setting page and wait for the result
-              final result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Setting(
-                    passUser: passUser,
-                    onUpdateUser: (User updatedUser) {
-                      setState(() {
-                        passUser = updatedUser;
-                      });
-                    },
-                    firestore: FirebaseFirestore.instance,
-                  ),
-                ),
-              );
-
-              // Handle the result if needed
-              if (result != null) {
-                // Do something with the result if needed
-              }
-            },
-            icon: const Icon(Icons.settings),
+      appBar: CupertinoNavigationBar(
+        middle: Text('My Profile'),
+        leading: GestureDetector(
+          onTap: () {
+            // Navigate to the home screen
+            Navigator.popUntil(context, (route) => route.isFirst);
+          },
+          child: Icon(
+            CupertinoIcons.home,
+            size: 26,
           ),
-        ],
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: () async {
+                // Navigate to the Setting page and wait for the result
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Setting(
+                      passUser: passUser,
+                      onUpdateUser: (User updatedUser) {
+                        setState(() {
+                          passUser = updatedUser;
+                        });
+                      },
+                      firestore: FirebaseFirestore.instance,
+                    ),
+                  ),
+                );
+
+                // Handle the result if needed
+                if (result != null) {
+                  // Do something with the result if needed
+                }
+              },
+              child: Icon(
+                Icons.settings,
+                size: 26,
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.lightGreenAccent,
       ),
       body: Container(
         width: double.infinity,
@@ -147,6 +162,7 @@ class _ProfileState extends State<Profile> {
                         buildInfoRow(Icons.home, passUser.getAddress()),
                         const SizedBox(height: 20),
                         buildInfoRow(Icons.work, passUser.getGender()),
+                        const SizedBox(height: 20),
                       ],
                     ),
                   ),
