@@ -1,5 +1,3 @@
-// setting.dart
-
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -29,19 +27,10 @@ class _SettingState extends State<Setting> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  final TextEditingController lastPasswordController = TextEditingController();
-  final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController confirmNewPasswordController =
-      TextEditingController();
-
-  bool _isLastPasswordVisible = false;
-  bool _isNewPasswordVisible = false;
-  bool _isConfirmNewPasswordVisible = false;
   String selectedGender = '';
   late String originalGender;
   File? _pickedImage;
-  String get imageUrl =>
-      _pickedImage != null ? _pickedImage!.path : user.getProfilePictureUrl();
+  String get imageUrl => _pickedImage != null ? _pickedImage!.path : user.getProfilePictureUrl();
 
   @override
   void initState() {
@@ -52,188 +41,6 @@ class _SettingState extends State<Setting> {
     addressController.text = user.getAddress();
     originalGender = user.getGender();
     selectedGender = originalGender;
-  }
-
- Widget buildPasswordFields(StateSetter setState) {
-  return Column(
-    children: [
-      buildPasswordField(
-        Icons.lock,
-        'Last Password',
-        lastPasswordController,
-        _isLastPasswordVisible,
-        () {
-          setState(() {
-            _isLastPasswordVisible = !_isLastPasswordVisible;
-          });
-        },
-      ),
-      SizedBox(height: 10),
-      buildPasswordField(
-        Icons.lock,
-        'New Password',
-        newPasswordController,
-        _isNewPasswordVisible,
-        () {
-          setState(() {
-            _isNewPasswordVisible = !_isNewPasswordVisible;
-          });
-        },
-      ),
-      SizedBox(height: 10),
-      buildPasswordField(
-        Icons.lock,
-        'Confirm New Password',
-        confirmNewPasswordController,
-        _isConfirmNewPasswordVisible,
-        () {
-          setState(() {
-            _isConfirmNewPasswordVisible = !_isConfirmNewPasswordVisible;
-          });
-        },
-      ),
-      SizedBox(height: 10),
-      ElevatedButton(
-        onPressed: () {
-          if (_validatePasswordFields()) {
-            _changePassword(lastPasswordController.text);
-            Navigator.pop(context);
-          }
-        },
-        child: Text('Submit'),
-      ),
-    ],
-  );
-}
-
-Widget buildPasswordField(
-  IconData icon,
-  String label,
-  TextEditingController controller,
-  bool isPasswordVisible,
-  VoidCallback onPressed,
-) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      SizedBox(width: 10),
-      Expanded(
-        child: SizedBox(
-          width: 250,
-          child: TextField(
-            controller: controller,
-            obscureText: !isPasswordVisible,
-            decoration: InputDecoration(
-              labelText: label,
-              border: OutlineInputBorder(),
-              prefixIcon: Icon(icon),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                  color: Theme.of(context).primaryColorDark,
-                ),
-                onPressed: onPressed,
-              ),
-            ),
-          ),
-        ),
-      ),
-    ],
-  );
-}
-
-Widget buildChangePasswordButton() {
-  return ElevatedButton(
-    onPressed: () {
-      _handlePasswordChangeButtonPress();
-    },
-    child: Text('Change Password'),
-  );
-}
-
-void _handlePasswordChangeButtonPress() {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      content: StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-          return buildPasswordFields(setState);
-        },
-      ),
-    ),
-  );
-}
-
-  bool _validatePasswordFields() {
-    if (lastPasswordController.text != user.getPassword()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Incorrect last password'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-      return false;
-    }
-
-    if (newPasswordController.text.isEmpty ||
-        newPasswordController.text.length < 6 ||
-        !_isPasswordComplex(newPasswordController.text)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'New password must be at least 6 characters and meet the complexity requirements',
-          ),
-          duration: Duration(seconds: 3),
-        ),
-      );
-      return false;
-    }
-
-    if (newPasswordController.text != confirmNewPasswordController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Passwords do not match'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-      return false;
-    }
-
-    return true;
-  }
-
-  void _changePassword(String lastPassword) {
-    if (lastPassword != user.getPassword()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Incorrect last password'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-      return;
-    }
-
-    user = user.copyWith(password: newPasswordController.text);
-    updateUserDataInFirestore(user);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Password changed successfully'),
-        duration: Duration(seconds: 3),
-      ),
-    );
-  }
-
-  bool _isPasswordComplex(String password) {
-    bool hasSpecialChar = RegExp(r'[!@#$%^&*(),.?":{}|<>_]').hasMatch(password);
-    bool hasNumber = RegExp(r'\d').hasMatch(password);
-    bool hasUppercase = RegExp(r'[A-Z]').hasMatch(password);
-
-    if (password.length < 6 || !hasSpecialChar || !hasNumber || !hasUppercase) {
-      return false;
-    }
-
-    return true;
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -274,16 +81,19 @@ void _handlePasswordChangeButtonPress() {
 
       await reference.putFile(imageFile);
 
+      // Get the download URL
       String imageUrl = await reference.getDownloadURL();
 
       setState(() {
+        // Update the user's profile picture URL
         user = user.copyWith(profilePictureUrl: imageUrl);
       });
 
       return imageUrl;
     } catch (error) {
       print('Error uploading image to Firebase Storage: $error');
-      return null;
+      // Handle the error (e.g., show a message to the user)
+      return null; // Return null to indicate an error
     }
   }
 
@@ -291,6 +101,7 @@ void _handlePasswordChangeButtonPress() {
     String? imageUrl;
 
     if (_pickedImage != null) {
+      // Upload profile picture and get the download URL
       imageUrl = await _uploadProfilePicture(_pickedImage!);
     }
 
@@ -302,11 +113,16 @@ void _handlePasswordChangeButtonPress() {
       address: addressController.text,
       gender: selectedGender,
       userId: user.getId(),
-      profilePictureUrl: imageUrl ?? '',
+      profilePictureUrl: imageUrl ?? '', // Use the uploaded image URL if available
     );
 
+    // Update user data in Firestore
     await updateUserDataInFirestore(updatedUser);
+
+    // Call the callback function to handle the updated user
     widget.onUpdateUser(updatedUser);
+
+    // Navigate back to the Profile page
     Navigator.pop(context);
   }
 
@@ -349,13 +165,13 @@ void _handlePasswordChangeButtonPress() {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  buildProfilePicture(),
+                  buildProfilePicture(), // Display the profile picture
                   const SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: () async {
                       await _pickImageFromGallery();
                     },
-                    child: const Text('Pick Image from Gallery'),
+                    child: const Text('Pick Image from Gallery '),
                   ),
                   const SizedBox(height: 5),
                   ElevatedButton(
@@ -375,9 +191,7 @@ void _handlePasswordChangeButtonPress() {
                   Text(
                     '${user.getName()}',
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 21.5,
-                    ),
+                        fontWeight: FontWeight.bold, fontSize: 21.5),
                   ),
                   Text(
                     '${user.getId()}',
@@ -394,10 +208,8 @@ void _handlePasswordChangeButtonPress() {
                     child: const Center(
                       child: Text(
                         'Active Student',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style:
+                            TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -423,19 +235,15 @@ void _handlePasswordChangeButtonPress() {
                         const SizedBox(height: 10),
                         buildTextField(Icons.email, 'Email', emailController),
                         const SizedBox(height: 10),
-                        buildTextField(
-                            Icons.phone, 'Phone Number', phoneController),
+                        buildTextField(Icons.phone, 'Phone Number', phoneController),
                         const SizedBox(height: 10),
-                        buildTextField(
-                            Icons.home, 'Address', addressController),
+                        buildTextField(Icons.home, 'Address', addressController),
                         const SizedBox(height: 10),
                         buildGenderDropdown(),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  buildChangePasswordButton(),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: saveChanges,
                     child: const Text('Save Changes'),
@@ -449,8 +257,7 @@ void _handlePasswordChangeButtonPress() {
     );
   }
 
-  Widget buildTextField(
-      IconData icon, String label, TextEditingController controller) {
+  Widget buildTextField(IconData icon, String label, TextEditingController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

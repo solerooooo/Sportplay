@@ -1,4 +1,3 @@
-//register.dart
 import 'package:flutter/material.dart';
 import 'login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

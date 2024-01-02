@@ -147,6 +147,7 @@ class _ProfileState extends State<Profile> {
                         buildInfoRow(Icons.home, passUser.getAddress()),
                         const SizedBox(height: 20),
                         buildInfoRow(Icons.work, passUser.getGender()),
+                        const SizedBox(height: 20),
                       ],
                     ),
                   ),
