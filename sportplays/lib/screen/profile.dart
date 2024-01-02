@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../models/user.dart';
+import '../model/user.dart';
 import 'setting.dart';
 
 class Profile extends StatefulWidget {
@@ -147,7 +147,6 @@ class _ProfileState extends State<Profile> {
                         buildInfoRow(Icons.home, passUser.getAddress()),
                         const SizedBox(height: 20),
                         buildInfoRow(Icons.work, passUser.getGender()),
-                        const SizedBox(height: 20),
                       ],
                     ),
                   ),

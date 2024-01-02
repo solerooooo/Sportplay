@@ -1,3 +1,4 @@
+//register.dart
 import 'package:flutter/material.dart';
 import 'login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -242,7 +243,7 @@ class _RegisterState extends State<Register> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            Map<String, dynamic> userData = {
+                            Map<String, dynamic> UserData = {
                               'name': nameController.text,
                               'email': emailController.text,
                               'password': passwordController.text,
@@ -256,8 +257,8 @@ class _RegisterState extends State<Register> {
                             try {
                               widget.firestore
                                   .collection('UserData')
-                                  .doc(nameController.text)
-                                  .set(userData);
+                                  .doc(emailController.text)
+                                  .set(UserData);
 
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(

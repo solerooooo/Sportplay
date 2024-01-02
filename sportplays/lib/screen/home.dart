@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sportplays/Screens/login.dart';
+import 'package:sportplays/screen/login.dart';
 import 'profile.dart';
-import '../models/user.dart';
+import '../model/user.dart';
 import 'booking.dart';
 import 'viewbookingdetails.dart';
 import 'qna.dart';
@@ -132,6 +132,8 @@ class _HomeState extends State<Home> {
                       builder: (context) => BookingPage(
                         passUser: widget.passUser,
                         selectedTime: 'Choose your time slot',
+                        selectedActivity: '',
+                        timestamp: null,
                       ),
                     ),
                   );
@@ -160,10 +162,9 @@ class _HomeState extends State<Home> {
                   );
                 },
               ),
-              Spacer(), // Add Spacer to push the logout button to the bottom
               ListTile(
                 title: Text('Logout'),
-                leading: Icon(Icons.logout), // Add the logout icon
+                leading: Icon(Icons.logout),
                 onTap: _logout,
               ),
             ],
@@ -317,7 +318,9 @@ class _HomeState extends State<Home> {
                                 MaterialPageRoute(
                                   builder: (context) => BookingPage(
                                     passUser: widget.passUser,
+                                    selectedActivity: '',
                                     selectedTime: 'Choose your time slot',
+                                    timestamp: null,
                                   ),
                                 ),
                               );
@@ -377,7 +380,9 @@ class _HomeState extends State<Home> {
                               MaterialPageRoute(
                                 builder: (context) => BookingPage(
                                   passUser: widget.passUser,
+                                  selectedActivity: '',
                                   selectedTime: 'Choose your time slot',
+                                  timestamp: null,
                                 ),
                               ),
                             );

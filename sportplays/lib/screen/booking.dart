@@ -5,22 +5,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:sportplays/Models/bookingdetails.dart';
-import 'package:sportplays/models/user.dart';
-import 'package:sportplays/Screens/availability.dart';
-import 'package:sportplays/Screens/home.dart';
-import 'package:sportplays/Screens/profile.dart';
-import 'package:sportplays/Screens/qna.dart';
+import 'package:sportplays/model/bookingdetails.dart';
+import 'package:sportplays/model/user.dart';
+import 'package:sportplays/screen/availability.dart';
+import 'package:sportplays/screen/home.dart';
+import 'package:sportplays/screen/profile.dart';
+import 'package:sportplays/screen/qna.dart';
 import 'package:http/http.dart' as http;
+import 'package:sportplays/screen/viewbookingdetails.dart';
 
 class BookingPage extends StatefulWidget {
   final User passUser;
   final String selectedTime;
+  final String selectedActivity;
+  final Timestamp? timestamp; 
 
   const BookingPage({
     Key? key,
     required this.passUser,
+    required this.selectedActivity,
     required this.selectedTime,
+    required this.timestamp,
   }) : super(key: key);
 
   @override
@@ -45,7 +50,7 @@ class _BookingPageState extends State<BookingPage> {
 
     // Initialize the booking object with default values
     booking = Booking(
-      selectedActivity: 'Ping Pong',
+      selectedActivity: 'pingpong',
       playerQuantity: 1,
       selectedPaymentMethod: 'Cash',
       selectedTime: 'Choose your time slot',
@@ -67,7 +72,7 @@ class _BookingPageState extends State<BookingPage> {
 
   void _initializeBookingObject() {
     booking = Booking(
-      selectedActivity: 'Ping Pong',
+      selectedActivity: widget.selectedActivity,
       playerQuantity: 1,
       selectedPaymentMethod: 'Cash',
       selectedTime: 'Choose your time slot',
@@ -75,14 +80,15 @@ class _BookingPageState extends State<BookingPage> {
       isCourtAssigned: null,
     );
   }
-  Future<void> _handleCashPayment() async {
-  // Handle additional logic for Cash payment (update Firestore, etc.)
-  // For now, let's show a pop-up message indicating a successful payment.
-  await _showDonePaymentDialog();
 
-  // Show "Done Booking" dialog
-  _showDoneBookingDialog();
-}
+  /*Future<void> _handleCashPayment() async {
+    // Handle additional logic for Cash payment (update Firestore, etc.)
+    // For now, let's show a pop-up message indicating a successful payment.
+    await _showDonePaymentDialog();
+
+    // Show "Done Booking" dialog
+    _showDoneBookingDialog();
+  }*/
 
   void _fetchNextBookingId() async {
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
@@ -129,8 +135,8 @@ class _BookingPageState extends State<BookingPage> {
     try {
       // 3. display the payment sheet.
       await Stripe.instance.presentPaymentSheet();
-
-      Fluttertoast.showToast(msg: 'Payment successfully completed');
+      //Fluttertoast.showToast(msg: 'Payment successfully completed');
+      _showDonePaymentDialog();
     } on Exception catch (e) {
       if (e is StripeException) {
         Fluttertoast.showToast(
@@ -178,31 +184,44 @@ class _BookingPageState extends State<BookingPage> {
       _selectedIndex = index;
     });
 
-    if (index == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Home(passUser: widget.passUser),
-        ),
-      );
-    }
-
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => QnAPage(passUser: widget.passUser),
-        ),
-      );
-    }
-
-    if (index == 3) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Profile(passUser: widget.passUser),
-        ),
-      );
+    switch (index) {
+      case 0:
+        // Current Booking page, no need to navigate
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ViewBookingPage(
+              passUser: widget.passUser,
+            ),
+          ),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Home(passUser: widget.passUser),
+          ),
+        );
+        break;
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => QnAPage(passUser: widget.passUser),
+          ),
+        );
+        break;
+      case 4:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Profile(passUser: widget.passUser),
+          ),
+        );
+        break;
     }
   }
 
@@ -211,7 +230,7 @@ class _BookingPageState extends State<BookingPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Booking'),
-        backgroundColor: const Color(0xFFD6F454),
+        backgroundColor: Colors.lightGreenAccent,
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -247,30 +266,29 @@ class _BookingPageState extends State<BookingPage> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                 ElevatedButton(
-    onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => AvailabilityPage(
-            passUser: widget.passUser,
-            sport: booking.selectedActivity,
-            selectedTime: widget.selectedTime,
-          ),
-        ),
-      );
-    },
-    style: booking.selectedActivity == chooseTimeSlotText
-        ? ElevatedButton.styleFrom(
-            backgroundColor: Colors.lightGreenAccent)
-        : null,
-    child: Text(
-      widget.selectedTime.isEmpty
-          ? chooseTimeSlotText
-          : '${widget.selectedTime}',
-    ),
-  ),
-
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AvailabilityPage(
+                          passUser: widget.passUser,
+                          sport: booking.selectedActivity,
+                          selectedTime: widget.selectedTime,
+                        ),
+                      ),
+                    );
+                  },
+                  style: booking.selectedActivity == chooseTimeSlotText
+                      ? ElevatedButton.styleFrom(
+                          backgroundColor: Colors.lightGreenAccent)
+                      : null,
+                  child: Text(
+                    widget.selectedTime.isEmpty
+                        ? chooseTimeSlotText
+                        : '${widget.selectedTime}',
+                  ),
+                ),
                 const SizedBox(height: 20),
                 Container(
                   decoration: BoxDecoration(
@@ -401,6 +419,7 @@ class _BookingPageState extends State<BookingPage> {
                       stripeMakePayment();
                       print(
                           'Selected Payment Method: $booking.selectedPaymentMethod');
+                      _saveDataToFirestore();
                     },
                     child: const Text('Make Payment'),
                   ),
@@ -408,7 +427,8 @@ class _BookingPageState extends State<BookingPage> {
                 ElevatedButton(
                   onPressed: () {
                     if (booking.selectedPaymentMethod == 'Cash') {
-                      _handleCashPayment();
+                      _showDoneBookingDialog();
+                      _saveDataToFirestore();
                     } else {
                       _saveDataToFirestore();
                     }
@@ -429,12 +449,16 @@ class _BookingPageState extends State<BookingPage> {
         showUnselectedLabels: true,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.add),
             label: 'Booking',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.book_rounded),
+            label: 'View Booking',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.question_answer),
@@ -519,8 +543,6 @@ class _BookingPageState extends State<BookingPage> {
     });
   }
 
-
-
   Future<void> _showDoneDialog(String title, String content) async {
     return showDialog(
       context: context,
@@ -531,7 +553,12 @@ class _BookingPageState extends State<BookingPage> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Home(passUser: widget.passUser),
+                  ),
+                );
               },
               child: Text('OK'),
             ),

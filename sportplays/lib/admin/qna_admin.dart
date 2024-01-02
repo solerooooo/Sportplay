@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; 
-import 'home.dart';
-import '../models/user.dart';
-import 'viewbookingdetails.dart';
-import 'profile.dart';
+import '../screen/home.dart';
+import '../model/user.dart';
+import '../screen/viewbookingdetails.dart';
+import '../screen/profile.dart';
+
 class QnAAdmin extends StatefulWidget {
   final User passUser;
 

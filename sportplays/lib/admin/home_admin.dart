@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sportplays/screens/availability_admin.dart';
-import 'package:sportplays/screens/contact_admin.dart';
-import 'package:sportplays/screens/qna_admin.dart';
-import 'package:sportplays/screens/viewbookingdetails_admin.dart';
-import 'login.dart';
-import 'profile.dart';
-import 'register.dart';
-import '../models/user.dart';
-import 'booking.dart';
+import 'package:sportplays/admin/availability_admin.dart';
+import 'package:sportplays/admin/contact_admin.dart';
+import 'package:sportplays/admin/qna_admin.dart';
+import 'package:sportplays/admin/viewbookingdetails_admin.dart';
+import '../screen/login.dart';
+import '../screen/profile.dart';
+import '../screen/register.dart';
+import '../model/user.dart';
+import '../screen/booking.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeAdmin extends StatefulWidget {
@@ -146,15 +146,16 @@ class _HomeAdminState extends State<HomeAdmin> {
                       builder: (context) => BookingPage(
                         passUser: widget.passUser,
                         selectedTime: 'Choose your time slot',
+                        selectedActivity: '',
+                        timestamp: null,
                       ),
                     ),
                   );
                 },
               ),
-              Spacer(), // Add Spacer to push the logout button to the bottom
               ListTile(
                 title: Text('Logout'),
-                leading: Icon(Icons.logout), // Add the logout icon
+                leading: Icon(Icons.logout),
                 onTap: _logout,
               ),
             ],
@@ -452,7 +453,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                                     );
                                   },
                                 ),
-                                _buildCircularButton(
+                                /*_buildCircularButton(
                                   icon: Icons.add,
                                   label: 'Booking',
                                   onPressed: () {
@@ -462,12 +463,13 @@ class _HomeAdminState extends State<HomeAdmin> {
                                       MaterialPageRoute(
                                         builder: (context) => BookingPage(
                                           passUser: widget.passUser,
+                                          selectedActivity: '',
                                           selectedTime: 'Choose your time slot',
                                         ),
                                       ),
                                     );
                                   },
-                                ),
+                                ),*/
                                 _buildCircularButton(
                                   icon: Icons.question_answer,
                                   label: 'Q&A',
@@ -509,7 +511,8 @@ class _HomeAdminState extends State<HomeAdmin> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ContactAdminPage(),
+                                        builder: (context) =>
+                                            ContactAdminPage(),
                                       ),
                                     );
                                   },
@@ -523,7 +526,8 @@ class _HomeAdminState extends State<HomeAdmin> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            ViewBookingDetailsAdminPage(passUser: widget.passUser),
+                                            ViewBookingDetailsAdminPage(
+                                                passUser: widget.passUser),
                                       ),
                                     );
                                   },
@@ -540,15 +544,6 @@ class _HomeAdminState extends State<HomeAdmin> {
             ),
           ),
         )));
-  }
-
-   void _logout() {
-    // Navigate to the login page and clear all routes
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => Login()),
-      (route) => false,
-    );
   }
 
   void _deleteNews(String documentId) async {
@@ -602,6 +597,16 @@ class _HomeAdminState extends State<HomeAdmin> {
           ),
         ],
       ),
+    );
+  }
+
+  
+  void _logout() {
+    // Navigate to the login page and clear all routes
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => Login()),
+      (route) => false,
     );
   }
 }

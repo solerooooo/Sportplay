@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../Models/contact_info.dart'; // Adjust the import based on your project structure
+import '../model/contact_info.dart'; // Adjust the import based on your project structure
 
 class ContactPage extends StatefulWidget {
   ContactPage({Key? key}) : super(key: key);
@@ -30,6 +30,7 @@ class _ContactPageState extends State<ContactPage> {
               Container(
                 color: Color(0xFFE6DFF1),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(height: 20),
                     Text(
@@ -40,6 +41,7 @@ class _ContactPageState extends State<ContactPage> {
                         fontStyle: FontStyle.italic,
                         color: Colors.black,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
@@ -67,7 +69,7 @@ class _ContactPageState extends State<ContactPage> {
                     return Padding(
                       padding: EdgeInsets.all(16.0),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
                             contactInfo.getName(),
@@ -75,16 +77,19 @@ class _ContactPageState extends State<ContactPage> {
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                           SizedBox(height: 10),
                           Text(
                             contactInfo.getPosition(),
                             style: TextStyle(fontSize: 16),
+                            textAlign: TextAlign.center,
                           ),
                           SizedBox(height: 10),
                           Text(
                             contactInfo.getPhoneNumber(),
                             style: TextStyle(fontSize: 16),
+                            textAlign: TextAlign.center,
                           ),
                           SizedBox(height: 10),
                         ],
