@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; 
-import '../screen/home.dart';
+import '../admin/home_admin.dart';
+import '../admin/availability_admin.dart';
 import '../model/user.dart';
-import '../screen/viewbookingdetails.dart';
+import '../admin/viewbookingdetails_admin.dart';
 import '../screen/profile.dart';
 
 class QnAAdmin extends StatefulWidget {
@@ -55,7 +56,7 @@ class _QnAAdminState extends State<QnAAdmin> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Home(passUser: widget.passUser),
+          builder: (context) => AvailabilityAdminPage(passUser: widget.passUser),
         ),
       );
     }
@@ -64,7 +65,7 @@ class _QnAAdminState extends State<QnAAdmin> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ViewBookingPage(passUser: widget.passUser,),
+          builder: (context) => ViewBookingDetailsAdminPage(passUser: widget.passUser,),
         ),
       );
     }
@@ -73,12 +74,21 @@ class _QnAAdminState extends State<QnAAdmin> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => QnAAdmin(passUser: widget.passUser),
+          builder: (context) => HomeAdmin(passUser: widget.passUser),
         ),
       );
     }
 
     if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => QnAAdmin(passUser: widget.passUser),
+        ),
+      );
+    }
+
+    if (index == 4) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -201,12 +211,16 @@ class _QnAAdminState extends State<QnAAdmin> {
         showUnselectedLabels: true,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: Icon(Icons.calendar_today),
+            label: 'Availability',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'View Booking',
+            icon: Icon(Icons.book),
+            label: 'View Booking Details',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.question_answer),
