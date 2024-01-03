@@ -453,23 +453,20 @@ class _HomeAdminState extends State<HomeAdmin> {
                                     );
                                   },
                                 ),
-                                /*_buildCircularButton(
-                                  icon: Icons.add,
-                                  label: 'Booking',
+                                _buildCircularButton(
+                                  icon: Icons.calendar_today,
+                                  label: 'Availability',
                                   onPressed: () {
-                                    // Navigate to BookingPage
+                                    // Navigate to availability.dart
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => BookingPage(
-                                          passUser: widget.passUser,
-                                          selectedActivity: '',
-                                          selectedTime: 'Choose your time slot',
-                                        ),
+                                        builder: (context) => AvailabilityAdminPage(
+                                            passUser: widget.passUser),
                                       ),
                                     );
                                   },
-                                ),*/
+                                ),
                                 _buildCircularButton(
                                   icon: Icons.question_answer,
                                   label: 'Q&A',
@@ -490,20 +487,6 @@ class _HomeAdminState extends State<HomeAdmin> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 _buildCircularButton(
-                                  icon: Icons.person,
-                                  label: 'Profile',
-                                  onPressed: () {
-                                    // Navigate to Profile
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            Profile(passUser: widget.passUser),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                _buildCircularButton(
                                   icon: Icons.contact_phone,
                                   label: 'Contacts',
                                   onPressed: () {
@@ -518,8 +501,22 @@ class _HomeAdminState extends State<HomeAdmin> {
                                   },
                                 ),
                                 _buildCircularButton(
+                                  icon: Icons.person,
+                                  label: 'Profile',
+                                  onPressed: () {
+                                    // Navigate to Profile
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            Profile(passUser: widget.passUser),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                _buildCircularButton(
                                   icon: Icons.auto_awesome_outlined,
-                                  label: 'View Booking Details',
+                                  label: 'Booking Details',
                                   onPressed: () {
                                     // Navigate to ContactAdmin
                                     Navigator.push(
