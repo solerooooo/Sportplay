@@ -42,79 +42,77 @@ class _ViewBookingDetailsAdminPageState
   }
 
   Future<List<Booking>> _getAllBookings() async {
-  try {
-    DateTime currentDate = DateTime.now();
-    DateTime startOfDay =
-        DateTime(currentDate.year, currentDate.month, currentDate.day);
-    DateTime endOfDay = startOfDay.add(Duration(days: 1));
+    try {
+      DateTime currentDate = DateTime.now();
+      DateTime startOfDay =
+          DateTime(currentDate.year, currentDate.month, currentDate.day);
+      DateTime endOfDay = startOfDay.add(Duration(days: 1));
 
-    QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await FirebaseFirestore.instance
-            .collection('Booking')
-            .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
-            .where('timestamp', isLessThan: endOfDay)
-            .get();
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await FirebaseFirestore.instance
+              .collection('Booking')
+              .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
+              .where('timestamp', isLessThan: endOfDay)
+              .get();
 
-    print('Number of documents for today: ${querySnapshot.docs.length}');
-      
-    List<Booking> bookings = querySnapshot.docs.map((doc) {
-      final data = doc.data() as Map<String, dynamic>;
+      print('Number of documents for today: ${querySnapshot.docs.length}');
 
-      return Booking(
-        bookingId: data['bookingId'],
-        selectedActivity: data['selectedActivity'],
-        playerQuantity: data['playerQuantity'],
-        selectedPaymentMethod: data['selectedPaymentMethod'],
-        selectedTime: data['selectedTime'],
-        timestamp: data['timestamp'],
-        userName: data['userName'],
-        isCourtAssigned: data.containsKey('isCourtAssigned')
-            ? data['isCourtAssigned']
-            : false,
-      );
-    }).toList();
+      List<Booking> bookings = querySnapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
 
-    // Sort the bookings based on timestamp in descending order
-    bookings.sort((a, b) => b.timestamp!.compareTo(a.timestamp!));
+        return Booking(
+          bookingId: data['bookingId'],
+          selectedActivity: data['selectedActivity'],
+          playerQuantity: data['playerQuantity'],
+          selectedPaymentMethod: data['selectedPaymentMethod'],
+          selectedTime: data['selectedTime'],
+          timestamp: data['timestamp'],
+          userName: data['userName'],
+          isCourtAssigned: data.containsKey('isCourtAssigned')
+              ? data['isCourtAssigned']
+              : false,
+        );
+      }).toList();
 
-    print('Number of bookings for today: ${bookings.length}');
-    print('First booking timestamp for today: ${bookings.isNotEmpty ? bookings.first.timestamp : 'No bookings for today'}');
+      // Sort the bookings based on timestamp in descending order
+      bookings.sort((a, b) => b.timestamp!.compareTo(a.timestamp!));
 
-    return bookings;
-  } catch (e) {
-    print('Error fetching bookings: $e');
-    return []; // Return an empty list in case of an error
+      print('Number of bookings for today: ${bookings.length}');
+      print(
+          'First booking timestamp for today: ${bookings.isNotEmpty ? bookings.first.timestamp : 'No bookings for today'}');
+
+      return bookings;
+    } catch (e) {
+      print('Error fetching bookings: $e');
+      return []; // Return an empty list in case of an error
+    }
   }
-}
-
 
   Widget _buildListView(List<Booking> bookings) {
-  return ListView.builder(
-    itemCount: bookings.length,
-    itemBuilder: (context, index) {
-      Booking booking = bookings[index];
+    return ListView.builder(
+      itemCount: bookings.length,
+      itemBuilder: (context, index) {
+        Booking booking = bookings[index];
 
-      // Check if court is assigned and set color accordingly
-      Color tileColor = booking.isCourtAssigned ?? false
-          ? Colors.green
-          : Colors.red;
+        // Check if court is assigned and set color accordingly
+        Color tileColor =
+            booking.isCourtAssigned ?? false ? Colors.green : Colors.red;
 
-      return Card(
-        color: tileColor, // Set tile color
-        child: ListTile(
-          title: Text(
-              'Player: ${booking.userName}'), // Display user name from Firestore
-          subtitle: Text(
-              'Sport: ${booking.selectedActivity}'), // Display sport name in subtitle
-          onTap: () {
-            _showBookingDetailsDialog(booking);
-          },
-        ),
-      );
-    },
-  );
-}
-
+        return Card(
+          color: tileColor, // Set tile color
+          child: ListTile(
+            title: Text(
+                'Player: ${booking.userName}'), // Display user name from Firestore
+            subtitle: Text(
+                'Sport: ${booking.selectedActivity}'), // Display sport name in subtitle
+            onTap: () {
+              _showBookingDetailsDialog(booking);
+            },
+          ),
+        );
+      },
+    );
+  }
 
   Future<void> _showBookingDetailsDialog(Booking booking) async {
     String assignCourtValue = booking.isCourtAssigned ?? false
@@ -181,7 +179,11 @@ class _ViewBookingDetailsAdminPageState
                         .doc(booking.bookingId.toString())
                         .update({'isCourtAssigned': booking.isCourtAssigned});
 
-                    Navigator.pop(context); // Close the dialog
+                    // Close the dialog
+                    Navigator.pop(context);
+
+                    // Trigger a rebuild of the widget to refresh the page
+                    _refreshPage();
                   },
                   child: Text('Save'),
                 ),
@@ -192,4 +194,8 @@ class _ViewBookingDetailsAdminPageState
       },
     );
   }
+
+  void _refreshPage() {
+  setState(() {}); // Trigger a rebuild of the widget
+}
 }
