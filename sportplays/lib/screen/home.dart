@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sportplays/screen/login.dart';
+import 'package:sportplays/screen/reminder.dart';
 import 'profile.dart';
 import '../model/user.dart';
 import 'booking.dart';
@@ -19,12 +20,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  
-
   void _onTabSelected(int index) {
-    setState(() {
-      
-    });
+    setState(() {});
 
     if (index == 1) {
       Navigator.push(
@@ -358,14 +355,14 @@ class _HomeState extends State<Home> {
                       children: [
                         _buildCircularButton(
                           icon: Icons.home,
-                          label: 'Home',
+                          label: 'Reminder',
                           onPressed: () {
                             // Navigate to Home
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    Home(passUser: widget.passUser),
+                                    ReminderPage(passUser: widget.passUser),
                               ),
                             );
                           },
