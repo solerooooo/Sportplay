@@ -9,6 +9,7 @@ import 'viewbookingdetails.dart';
 import 'qna.dart';
 import 'contact.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/cupertino.dart';
 
 class Home extends StatefulWidget {
   final User passUser;
@@ -20,48 +21,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  void _onTabSelected(int index) {
-    setState(() {});
-
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ViewBookingPage(
-            passUser: widget.passUser,
-          ),
-        ),
-      );
-    }
-
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => QnAPage(passUser: widget.passUser),
-        ),
-      );
-    }
-
-    if (index == 3) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Profile(passUser: widget.passUser),
-        ),
-      );
-    }
-
-    if (index == 4) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ContactPage(), // Navigate to ContactPage
-        ),
-      );
-    }
-  }
-
+ 
   void _logout() {
     // Navigate to the login page and clear all routes
     Navigator.pushAndRemoveUntil(
@@ -71,23 +31,36 @@ class _HomeState extends State<Home> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFFb364f3), Color(0xFFD6F454)],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFFb364f3), Color(0xFFD6F454)],
+            ),
+          ),
+         child: CupertinoNavigationBar(
+            middle: Text('SportPlay', style: TextStyle(color: Colors.black)),
+            backgroundColor: Colors.transparent,
+            leading: Builder(
+              builder: (context) => GestureDetector(
+                onTap: () {
+                  Scaffold.of(context).openDrawer();
+                },
+                child: Icon(
+                  CupertinoIcons.line_horizontal_3,
+                  color: Colors.black,
+                ),
               ),
             ),
           ),
         ),
-        backgroundColor: Color(0xFFE6DFF1),
+      ),
+      backgroundColor: Color(0xFFE6DFF1),
         drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
@@ -167,6 +140,7 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
+
         body: SingleChildScrollView(
           child: Container(
             child: Center(

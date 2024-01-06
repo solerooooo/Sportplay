@@ -10,9 +10,7 @@ import 'package:sportplays/model/user.dart';
 import 'package:sportplays/screen/availability.dart';
 import 'package:sportplays/screen/home.dart';
 import 'package:sportplays/screen/profile.dart';
-import 'package:sportplays/screen/qna.dart';
 import 'package:http/http.dart' as http;
-import 'package:sportplays/screen/viewbookingdetails.dart';
 import 'package:flutter/cupertino.dart';
 
 
