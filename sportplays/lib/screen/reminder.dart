@@ -10,14 +10,21 @@ DateTime scheduleTime = DateTime.now();
 
 class ReminderPage extends StatefulWidget {
   final User passUser;
+  final String selectedActivity;
 
-  const ReminderPage({Key? key, required this.passUser}) : super(key: key);
+  const ReminderPage({
+    Key? key,
+    required this.passUser,
+    required this.selectedActivity,
+  }) : super(key: key);
 
   @override
   _ReminderPageState createState() => _ReminderPageState();
 }
 
 class _ReminderPageState extends State<ReminderPage> {
+  String selectedActivity = ''; // Define selectedActivity
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,8 +66,9 @@ class _ReminderPageState extends State<ReminderPage> {
         backgroundColor: Colors.lightGreenAccent,
       ),
       backgroundColor: Color(0xFFE6DFF1),
-      body: Center(
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -68,7 +76,7 @@ class _ReminderPageState extends State<ReminderPage> {
                 'Select Activity',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 60),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -89,8 +97,8 @@ class _ReminderPageState extends State<ReminderPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
-              TextButton(
+              const SizedBox(height: 20),
+              ElevatedButton(
                 onPressed: () async {
                   DateTime? pickedDateTime = await showDatePicker(
                     context: context,
@@ -148,22 +156,29 @@ class _ReminderPageState extends State<ReminderPage> {
   }) {
     return Column(
       children: [
-        Image.asset(
-          imagePath,
-          width: 80,
-          height: 80,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
         ElevatedButton(
           onPressed: () {
-            // Handle button press for the specific activity
+            setState(() {
+              selectedActivity = activityName;
+            });
           },
-          child: const Text('Select'),
+          style: selectedActivity == activityName
+              ? ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightGreenAccent,
+                )
+              : null,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Image.asset(
+              imagePath,
+              height: 30,
+            ),
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          label,
+          style: TextStyle(fontSize: 12, color: Colors.black),
         ),
       ],
     );

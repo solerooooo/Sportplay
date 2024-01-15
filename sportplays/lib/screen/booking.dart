@@ -13,13 +13,11 @@ import 'package:sportplays/screen/profile.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 
-
-
 class BookingPage extends StatefulWidget {
   final User passUser;
   final String selectedTime;
   final String selectedActivity;
-  final Timestamp? timestamp; 
+  final Timestamp? timestamp;
 
   const BookingPage({
     Key? key,
@@ -179,50 +177,56 @@ class _BookingPageState extends State<BookingPage> {
     }
   }
 
- 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: CupertinoNavigationBar(
-      middle: Text('Booking'),
-      leading: GestureDetector(
-        onTap: () {
-          // Navigate to the home screen
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Home(passUser: widget.passUser),
-            ),
-          );
-        },
-        child: Icon(CupertinoIcons.home, size: 26,),
-      ),
-      trailing: Row(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: CupertinoNavigationBar(
+        middle: Text('Booking'),
+        leading: GestureDetector(
+          onTap: () {
+            // Navigate to the home screen
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Home(passUser: widget.passUser),
+              ),
+            );
+          },
+          child: Icon(
+            CupertinoIcons.home,
+            size: 26,
+          ),
+        ),
+        trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
-        onTap: () {
-          // Navigate to the home screen
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Profile(passUser: widget.passUser),
+              onTap: () {
+                // Navigate to the profile screen
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Profile(passUser: widget.passUser),
+                  ),
+                );
+              },
+              child: Icon(
+                CupertinoIcons.person,
+                size: 26,
+              ),
             ),
-          );
-        },
-        child: Icon(CupertinoIcons.person, size: 26,),
-      ),],),
+          ],
+        ),
         backgroundColor: Colors.lightGreenAccent,
       ),
-    
-    body: SingleChildScrollView(
-      child: Container(
-        color: Color(0xFFE6DFF1),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+      body: SingleChildScrollView(
+        child: Container(
+          color: Color(0xFFE6DFF1),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
                 Text(
                   'Select Activity',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -423,7 +427,6 @@ Widget build(BuildContext context) {
           ),
         ),
       ),
-     
     );
   }
 

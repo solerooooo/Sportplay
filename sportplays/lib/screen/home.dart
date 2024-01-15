@@ -21,7 +21,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
- 
   void _logout() {
     // Navigate to the login page and clear all routes
     Navigator.pushAndRemoveUntil(
@@ -31,36 +30,36 @@ class _HomeState extends State<Home> {
     );
   }
 
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFFb364f3), Color(0xFFD6F454)],
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFFb364f3), Color(0xFFD6F454)],
+              ),
             ),
-          ),
-         child: CupertinoNavigationBar(
-            middle: Text('SportPlay', style: TextStyle(color: Colors.black)),
-            backgroundColor: Colors.transparent,
-            leading: Builder(
-              builder: (context) => GestureDetector(
-                onTap: () {
-                  Scaffold.of(context).openDrawer();
-                },
-                child: Icon(
-                  CupertinoIcons.line_horizontal_3,
-                  color: Colors.black,
+            child: CupertinoNavigationBar(
+              middle: Text('SportPlay', style: TextStyle(color: Colors.black)),
+              backgroundColor: Colors.transparent,
+              leading: Builder(
+                builder: (context) => GestureDetector(
+                  onTap: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  child: Icon(
+                    CupertinoIcons.line_horizontal_3,
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
-      backgroundColor: Color(0xFFE6DFF1),
+        backgroundColor: Color(0xFFE6DFF1),
         drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
@@ -140,7 +139,6 @@ Widget build(BuildContext context) {
             ],
           ),
         ),
-
         body: SingleChildScrollView(
           child: Container(
             child: Center(
@@ -335,8 +333,10 @@ Widget build(BuildContext context) {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    ReminderPage(passUser: widget.passUser),
+                                builder: (context) => ReminderPage(
+                                  passUser: widget.passUser,
+                                  selectedActivity: '',
+                                ),
                               ),
                             );
                           },
