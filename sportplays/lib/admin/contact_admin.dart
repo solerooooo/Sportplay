@@ -1,7 +1,7 @@
 // contact_admin.dart
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../model/contact_info.dart'; 
+import '../model/contact_info.dart';
 
 class ContactAdminPage extends StatefulWidget {
   @override
@@ -58,23 +58,41 @@ class _ContactAdminPageState extends State<ContactAdminPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Add New Contact:'),
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(labelText: 'Name'),
-              ),
-              TextField(
-                controller: positionController,
-                decoration: InputDecoration(labelText: 'Position'),
-              ),
-              TextField(
-                controller: phoneController,
-                decoration: InputDecoration(labelText: 'Phone Number'),
-              ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: addContact,
-                child: Text('Add Contact'),
+              Container(
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.0),
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Add New Contact:'),
+                    TextField(
+                      controller: nameController,
+                      decoration: InputDecoration(labelText: 'Name'),
+                    ),
+                    TextField(
+                      controller: positionController,
+                      decoration: InputDecoration(labelText: 'Position'),
+                    ),
+                    TextField(
+                      controller: phoneController,
+                      decoration: InputDecoration(labelText: 'Phone Number'),
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ElevatedButton(
+                          onPressed: addContact,
+                          child: Text('Add Contact'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               SizedBox(height: 30),
               Text('Existing Contacts:'),
@@ -99,7 +117,8 @@ class _ContactAdminPageState extends State<ContactAdminPage> {
 
                       return ListTile(
                         title: Text(contactInfo.getName()),
-                        subtitle: Text('${contactInfo.getPosition()} ${contactInfo.getPhoneNumber()}'),
+                        subtitle: Text(
+                            '${contactInfo.getPosition()} ${contactInfo.getPhoneNumber()}'),
                         trailing: IconButton(
                           icon: Icon(Icons.delete),
                           onPressed: () => deleteContact(document.id),

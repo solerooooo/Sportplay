@@ -6,7 +6,7 @@ class User {
   String address;
   String gender;
   String userId;
-  late String profilePictureUrl;  // Changed from 'final' to 'late'
+  late String profilePictureUrl; // Changed from 'final' to 'late'
 
   User({
     required this.name,
@@ -16,8 +16,10 @@ class User {
     required this.address,
     required this.userId,
     required this.gender,
-    required this.profilePictureUrl,  // Removed 'late' or 'final'
+    required this.profilePictureUrl, // Removed 'late' or 'final'
   });
+
+  get uid => null;
 
   // Getters
   String getName() => name;

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sportplays/screen/login.dart';
+import 'package:sportplays/screen/reminder.dart';
 import 'profile.dart';
 import '../model/user.dart';
 import 'booking.dart';
@@ -8,6 +9,7 @@ import 'viewbookingdetails.dart';
 import 'qna.dart';
 import 'contact.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/cupertino.dart';
 
 class Home extends StatefulWidget {
   final User passUser;
@@ -19,52 +21,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int _selectedIndex = 0;
-
-  void _onTabSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ViewBookingPage(
-            passUser: widget.passUser,
-          ),
-        ),
-      );
-    }
-
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => QnAPage(passUser: widget.passUser),
-        ),
-      );
-    }
-
-    if (index == 3) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Profile(passUser: widget.passUser),
-        ),
-      );
-    }
-
-    if (index == 4) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ContactPage(), // Navigate to ContactPage
-        ),
-      );
-    }
-  }
-
   void _logout() {
     // Navigate to the login page and clear all routes
     Navigator.pushAndRemoveUntil(
@@ -74,18 +30,31 @@ class _HomeState extends State<Home> {
     );
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          flexibleSpace: Container(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [Color(0xFFb364f3), Color(0xFFD6F454)],
+              ),
+            ),
+            child: CupertinoNavigationBar(
+              middle: Text('SportPlay', style: TextStyle(color: Colors.black)),
+              backgroundColor: Colors.transparent,
+              leading: Builder(
+                builder: (context) => GestureDetector(
+                  onTap: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  child: Icon(
+                    CupertinoIcons.line_horizontal_3,
+                    color: Colors.black,
+                  ),
+                ),
               ),
             ),
           ),
@@ -358,14 +327,16 @@ class _HomeState extends State<Home> {
                       children: [
                         _buildCircularButton(
                           icon: Icons.home,
-                          label: 'Home',
+                          label: 'Reminder',
                           onPressed: () {
                             // Navigate to Home
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    Home(passUser: widget.passUser),
+                                builder: (context) => ReminderPage(
+                                  passUser: widget.passUser,
+                                  selectedActivity: '',
+                                ),
                               ),
                             );
                           },

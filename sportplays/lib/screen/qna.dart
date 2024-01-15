@@ -1,10 +1,11 @@
-//qna.dart
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sportplays/screen/booking.dart';
-import 'home.dart';
 import '../model/user.dart';
+import 'booking.dart';
+import 'home.dart';
 import 'viewbookingdetails.dart';
 import 'profile.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class QnAService {
@@ -28,13 +29,13 @@ class QnAPage extends StatefulWidget {
   final User passUser;
 
   const QnAPage({Key? key, required this.passUser}) : super(key: key);
+
   @override
   _QnAPageState createState() => _QnAPageState();
 }
 
 class _QnAPageState extends State<QnAPage> {
-  int _selectedIndex = 0;
-  List<Map<String, dynamic>> qnaList = [];
+  int _selectedIndex = 3; // Set the initial index to 3 for Q&A
 
   final QnAService _qnAService = QnAService();
 
@@ -91,20 +92,61 @@ class _QnAPageState extends State<QnAPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Insights'),
+    return CupertinoTabScaffold(
+      tabBar: CupertinoTabBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.add),
+            
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.book),
+           
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.home),
+            
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.bubble_left_bubble_right_fill),
+            
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.person),
+           
+          ),
+        ],
+        activeColor: CupertinoColors.black,
+        currentIndex: _selectedIndex,
+        onTap: _onTabSelected,
+      ),
+      tabBuilder: (BuildContext context, int index) {
+        return CupertinoTabView(
+          builder: (BuildContext context) {
+            return _selectedPage();
+          },
+        );
+      },
+    );
+  }
+
+  Widget _selectedPage() {
+   
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text('Frequently Asked Questions'),
         backgroundColor: Colors.lightGreenAccent,
       ),
-      body: StreamBuilder<List<Map<String, dynamic>>>(
+      backgroundColor: Color(0xFFE6DFF1),
+      child: StreamBuilder<List<Map<String, dynamic>>>(
         stream: _qnAService.getQnAStream(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: CupertinoActivityIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            qnaList = snapshot.data ?? [];
+            List<Map<String, dynamic>> qnaList = snapshot.data ?? [];
 
             return ListView.builder(
               itemCount: qnaList.length,
@@ -125,36 +167,6 @@ class _QnAPageState extends State<QnAPage> {
             );
           }
         },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        onTap: _onTabSelected,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black.withOpacity(0.5),
-        showUnselectedLabels: true,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Booking',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book_rounded),
-            label: 'View Booking',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.question_answer),
-            label: 'Q&A',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
       ),
     );
   }

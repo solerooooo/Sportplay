@@ -10,6 +10,7 @@ import '../screen/register.dart';
 import '../model/user.dart';
 import '../screen/booking.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/cupertino.dart';
 
 class HomeAdmin extends StatefulWidget {
   final User passUser;
@@ -45,15 +46,29 @@ class _HomeAdminState extends State<HomeAdmin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          flexibleSpace: Container(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [Color(0xFFb364f3), Color(0xFFD6F454)],
+              ),
+            ),
+            child: CupertinoNavigationBar(
+              middle: Text('SportPlay', style: TextStyle(color: Colors.black)),
+              backgroundColor: Colors.transparent,
+              leading: Builder(
+                builder: (context) => GestureDetector(
+                  onTap: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  child: Icon(
+                    CupertinoIcons.line_horizontal_3,
+                    color: Colors.black,
+                  ),
+                ),
               ),
             ),
           ),
@@ -79,28 +94,6 @@ class _HomeAdminState extends State<HomeAdmin> {
                   'Menu',
                   style: TextStyle(color: Colors.black, fontSize: 30),
                 ),
-              ),
-              ListTile(
-                title: Text('Login'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Login()),
-                  );
-                },
-              ),
-              ListTile(
-                title: Text('Register'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Register(
-                        firestore: FirebaseFirestore.instance,
-                      ),
-                    ),
-                  );
-                },
               ),
               ListTile(
                 title: Text('Profile'),
@@ -453,23 +446,21 @@ class _HomeAdminState extends State<HomeAdmin> {
                                     );
                                   },
                                 ),
-                                /*_buildCircularButton(
-                                  icon: Icons.add,
-                                  label: 'Booking',
+                                _buildCircularButton(
+                                  icon: Icons.calendar_today,
+                                  label: 'Availability',
                                   onPressed: () {
-                                    // Navigate to BookingPage
+                                    // Navigate to availability.dart
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => BookingPage(
-                                          passUser: widget.passUser,
-                                          selectedActivity: '',
-                                          selectedTime: 'Choose your time slot',
-                                        ),
+                                        builder: (context) =>
+                                            AvailabilityAdminPage(
+                                                passUser: widget.passUser),
                                       ),
                                     );
                                   },
-                                ),*/
+                                ),
                                 _buildCircularButton(
                                   icon: Icons.question_answer,
                                   label: 'Q&A',
@@ -490,20 +481,6 @@ class _HomeAdminState extends State<HomeAdmin> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 _buildCircularButton(
-                                  icon: Icons.person,
-                                  label: 'Profile',
-                                  onPressed: () {
-                                    // Navigate to Profile
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            Profile(passUser: widget.passUser),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                _buildCircularButton(
                                   icon: Icons.contact_phone,
                                   label: 'Contacts',
                                   onPressed: () {
@@ -518,8 +495,22 @@ class _HomeAdminState extends State<HomeAdmin> {
                                   },
                                 ),
                                 _buildCircularButton(
+                                  icon: Icons.person,
+                                  label: 'Profile',
+                                  onPressed: () {
+                                    // Navigate to Profile
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            Profile(passUser: widget.passUser),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                _buildCircularButton(
                                   icon: Icons.auto_awesome_outlined,
-                                  label: 'View Booking Details',
+                                  label: 'Booking Details',
                                   onPressed: () {
                                     // Navigate to ContactAdmin
                                     Navigator.push(
@@ -600,7 +591,6 @@ class _HomeAdminState extends State<HomeAdmin> {
     );
   }
 
-  
   void _logout() {
     // Navigate to the login page and clear all routes
     Navigator.pushAndRemoveUntil(
