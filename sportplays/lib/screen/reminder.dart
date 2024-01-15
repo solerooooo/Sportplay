@@ -22,7 +22,7 @@ class _ReminderPageState extends State<ReminderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CupertinoNavigationBar(
-        middle: Text('Booking'),
+        middle: Text('Reminder'),
         leading: GestureDetector(
           onTap: () {
             Navigator.pushReplacement(
@@ -58,86 +58,83 @@ class _ReminderPageState extends State<ReminderPage> {
         ),
         backgroundColor: Colors.lightGreenAccent,
       ),
+      backgroundColor: Color(0xFFE6DFF1),
       body: Center(
         child: SingleChildScrollView(
-          child: Container(
-            color: Color(0xFFE6DFF1),
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Select Activity',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildActivityButton(
-                      activityName: 'Ping Pong',
-                      imagePath: 'images/pingpong.png',
-                      label: 'Ping Pong',
-                    ),
-                    _buildActivityButton(
-                      activityName: 'Badminton',
-                      imagePath: 'images/badminton.png',
-                      label: 'Badminton',
-                    ),
-                    _buildActivityButton(
-                      activityName: 'Squash',
-                      imagePath: 'images/squash.png',
-                      label: 'Squash',
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                TextButton(
-                  onPressed: () async {
-                    DateTime? pickedDateTime = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2023),
-                      lastDate: DateTime(2025),
-                    );
-
-                    if (pickedDateTime != null) {
-                      TimeOfDay? pickedTime = await showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay.now(),
-                      );
-
-                      if (pickedTime != null) {
-                        setState(() {
-                          scheduleTime = DateTime(
-                            pickedDateTime.year,
-                            pickedDateTime.month,
-                            pickedDateTime.day,
-                            pickedTime.hour,
-                            pickedTime.minute,
-                          );
-                        });
-                      }
-                    }
-                  },
-                  child: const Text(
-                    'Select Date Time',
-                    style: TextStyle(color: Colors.blue),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Select Activity',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildActivityButton(
+                    activityName: 'Ping Pong',
+                    imagePath: 'images/pingpong.png',
+                    label: 'Ping Pong',
                   ),
-                ),
-                ElevatedButton(
-                  child: const Text('Set Reminder'),
-                  onPressed: () {
-                    debugPrint('Notification Scheduled for $scheduleTime');
-                    NotificationService().scheduleNotification(
-                      title: 'Scheduled Notification',
-                      body: '$scheduleTime',
-                      scheduledNotificationDateTime: scheduleTime,
+                  _buildActivityButton(
+                    activityName: 'Badminton',
+                    imagePath: 'images/badminton.png',
+                    label: 'Badminton',
+                  ),
+                  _buildActivityButton(
+                    activityName: 'Squash',
+                    imagePath: 'images/squash.png',
+                    label: 'Squash',
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () async {
+                  DateTime? pickedDateTime = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2023),
+                    lastDate: DateTime(2025),
+                  );
+
+                  if (pickedDateTime != null) {
+                    TimeOfDay? pickedTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
                     );
-                  },
+
+                    if (pickedTime != null) {
+                      setState(() {
+                        scheduleTime = DateTime(
+                          pickedDateTime.year,
+                          pickedDateTime.month,
+                          pickedDateTime.day,
+                          pickedTime.hour,
+                          pickedTime.minute,
+                        );
+                      });
+                    }
+                  }
+                },
+                child: const Text(
+                  'Select Date Time',
+                  style: TextStyle(color: Colors.blue),
                 ),
-              ],
-            ),
+              ),
+              ElevatedButton(
+                child: const Text('Set Reminder'),
+                onPressed: () {
+                  debugPrint('Notification Scheduled for $scheduleTime');
+                  NotificationService().scheduleNotification(
+                    title: 'Scheduled Notification',
+                    body: '$scheduleTime',
+                    scheduledNotificationDateTime: scheduleTime,
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),
