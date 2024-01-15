@@ -114,13 +114,8 @@ class _ViewBookingDetailsAdminPageState
     );
   }
 
-  Future<void> _showBookingDetailsDialog(Booking booking) async {
-  String assignCourtValue = booking.isCourtAssigned ?? false
-      ? 'Assigned'
-      : 'Not Assigned';
-
-  Color dialogColor =
-      assignCourtValue == 'Assigned' ? Colors.green : Colors.red;
+ Future<void> _showBookingDetailsDialog(Booking booking) async {
+  int assignCourtValue = booking.isCourtAssigned ?? false ? 1 : 0; // Initialize with the current value
 
   return showDialog(
     context: context,
@@ -143,51 +138,54 @@ class _ViewBookingDetailsAdminPageState
                 Row(
                   children: [
                     Text('Assign Court: '),
-                    DropdownButton<String>(
+                    DropdownButton<int>(
                       value: assignCourtValue,
-                      onChanged: (String? newValue) {
+                      onChanged: (int? newValue) {
                         setState(() {
                           assignCourtValue = newValue!;
-                          dialogColor =
-                              assignCourtValue == 'Assigned' ? Colors.green : Colors.red;
                         });
                       },
-                      items: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', 'Not Assigned']
-                          .map((String value) {
-                        return DropdownMenuItem<String>(
+                      items: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((int value) {
+                        return DropdownMenuItem<int>(
                           value: value,
-                          child: Text(value),
+                          child: Text(value == 0 ? 'Unassigned' : value.toString()),
                         );
                       }).toList(),
                     ),
                   ],
                 ),
+                // Add other fields as needed
               ],
             ),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context); // Close the dialog
                 },
                 child: Text('Cancel'),
               ),
               TextButton(
                 onPressed: () async {
+                  // Update the local state
                   setState(() {
-                    booking.isCourtAssigned = assignCourtValue == 'Assigned';
+                    booking.isCourtAssigned = assignCourtValue != 0;
                   });
 
+                  // Update Firestore
                   await FirebaseFirestore.instance
                       .collection('Booking')
                       .doc(booking.bookingId.toString())
                       .update({'isCourtAssigned': booking.isCourtAssigned});
+
+                  // Close the dialog
                   Navigator.pop(context);
+
+                  // Trigger a rebuild of the widget to refresh the page
                   _refreshPage();
                 },
                 child: Text('Save'),
               ),
             ],
-            backgroundColor: dialogColor,
           );
         },
       );
@@ -197,6 +195,6 @@ class _ViewBookingDetailsAdminPageState
 
 
   void _refreshPage() {
-  setState(() {});
+  setState(() {}); // Trigger a rebuild of the widget
 }
 }
