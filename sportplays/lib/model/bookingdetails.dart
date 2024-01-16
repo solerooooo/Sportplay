@@ -10,6 +10,7 @@ class Booking {
   Timestamp? timestamp; 
   final String? userName;
   bool? isCourtAssigned;
+  final List<String>? playerNames;
 
   Booking({
     required this.bookingId,
@@ -20,5 +21,8 @@ class Booking {
     this.timestamp,
     this.userName,
     required this.isCourtAssigned,
+    required this.playerNames,
   });
+
+
 }

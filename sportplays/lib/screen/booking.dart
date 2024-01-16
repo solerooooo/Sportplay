@@ -54,6 +54,7 @@ class _BookingPageState extends State<BookingPage> {
       selectedTime: 'Choose your time slot',
       bookingId: 0,
       isCourtAssigned: null,
+      playerNames: [],
     );
 
     // Fetch the next available bookingId from Firestore
@@ -76,6 +77,7 @@ class _BookingPageState extends State<BookingPage> {
       selectedTime: 'Choose your time slot',
       bookingId: 0,
       isCourtAssigned: null,
+      playerNames: [],
     );
   }
 

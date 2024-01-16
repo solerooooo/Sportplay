@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sportplays/model/bookingdetails.dart';
 import 'package:sportplays/screen/booking.dart';
-import 'package:sportplays/screen/editbookingdetails.dart';
 import 'package:sportplays/screen/home.dart';
 import 'package:sportplays/screen/profile.dart';
 import 'package:sportplays/screen/qna.dart';
@@ -153,6 +152,7 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
         selectedTime: doc['selectedTime'],
         isCourtAssigned: false,
         timestamp: doc['timestamp'],
+        playerNames: [],
       );
     }).toList();
 
@@ -182,21 +182,6 @@ class _ViewBookingPageState extends State<ViewBookingPage> {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
-                  icon: Icon(CupertinoIcons.pencil),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditBookingDetailsPage(
-                          passUser: widget.passUser,
-                          bookingId: booking.bookingId,
-                          selectedTime: booking.selectedTime,
-                        ),
-                      ),
-                    );
-                  },
-                ),
                 IconButton(
                   icon: Icon(CupertinoIcons.trash),
                   onPressed: () {

@@ -131,16 +131,13 @@ class _HomeAdminState extends State<HomeAdmin> {
                 },
               ),
               ListTile(
-                title: Text('Booking Page'),
+                title: Text('Availability Page'),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BookingPage(
+                      builder: (context) => AvailabilityAdminPage(
                         passUser: widget.passUser,
-                        selectedTime: 'Choose your time slot',
-                        selectedActivity: '',
-                        timestamp: null,
                       ),
                     ),
                   );
@@ -433,20 +430,6 @@ class _HomeAdminState extends State<HomeAdmin> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 _buildCircularButton(
-                                  icon: Icons.home,
-                                  label: 'Home',
-                                  onPressed: () {
-                                    // Navigate to home_admin.dart
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => HomeAdmin(
-                                            passUser: widget.passUser),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                _buildCircularButton(
                                   icon: Icons.calendar_today,
                                   label: 'Availability',
                                   onPressed: () {
@@ -490,20 +473,6 @@ class _HomeAdminState extends State<HomeAdmin> {
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             ContactAdminPage(),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                _buildCircularButton(
-                                  icon: Icons.person,
-                                  label: 'Profile',
-                                  onPressed: () {
-                                    // Navigate to Profile
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            Profile(passUser: widget.passUser),
                                       ),
                                     );
                                   },
