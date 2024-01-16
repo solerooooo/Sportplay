@@ -71,6 +71,7 @@ class _ViewBookingDetailsAdminPageState
           isCourtAssigned: data.containsKey('isCourtAssigned')
               ? data['isCourtAssigned']
               : false,
+              playerNames: [],
         );
       }).toList();
 

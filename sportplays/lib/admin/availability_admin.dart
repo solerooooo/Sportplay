@@ -50,46 +50,6 @@ class _AvailabilityAdminPageState extends State<AvailabilityAdminPage> {
     });
   }
 
-  void _onTabSelected(int index) {
-    if (index == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Home(passUser: widget.passUser),
-        ),
-      );
-    }
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BookingPage(
-            passUser: widget.passUser,
-            selectedTime: 'Choose you time slot',
-            selectedActivity: '',
-            timestamp: null,
-          ),
-        ),
-      );
-    }
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => QnAPage(passUser: widget.passUser),
-        ),
-      );
-    }
-    if (index == 3) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Profile(passUser: widget.passUser),
-        ),
-      );
-    }
-  }
-
   void _onTimeSelected(String selectedTime) {
     int currentPingPongCourts = selectedCourts['pingPong_$selectedTime'] ?? 0;
     int currentBadmintonCourts = selectedCourts['badminton_$selectedTime'] ?? 0;

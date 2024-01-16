@@ -132,6 +132,17 @@ class _HomeState extends State<Home> {
                 },
               ),
               ListTile(
+                title: Text('QnA'), // Add Contact to the drawer
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => QnAPage(passUser: widget.passUser),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
                 title: Text('Logout'),
                 leading: Icon(Icons.logout),
                 onTap: _logout,
@@ -326,7 +337,7 @@ class _HomeState extends State<Home> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _buildCircularButton(
-                          icon: Icons.home,
+                          icon: Icons.access_alarms,
                           label: 'Reminder',
                           onPressed: () {
                             // Navigate to Home
