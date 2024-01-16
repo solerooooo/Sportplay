@@ -7,6 +7,8 @@ import 'package:sportplays/screen/profile.dart';
 import 'package:flutter/cupertino.dart';
 
 DateTime scheduleTime = DateTime.now();
+DateTime? pickedDateTime;
+TimeOfDay? pickedTime;
 
 class ReminderPage extends StatefulWidget {
   final User passUser;
@@ -23,7 +25,7 @@ class ReminderPage extends StatefulWidget {
 }
 
 class _ReminderPageState extends State<ReminderPage> {
-  String selectedActivity = ''; // Define selectedActivity
+  String selectedActivity = '';
 
   @override
   Widget build(BuildContext context) {
@@ -67,86 +69,94 @@ class _ReminderPageState extends State<ReminderPage> {
       ),
       backgroundColor: Color(0xFFE6DFF1),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Select Activity',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 60),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildActivityButton(
-                    activityName: 'Ping Pong',
-                    imagePath: 'images/pingpong.png',
-                    label: 'Ping Pong',
-                  ),
-                  _buildActivityButton(
-                    activityName: 'Badminton',
-                    imagePath: 'images/badminton.png',
-                    label: 'Badminton',
-                  ),
-                  _buildActivityButton(
-                    activityName: 'Squash',
-                    imagePath: 'images/squash.png',
-                    label: 'Squash',
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  DateTime? pickedDateTime = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2023),
-                    lastDate: DateTime(2025),
-                  );
-
-                  if (pickedDateTime != null) {
-                    TimeOfDay? pickedTime = await showTimePicker(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Select Activity',
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 60),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildActivityButton(
+                      activityName: 'Ping Pong',
+                      imagePath: 'images/pingpong.png',
+                      label: 'Ping Pong',
+                    ),
+                    _buildActivityButton(
+                      activityName: 'Badminton',
+                      imagePath: 'images/badminton.png',
+                      label: 'Badminton',
+                    ),
+                    _buildActivityButton(
+                      activityName: 'Squash',
+                      imagePath: 'images/squash.png',
+                      label: 'Squash',
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    pickedDateTime = await showDatePicker(
                       context: context,
-                      initialTime: TimeOfDay.now(),
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2023),
+                      lastDate: DateTime(2025),
                     );
 
-                    if (pickedTime != null) {
-                      setState(() {
-                        scheduleTime = DateTime(
-                          pickedDateTime.year,
-                          pickedDateTime.month,
-                          pickedDateTime.day,
-                          pickedTime.hour,
-                          pickedTime.minute,
-                        );
-                      });
+                    if (pickedDateTime != null) {
+                      pickedTime = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      );
+
+                      if (pickedTime != null) {
+                        setState(() {
+                          scheduleTime = DateTime(
+                            pickedDateTime!.year,
+                            pickedDateTime!.month,
+                            pickedDateTime!.day,
+                            pickedTime!.hour,
+                            pickedTime!.minute,
+                          );
+                        });
+                      }
                     }
-                  }
-                },
-                child: const Text(
-                  'Select Date Time',
-                  style: TextStyle(color: Colors.blue),
+                  },
+                  child: Text(
+                    pickedDateTime != null && pickedTime != null
+                        ? 'Selected Date Time: ${formatDateTime(scheduleTime)}'
+                        : 'Select Date Time',
+                    style: TextStyle(color: Colors.blue),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                child: const Text('Set Reminder'),
-                onPressed: () {
-                  debugPrint('Notification Scheduled for $scheduleTime');
-                  NotificationService().scheduleNotification(
-                    title: 'Scheduled Notification',
-                    body: '$scheduleTime',
-                    scheduledNotificationDateTime: scheduleTime,
-                  );
-                },
-              ),
-            ],
+                ElevatedButton(
+                  child: const Text('Set Reminder'),
+                  onPressed: () {
+                    debugPrint('Notification Scheduled for $scheduleTime');
+                    NotificationService().scheduleNotification(
+                      title: 'Scheduled Notification',
+                      body: '$scheduleTime',
+                      scheduledNotificationDateTime: scheduleTime,
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  String formatDateTime(DateTime dateTime) {
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute}';
   }
 
   Widget _buildActivityButton({
